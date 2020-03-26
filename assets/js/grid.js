@@ -2,13 +2,16 @@ import ViewableObject from './viewable-object';
 import Tile from './tile';
 import Toolbar from './toolbar';
 
+/**
+ * The arrangement of world Tiles.
+ */
 export default class Grid extends ViewableObject {
 
   // Constants
-  static numRows = 12;
-  static numCols = 12;
-  static cellWidth = 64;
-  static cellHeight = 64;
+  static GRID_ROWS = 24;
+  static GRID_COLS = 24;
+  static TILE_WIDTH = 40;
+  static TILE_HEIGHT = 40;
   static TILE_TYPE_GRASS = 0;
   static TILE_TYPE_ROAD = 1;
   static TILE_LABEL_DICTIONARY = {
@@ -26,26 +29,26 @@ export default class Grid extends ViewableObject {
     super();
 
     this.#game = game;
-    this.#startingX = (appWidth / 2) - ((Grid.numRows * Grid.cellWidth) / 2);
-    this.#startingY = (appHeight / 2) - ((Grid.numRows * Grid.cellHeight) / 2);
+    // Center the grid in the app
+    this.#startingX = (appWidth / 2) - ((Grid.GRID_ROWS * Grid.TILE_WIDTH) / 2);
+    this.#startingY = (appHeight / 2) - ((Grid.GRID_ROWS * Grid.TILE_HEIGHT) / 2);
     this.#tiles = [];
 
     this.generateGraphics();
-    console.log(Grid.TILE_LABEL_DICTIONARY);
   }
 
   generateGraphics() {
     let x = this.#startingX;
     let y = this.#startingY;
 
-    for (let i = 0; i < Grid.numRows; i++) {
-      for (let j = 0; j < Grid.numCols; j++) {
+    for (let i = 0; i < Grid.GRID_ROWS; i++) {
+      for (let j = 0; j < Grid.GRID_COLS; j++) {
         const tile = new Tile(this, x, y);
         this.#tiles = this.#tiles.concat(tile);
 
-        x += Grid.cellWidth;
+        x += Grid.TILE_WIDTH;
       }
-      y += Grid.cellHeight;
+      y += Grid.TILE_HEIGHT;
       x = this.#startingX;
     }
   }
@@ -56,10 +59,13 @@ export default class Grid extends ViewableObject {
 
     console.log(
         'onTileClick before: ' + Grid.TILE_LABEL_DICTIONARY[tile.tileType]);
-    if (this.#game.toolInUse.id === Toolbar.ROAD_TOOL) {
-      tile.tileType = Grid.TILE_TYPE_ROAD;
-      tile.x = tile.x + 1;
-      // tile.updateTileGraphic();
+    switch(this.#game.toolInUse.id){
+      case Toolbar.ROAD_TOOL:
+        tile.tileType = Grid.TILE_TYPE_ROAD;
+        break;
+      case Toolbar.BULLDOZE_TOOL:
+        tile.tileType = Grid.TILE_TYPE_GRASS;
+        break;
     }
     console.log(
         'onTileClick after: ' + Grid.TILE_LABEL_DICTIONARY[tile.tileType]);

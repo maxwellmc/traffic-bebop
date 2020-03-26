@@ -2,6 +2,9 @@ import {Graphics} from 'pixi.js';
 import ViewableObject from './viewable-object';
 import Grid from './grid';
 
+/**
+ * A cell within the world.
+ */
 export default class Tile extends ViewableObject {
 
   // Constants
@@ -44,7 +47,7 @@ export default class Tile extends ViewableObject {
     const rectangle = new Graphics();
     rectangle.lineStyle(1, 0x4d4646, 0.1);
     rectangle.beginFill(fillColor);
-    rectangle.drawRect(0, 0, Grid.cellWidth, Grid.cellHeight);
+    rectangle.drawRect(0, 0, Grid.TILE_WIDTH, Grid.TILE_HEIGHT);
     rectangle.endFill();
     rectangle.x = this.#x;
     rectangle.y = this.#y;

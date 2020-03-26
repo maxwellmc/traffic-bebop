@@ -2,7 +2,15 @@ import {Graphics, Text} from 'pixi.js';
 import ViewableObject from './viewable-object';
 import Toolbar from './toolbar';
 
+/**
+ * Selected by the user to manipulate the world.
+ */
 export default class Tool extends ViewableObject {
+
+  // Constants
+  static FILL_COLOR = 0xeeeeee;
+  static LINE_COLOR = 0xdedede;
+  static TEXT_COLOR = 0xc10000;
 
   // Class properties
   #id;
@@ -15,8 +23,8 @@ export default class Tool extends ViewableObject {
 
     // Rectangle
     const rectangle = new Graphics();
-    rectangle.lineStyle(4, 0xFF3300, 1);
-    rectangle.beginFill(0x66CCFF);
+    rectangle.lineStyle(4, Tool.LINE_COLOR, 1);
+    rectangle.beginFill(Tool.FILL_COLOR);
     rectangle.drawRect(0, 0, Toolbar.TOOL_WIDTH, Toolbar.TOOL_HEIGHT);
     rectangle.endFill();
     rectangle.x = x;
@@ -29,7 +37,7 @@ export default class Tool extends ViewableObject {
     const text = new Text(this.#label, {
       fontFamily: 'Arial',
       fontSize: 24,
-      fill: 0xff1010,
+      fill: Tool.TEXT_COLOR,
       align: 'center',
     });
     text.x = x + 5;

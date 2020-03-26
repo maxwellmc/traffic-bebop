@@ -1,12 +1,19 @@
 import Tool from './tool';
 
+/**
+ * A non-world container for Tools.
+ */
 export default class Toolbar {
 
   // Constants
+  static TOOLBAR_STARTING_X = 20;
+  static TOOLBAR_STARTING_Y = 20;
+  static TOOL_WIDTH = 110;
+  static TOOL_HEIGHT = 40;
+
   static SELECT_TOOL = 0;
   static ROAD_TOOL = 1;
-  static TOOL_WIDTH = 80;
-  static TOOL_HEIGHT = 40;
+  static BULLDOZE_TOOL = 2;
   static TOOLS = [
     {
       'id': Toolbar.SELECT_TOOL,
@@ -16,27 +23,27 @@ export default class Toolbar {
       'id': Toolbar.ROAD_TOOL,
       'label': 'Road',
     },
+    {
+      'id': Toolbar.BULLDOZE_TOOL,
+      'label': 'Bulldoze',
+    },
   ];
 
   // Class properties
   #game;
   /** @type array */
   #tools;
-  #startingX;
-  #startingY;
 
   constructor(game) {
     this.#game = game;
     this.#tools = [];
-    this.#startingX = 10;
-    this.#startingY = 20;
 
     this.generateGraphics();
   }
 
   generateGraphics() {
-    let x = this.#startingX;
-    let y = this.#startingY;
+    let x = Toolbar.TOOLBAR_STARTING_X;
+    let y = Toolbar.TOOLBAR_STARTING_Y;
 
     for (let i = 0; i < Toolbar.TOOLS.length; i++) {
       const tool = Toolbar.TOOLS[i];

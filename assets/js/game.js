@@ -2,11 +2,14 @@ import {Application, Loader} from 'pixi.js';
 import Toolbar from './toolbar';
 import Grid from './grid';
 
+/**
+ * Manages the Pixi Application, the game loop, and calling the draw-ers.
+ */
 class Game {
 
   // Constants
-  static appWidth = 1024;
-  static appHeight = 1024;
+  static appWidth = 1200;
+  static appHeight = 1000;
 
   // Class properties
   #app;
