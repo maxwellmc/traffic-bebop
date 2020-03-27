@@ -1,6 +1,7 @@
 import ViewableObject from './viewable-object';
 import Tile from './tile';
 import Toolbar from './toolbar';
+import Game from './game';
 
 /**
  * The arrangement of world Tiles.
@@ -62,6 +63,7 @@ export default class Grid extends ViewableObject {
     switch(this.#game.toolInUse.id){
       case Toolbar.ROAD_TOOL:
         tile.tileType = Grid.TILE_TYPE_ROAD;
+        this.#game.eventDispatcher.dispatch(Game.EVENT_MONEY_DEDUCTED, -10);
         break;
       case Toolbar.BULLDOZE_TOOL:
         tile.tileType = Grid.TILE_TYPE_GRASS;

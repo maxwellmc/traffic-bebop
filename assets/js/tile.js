@@ -24,7 +24,7 @@ export default class Tile extends ViewableObject {
     this.#x = x;
     this.#y = y;
 
-    // Set the defaullt tile to grass
+    // Set the default tile to grass
     this.#tileType = Grid.TILE_TYPE_GRASS;
 
     this.updateTileGraphic();

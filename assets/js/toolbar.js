@@ -35,6 +35,7 @@ export default class Toolbar {
   #tools;
 
   constructor(game) {
+
     this.#game = game;
     this.#tools = [];
 
