@@ -3,6 +3,7 @@ import ViewableObject from './viewable-object';
 import {Graphics} from "pixi.js";
 import Toolbar from './toolbar';
 import Game from './game';
+import GameState from './game-state';
 
 /**
  * The heads-up display to show the game state to the user.
@@ -30,15 +31,18 @@ export default class HUD extends ViewableObject {
 
     this.#items = [
       new HUDItem('Money', this.#gameState.money),
+      new HUDItem('Days', this.#gameState.time)
     ];
 
     this.generateGraphics(this.#startingX, this.#startingY, appWidth, HUD.HEIGHT);
 
     this.setGraphicsPositioning();
 
-    // Update the money when it changes
-    this.#game.eventDispatcher.createEvent(Game.EVENT_MONEY_DEDUCTED);
-    this.#game.eventDispatcher.registerListener(Game.EVENT_MONEY_DEDUCTED, (args) => this.onMoneyUpdated(args));
+    // Update the money graphic when it changes
+    this.#game.eventDispatcher.registerListener(GameState.EVENT_MONEY_CHANGED, (args) => this.onMoneyChanged(args));
+
+    // Update the game time graphic when it changes
+    this.#game.eventDispatcher.registerListener(GameState.EVENT_TIME_CHANGED, (args) => this.onTimeChanged(args));
   }
 
   generateGraphics(x, y, width, height){
@@ -57,14 +61,18 @@ export default class HUD extends ViewableObject {
 
     for (let i = 0; i < this.#items.length; i++) {
       const hudItem = this.#items[i];
-      hudItem.changeX(x);
+      hudItem.changeX(x + (70 * i));
       hudItem.changeY(y);
       x += HUDItem.WIDTH;
     }
   }
 
-  onMoneyUpdated(amount){
-    this.#items[0].value += amount;
+  onMoneyChanged(amount){
+    this.#items[0].value = amount;
+  }
+
+  onTimeChanged(milliseconds){
+    this.#items[1].value = Math.round(milliseconds / 2000);
   }
 
   // Getters and setters -------------------------------------------------------

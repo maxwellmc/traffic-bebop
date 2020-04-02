@@ -20,8 +20,11 @@ export default class Game {
   static appWidth = 1200;
   static appHeight = 1000;
   static EVENT_MONEY_DEDUCTED = 'money.deducted';
+  static EVENT_TIME_INCREASED = 'time.increased';
 
   // Class properties
+  /** @type PIXI.Ticker */
+  #ticker;
   #renderer;
   /** @type PIXI.Container */
   #stage;
@@ -35,6 +38,7 @@ export default class Game {
 
   constructor() {
 
+    this.#ticker = new PIXI.Ticker();
     this.#renderer = new PIXI.Renderer({
       width: Game.appWidth,
       height: Game.appHeight,
@@ -43,8 +47,8 @@ export default class Game {
       resolution: 1,
     });
     this.#stage = new PIXI.Container();
-    this.#gameState = new GameState();
     this.#eventDispatcher = new Dispatcher();
+    this.#gameState = new GameState(this);
     this.#map = new Map();
     this.#grid = new Grid(this, Game.appWidth, Game.appHeight);
     this.#toolbar = new Toolbar(this);
@@ -75,12 +79,14 @@ export default class Game {
     console.log('load');
 
     //Start the game loop
-    const ticker = new PIXI.Ticker();
-    ticker.add(delta => this.gameLoop(delta));
-    ticker.start();
+    this.#ticker.add((delta) => this.gameLoop(delta));
+    this.#ticker.start();
   }
 
   gameLoop(delta) {
+    // Dispatch an event that the time has increased
+    this.#eventDispatcher.dispatch(Game.EVENT_TIME_INCREASED, this.#ticker.deltaMS);
+
     this.updateGrid();
     this.updateToolbar();
     this.updateHUD();

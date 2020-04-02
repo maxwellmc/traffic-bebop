@@ -13,7 +13,11 @@ export default class Dispatcher {
   }
 
   registerListener(eventName, callable){
-    const event = this.findEventObject(eventName);
+    let event = this.findEventObject(eventName);
+    if(event === false){
+      this.createEvent(eventName);
+      event = this.findEventObject(eventName);
+    }
     event.addRegistrant(callable);
   }
 
@@ -28,6 +32,6 @@ export default class Dispatcher {
         return event;
       }
     }
-    return null;
+    return false;
   }
 }
