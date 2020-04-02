@@ -65,8 +65,6 @@ export default class HUD extends ViewableObject {
 
   onMoneyUpdated(amount){
     this.#items[0].value += amount;
-    this.#items[0].generateGraphics();
-    this.setGraphicsPositioning();
   }
 
   // Getters and setters -------------------------------------------------------

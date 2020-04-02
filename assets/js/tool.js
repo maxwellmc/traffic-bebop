@@ -13,13 +13,24 @@ export default class Tool extends ViewableObject {
   static TEXT_COLOR = 0xc10000;
 
   // Class properties
+  #toolbar;
   #id;
   #label;
+  #x;
+  #y;
 
-  constructor(id, label, x, y) {
+  constructor(toolbar, id, label, x, y) {
     super();
+    this.#toolbar = toolbar;
     this.#id = id;
     this.#label = label;
+    this.#x = x;
+    this.#y = y;
+
+    this.generateGraphics();
+  }
+
+  generateGraphics(){
 
     // Rectangle
     const rectangle = new Graphics();
@@ -27,11 +38,13 @@ export default class Tool extends ViewableObject {
     rectangle.beginFill(Tool.FILL_COLOR);
     rectangle.drawRect(0, 0, Toolbar.TOOL_WIDTH, Toolbar.TOOL_HEIGHT);
     rectangle.endFill();
-    rectangle.x = x;
-    rectangle.y = y;
+    rectangle.x = this.#x;
+    rectangle.y = this.#y;
     rectangle.interactive = true;
 
-    this.graphics = this.graphics.concat(rectangle);
+    rectangle.on('mousedown', (e) => this.#toolbar.onToolClick(e, this));
+
+    this.graphics = [rectangle];
 
     // Text
     const text = new Text(this.#label, {
@@ -40,8 +53,8 @@ export default class Tool extends ViewableObject {
       fill: Tool.TEXT_COLOR,
       align: 'center',
     });
-    text.x = x + 5;
-    text.y = y + 5;
+    text.x = this.#x + 5;
+    text.y = this.#y + 5;
     this.graphics = this.graphics.concat(text);
   }
 

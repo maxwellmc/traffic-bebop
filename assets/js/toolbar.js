@@ -48,20 +48,17 @@ export default class Toolbar {
 
     for (let i = 0; i < Toolbar.TOOLS.length; i++) {
       const tool = Toolbar.TOOLS[i];
-      this.addTool(new Tool(tool.id, tool.label, x, y));
+      this.addTool(new Tool(this, tool.id, tool.label, x, y));
       y += Toolbar.TOOL_HEIGHT;
     }
   }
 
   addTool(tool) {
-    tool.graphics[0].on('mousedown', (e) => this.onToolClick(e));
-
     this.#tools.push(tool);
   }
 
-  onToolClick(e) {
+  onToolClick(e, tool) {
 
-    const tool = this.findToolByGraphic(e.currentTarget);
     this.#game.toolInUse = tool;
     console.log('onToolClick: ' + this.game.toolInUse.label);
   }

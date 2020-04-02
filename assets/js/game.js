@@ -4,6 +4,12 @@ import Grid from './grid';
 import HUD from './hud';
 import GameState from './game-state';
 import Dispatcher from './events/dispatcher';
+import Map from './map';
+
+// This block is to get the PixiJS Chrome devtool to work
+PIXI.useDeprecated();
+window.__PIXI_INSPECTOR_GLOBAL_HOOK__ &&
+window.__PIXI_INSPECTOR_GLOBAL_HOOK__.register({PIXI: PIXI});
 
 /**
  * Manages the Pixi Application, the game loop, and calling the draw-ers.
@@ -17,9 +23,11 @@ export default class Game {
 
   // Class properties
   #renderer;
+  /** @type PIXI.Container */
   #stage;
   #gameState;
   #eventDispatcher;
+  #map;
   #grid;
   #toolbar;
   #toolInUse;
@@ -37,12 +45,18 @@ export default class Game {
     this.#stage = new PIXI.Container();
     this.#gameState = new GameState();
     this.#eventDispatcher = new Dispatcher();
+    this.#map = new Map();
     this.#grid = new Grid(this, Game.appWidth, Game.appHeight);
     this.#toolbar = new Toolbar(this);
     this.#hud = new HUD(this, this.#gameState, Game.appWidth, Game.appHeight);
 
     // Set the default "tool in use"
     this.#toolInUse = this.#toolbar.tools[0];
+
+    this.#grid.generateGraphics();
+    this.drawGrid();
+    this.drawToolbar();
+    this.drawHUD();
   }
 
   init() {
@@ -67,17 +81,28 @@ export default class Game {
   }
 
   gameLoop(delta) {
-    this.drawGrid();
-    this.drawToolbar();
-    this.drawHUD();
+    this.updateGrid();
+    this.updateToolbar();
+    this.updateHUD();
     this.#renderer.render(this.#stage);
   }
 
   drawGrid() {
     for (const tile of this.#grid.tiles) {
+      tile.updateTileGraphic();
       for (const graphic of tile.graphics) {
         this.#stage.addChild(graphic);
       }
+    }
+  }
+
+  updateGrid() {
+    for (const tile of this.#grid.tiles) {
+      const oldGraphic = tile.graphics[0];
+      tile.updateTileGraphic();
+      oldGraphic.destroy();
+      const newGraphic = tile.graphics[0];
+      this.#stage.addChild(newGraphic);
     }
   }
 
@@ -86,6 +111,20 @@ export default class Game {
       for (const graphic of tool.graphics) {
         this.#stage.addChild(graphic);
       }
+    }
+  }
+
+  updateToolbar() {
+    for (const tool of this.#toolbar.tools) {
+      const oldGraphic1 = tool.graphics[0];
+      const oldGraphic2 = tool.graphics[1];
+      tool.generateGraphics();
+      oldGraphic1.destroy();
+      oldGraphic2.destroy();
+      const newGraphic1 = tool.graphics[0];
+      const newGraphic2 = tool.graphics[1];
+      this.#stage.addChild(newGraphic1);
+      this.#stage.addChild(newGraphic2);
     }
   }
 
@@ -103,32 +142,15 @@ export default class Game {
     }
   }
 
-  onDragStart(event) {
-    console.log('onDragStart');
-    // store a reference to the data
-    // the reason for this is because of multitouch
-    // we want to track the movement of this particular touch
-    this.data = event.data;
-    this.alpha = 0.5;
-    this.dragging = true;
-  }
-
-  onDragEnd() {
-    console.log('onDragEnd');
-    this.alpha = 1;
-
-    this.dragging = false;
-
-    // set the interaction data to null
-    this.data = null;
-  }
-
-  onDragMove() {
-    if (this.dragging) {
-      console.log('onDragMove');
-      const newPosition = this.data.getLocalPosition(this.parent);
-      this.position.x = newPosition.x;
-      this.position.y = newPosition.y;
+  updateHUD() {
+    // Reraw the HUD items
+    for (const hudItem of this.#hud.items) {
+      const oldGraphic = hudItem.graphics[0];
+      hudItem.generateGraphics();
+      oldGraphic.destroy();
+      this.#hud.setGraphicsPositioning();
+      const newGraphic = hudItem.graphics[0];
+      this.#stage.addChild(newGraphic);
     }
   }
 
@@ -140,6 +162,10 @@ export default class Game {
 
   get eventDispatcher() {
     return this.#eventDispatcher;
+  }
+
+  get map() {
+    return this.#map;
   }
 
   get toolInUse() {

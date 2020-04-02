@@ -1,6 +1,7 @@
 import {Graphics} from 'pixi.js';
 import ViewableObject from './viewable-object';
 import Grid from './grid';
+import Cell from './cell';
 
 /**
  * A cell within the world.
@@ -15,17 +16,15 @@ export default class Tile extends ViewableObject {
   #grid;
   #x;
   #y;
-  #tileType;
+  #cell;
 
-  constructor(grid, x, y) {
+  constructor(grid, x, y, cell) {
     super();
 
     this.#grid = grid;
     this.#x = x;
     this.#y = y;
-
-    // Set the default tile to grass
-    this.#tileType = Grid.TILE_TYPE_GRASS;
+    this.#cell = cell;
 
     this.updateTileGraphic();
   }
@@ -34,11 +33,11 @@ export default class Tile extends ViewableObject {
 
     let fillColor = '0x';
 
-    switch (this.#tileType) {
-      case Grid.TILE_TYPE_GRASS:
+    switch (this.#cell.terrainType) {
+      case Cell.TERRAIN_TYPE_GRASS:
         fillColor += Tile.COLOR_GRASS;
         break;
-      case Grid.TILE_TYPE_ROAD:
+      case Cell.TERRAIN_TYPE_ROAD:
         fillColor += Tile.COLOR_ROAD;
         break;
     }
@@ -53,7 +52,7 @@ export default class Tile extends ViewableObject {
     rectangle.y = this.#y;
     rectangle.interactive = true;
 
-    rectangle.on('mousedown', (e) => this.#grid.onTileClick(e));
+    rectangle.on('mousedown', (e) => this.#grid.onTileClick(e, this));
 
     this.graphics = [rectangle];
   }
@@ -68,13 +67,8 @@ export default class Tile extends ViewableObject {
     this.#x = value;
   }
 
-  get tileType() {
-    return this.#tileType;
+  get cell() {
+    return this.#cell;
   }
 
-  set tileType(value) {
-    this.#tileType = value;
-
-    this.updateTileGraphic();
-  }
 }

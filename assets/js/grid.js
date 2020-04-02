@@ -2,9 +2,12 @@ import ViewableObject from './viewable-object';
 import Tile from './tile';
 import Toolbar from './toolbar';
 import Game from './game';
+import Cell from './cell';
+import Map from './map';
 
 /**
- * The arrangement of world Tiles.
+ * Visually represents the Map, as translated to an arrangement of
+ * viewable Tiles.
  */
 export default class Grid extends ViewableObject {
 
@@ -13,11 +16,9 @@ export default class Grid extends ViewableObject {
   static GRID_COLS = 24;
   static TILE_WIDTH = 40;
   static TILE_HEIGHT = 40;
-  static TILE_TYPE_GRASS = 0;
-  static TILE_TYPE_ROAD = 1;
   static TILE_LABEL_DICTIONARY = {
-    [Grid.TILE_TYPE_GRASS]: 'Grass',
-    [Grid.TILE_TYPE_ROAD]: 'Road',
+    [Cell.TERRAIN_TYPE_GRASS]: 'Grass',
+    [Cell.TERRAIN_TYPE_ROAD]: 'Road',
   };
 
   // Class properties
@@ -42,9 +43,16 @@ export default class Grid extends ViewableObject {
     let x = this.#startingX;
     let y = this.#startingY;
 
-    for (let i = 0; i < Grid.GRID_ROWS; i++) {
-      for (let j = 0; j < Grid.GRID_COLS; j++) {
-        const tile = new Tile(this, x, y);
+    for (let row = 0; row < Map.MAP_ROWS; row++) {
+      for (let col = 0; col < Map.MAP_COLS; col++) {
+
+        // Find the Cell for this row/column combination
+        const cell = this.#game.map.findCellByRowColumn(row, col);
+
+        // Create a new Tile for it
+        const tile = new Tile(this, x, y, cell);
+
+        // Add the Tile to our list
         this.#tiles = this.#tiles.concat(tile);
 
         x += Grid.TILE_WIDTH;
@@ -54,33 +62,29 @@ export default class Grid extends ViewableObject {
     }
   }
 
-  onTileClick(e) {
+  updateGraphics() {
 
-    const tile = this.findTileByGraphic(e.currentTarget);
+    for(const tile of this.#tiles){
+      tile.updateTileGraphic();
+    }
+
+  }
+
+  onTileClick(e, tile) {
 
     console.log(
-        'onTileClick before: ' + Grid.TILE_LABEL_DICTIONARY[tile.tileType]);
+        'onTileClick before: ' + Grid.TILE_LABEL_DICTIONARY[tile.cell.terrainType]);
     switch(this.#game.toolInUse.id){
       case Toolbar.ROAD_TOOL:
-        tile.tileType = Grid.TILE_TYPE_ROAD;
+        tile.cell.terrainType = Cell.TERRAIN_TYPE_ROAD;
         this.#game.eventDispatcher.dispatch(Game.EVENT_MONEY_DEDUCTED, -10);
         break;
       case Toolbar.BULLDOZE_TOOL:
-        tile.tileType = Grid.TILE_TYPE_GRASS;
+        tile.cell.terrainType = Cell.TERRAIN_TYPE_GRASS;
         break;
     }
     console.log(
-        'onTileClick after: ' + Grid.TILE_LABEL_DICTIONARY[tile.tileType]);
-  }
-
-  /** @returns Tile */
-  findTileByGraphic(graphic) {
-    for (const tile of this.#tiles) {
-      if (tile.graphics[0] === graphic) {
-        return tile;
-      }
-    }
-    return null;
+        'onTileClick after: ' + Grid.TILE_LABEL_DICTIONARY[tile.cell.terrainType]);
   }
 
   // Getters and setters -------------------------------------------------------
