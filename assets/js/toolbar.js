@@ -14,6 +14,7 @@ export default class Toolbar {
   static SELECT_TOOL = 0;
   static ROAD_TOOL = 1;
   static BULLDOZE_TOOL = 2;
+  static RESIDENTIAL_ZONE_TOOL = 3;
   static TOOLS = [
     {
       'id': Toolbar.SELECT_TOOL,
@@ -26,6 +27,10 @@ export default class Toolbar {
     {
       'id': Toolbar.BULLDOZE_TOOL,
       'label': 'Bulldoze',
+    },
+    {
+      'id': Toolbar.RESIDENTIAL_ZONE_TOOL,
+      'label': 'Residential',
     },
   ];
 

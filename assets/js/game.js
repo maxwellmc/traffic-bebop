@@ -143,7 +143,7 @@ export default class Game {
   }
 
   updateHUD() {
-    // Reraw the HUD items
+    // Redraw the HUD items
     for (const hudItem of this.#hud.items) {
       const oldGraphic = hudItem.graphics[0];
       hudItem.generateGraphics();

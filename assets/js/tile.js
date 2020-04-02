@@ -11,6 +11,7 @@ export default class Tile extends ViewableObject {
   // Constants
   static COLOR_GRASS = '7fcd91';
   static COLOR_ROAD = '5b5656';
+  static COLOR_RESIDENTIAL_ZONE = '639a67';
 
   // Class properties
   #grid;
@@ -39,6 +40,12 @@ export default class Tile extends ViewableObject {
         break;
       case Cell.TERRAIN_TYPE_ROAD:
         fillColor += Tile.COLOR_ROAD;
+        break;
+    }
+
+    switch (this.#cell.zoneType) {
+      case Cell.ZONE_TYPE_RESIDENTIAL:
+        fillColor += Tile.COLOR_RESIDENTIAL_ZONE;
         break;
     }
 

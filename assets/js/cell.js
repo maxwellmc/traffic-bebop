@@ -7,9 +7,11 @@ export default class Cell {
   // Constants
   static TERRAIN_TYPE_GRASS = 0;
   static TERRAIN_TYPE_ROAD = 1;
+  static ZONE_TYPE_RESIDENTIAL = 0;
 
   // Class properties
   #terrainType;
+  #zoneType;
   #gamePiece;
 
   constructor(terrainType) {
@@ -24,5 +26,13 @@ export default class Cell {
 
   set terrainType(value) {
     this.#terrainType = value;
+  }
+
+  get zoneType() {
+    return this.#zoneType;
+  }
+
+  set zoneType(value) {
+    this.#zoneType = value;
   }
 }

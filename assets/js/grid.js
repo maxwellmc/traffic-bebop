@@ -12,8 +12,6 @@ import Map from './map';
 export default class Grid extends ViewableObject {
 
   // Constants
-  static GRID_ROWS = 24;
-  static GRID_COLS = 24;
   static TILE_WIDTH = 40;
   static TILE_HEIGHT = 40;
   static TILE_LABEL_DICTIONARY = {
@@ -32,8 +30,8 @@ export default class Grid extends ViewableObject {
 
     this.#game = game;
     // Center the grid in the app
-    this.#startingX = (appWidth / 2) - ((Grid.GRID_ROWS * Grid.TILE_WIDTH) / 2);
-    this.#startingY = (appHeight / 2) - ((Grid.GRID_ROWS * Grid.TILE_HEIGHT) / 2);
+    this.#startingX = (appWidth / 2) - ((Map.MAP_COLS * Grid.TILE_WIDTH) / 2);
+    this.#startingY = (appHeight / 2) - ((Map.MAP_ROWS * Grid.TILE_HEIGHT) / 2);
     this.#tiles = [];
 
     this.generateGraphics();
@@ -81,6 +79,11 @@ export default class Grid extends ViewableObject {
         break;
       case Toolbar.BULLDOZE_TOOL:
         tile.cell.terrainType = Cell.TERRAIN_TYPE_GRASS;
+        break;
+      case Toolbar.RESIDENTIAL_ZONE_TOOL:
+        tile.cell.terrainType = Cell.TERRAIN_TYPE_GRASS;
+        tile.cell.zoneType = Cell.ZONE_TYPE_RESIDENTIAL;
+        this.#game.eventDispatcher.dispatch(Game.EVENT_MONEY_DEDUCTED, -100);
         break;
     }
     console.log(
