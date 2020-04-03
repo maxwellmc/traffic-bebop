@@ -7,7 +7,7 @@ export default class Toolbar {
 
   // Constants
   static TOOLBAR_STARTING_X = 20;
-  static TOOLBAR_STARTING_Y = 20;
+  static TOOLBAR_STARTING_Y = 80;
   static TOOL_WIDTH = 110;
   static TOOL_HEIGHT = 40;
 

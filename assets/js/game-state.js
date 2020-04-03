@@ -9,17 +9,22 @@ export default class GameState {
   static STARTING_MONEY = 1000000;
   static EVENT_MONEY_CHANGED = 'game-state.money';
   static EVENT_TIME_CHANGED = 'game-state.time';
+  static SPEED_PAUSED = 0;
+  static SPEED_NORMAL = 1;
 
   // Class properties
   #game;
   #money;
   #time;
+  #speed;
 
   constructor(game) {
     this.#game = game;
     this.#money = GameState.STARTING_MONEY;
     this.#time = 0;
+    this.#speed = GameState.SPEED_PAUSED;
 
+    // Listen for events that should update the state
     this.#game.eventDispatcher.registerListener(Game.EVENT_MONEY_DEDUCTED, (args) => this.onMoneyUpdated(args));
     this.#game.eventDispatcher.registerListener(Game.EVENT_TIME_INCREASED, (args) => this.onTimeIncreased(args));
   }

@@ -1,6 +1,6 @@
 import ViewableObject from './viewable-object';
 import Tile from './tile';
-import Toolbar from './toolbar';
+import Toolbar from './nonworld/toolbar';
 import Game from './game';
 import Cell from './cell';
 import Map from './map';

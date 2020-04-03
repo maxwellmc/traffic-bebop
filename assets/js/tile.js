@@ -50,14 +50,7 @@ export default class Tile extends ViewableObject {
     }
 
     // Rectangle
-    const rectangle = new Graphics();
-    rectangle.lineStyle(1, 0x4d4646, 0.1);
-    rectangle.beginFill(fillColor);
-    rectangle.drawRect(0, 0, Grid.TILE_WIDTH, Grid.TILE_HEIGHT);
-    rectangle.endFill();
-    rectangle.x = this.#x;
-    rectangle.y = this.#y;
-    rectangle.interactive = true;
+    const rectangle = ViewableObject.generateRectangle(1, 0x4d4646, 0.1, fillColor, Grid.TILE_WIDTH, Grid.TILE_HEIGHT, this.#x, this.#y);
 
     rectangle.on('mousedown', (e) => this.#grid.onTileClick(e, this));
 

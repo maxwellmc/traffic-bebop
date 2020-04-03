@@ -1,10 +1,11 @@
 import * as PIXI from 'pixi.js';
-import Toolbar from './toolbar';
+import Toolbar from './nonworld/toolbar';
 import Grid from './grid';
-import HUD from './hud';
+import HUD from './nonworld/hud';
 import GameState from './game-state';
 import Dispatcher from './events/dispatcher';
 import Map from './map';
+import Menubar from './nonworld/menubar';
 
 // This block is to get the PixiJS Chrome devtool to work
 PIXI.useDeprecated();
@@ -32,6 +33,7 @@ export default class Game {
   #eventDispatcher;
   #map;
   #grid;
+  #menubar;
   #toolbar;
   #toolInUse;
   #hud;
@@ -51,6 +53,7 @@ export default class Game {
     this.#gameState = new GameState(this);
     this.#map = new Map();
     this.#grid = new Grid(this, Game.appWidth, Game.appHeight);
+    this.#menubar = new Menubar(this);
     this.#toolbar = new Toolbar(this);
     this.#hud = new HUD(this, this.#gameState, Game.appWidth, Game.appHeight);
 
@@ -61,6 +64,7 @@ export default class Game {
     this.drawGrid();
     this.drawToolbar();
     this.drawHUD();
+    this.drawMenubar();
   }
 
   init() {
@@ -157,6 +161,14 @@ export default class Game {
       this.#hud.setGraphicsPositioning();
       const newGraphic = hudItem.graphics[0];
       this.#stage.addChild(newGraphic);
+    }
+  }
+
+  drawMenubar() {
+    for (const menu of this.#menubar.menus) {
+      for (const graphic of menu.graphics) {
+        this.#stage.addChild(graphic);
+      }
     }
   }
 

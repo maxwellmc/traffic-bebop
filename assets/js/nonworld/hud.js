@@ -1,9 +1,9 @@
 import HUDItem from './hud-item';
-import ViewableObject from './viewable-object';
+import ViewableObject from '../viewable-object';
 import {Graphics} from "pixi.js";
 import Toolbar from './toolbar';
-import Game from './game';
-import GameState from './game-state';
+import Game from '../game';
+import GameState from '../game-state';
 
 /**
  * The heads-up display to show the game state to the user.

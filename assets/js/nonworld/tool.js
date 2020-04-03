@@ -1,9 +1,9 @@
 import {Graphics, Text} from 'pixi.js';
-import ViewableObject from './viewable-object';
+import ViewableObject from '../viewable-object';
 import Toolbar from './toolbar';
 
 /**
- * Selected by the user to manipulate the world.
+ * Selected by the user to manipulate individual cells in the world.
  */
 export default class Tool extends ViewableObject {
 
@@ -33,28 +33,15 @@ export default class Tool extends ViewableObject {
   generateGraphics(){
 
     // Rectangle
-    const rectangle = new Graphics();
-    rectangle.lineStyle(4, Tool.LINE_COLOR, 1);
-    rectangle.beginFill(Tool.FILL_COLOR);
-    rectangle.drawRect(0, 0, Toolbar.TOOL_WIDTH, Toolbar.TOOL_HEIGHT);
-    rectangle.endFill();
-    rectangle.x = this.#x;
-    rectangle.y = this.#y;
-    rectangle.interactive = true;
+    const rectangle = ViewableObject.generateRectangle(4, Tool.LINE_COLOR, 1, Tool.FILL_COLOR, Toolbar.TOOL_WIDTH, Toolbar.TOOL_HEIGHT, this.#x, this.#y);
 
     rectangle.on('mousedown', (e) => this.#toolbar.onToolClick(e, this));
 
     this.graphics = [rectangle];
 
     // Text
-    const text = new Text(this.#label, {
-      fontFamily: 'Arial',
-      fontSize: 24,
-      fill: Tool.TEXT_COLOR,
-      align: 'center',
-    });
-    text.x = this.#x + 5;
-    text.y = this.#y + 5;
+    const text = ViewableObject.generateText(this.#label, 24, Tool.TEXT_COLOR, this.#x + 5, this.#y + 5)
+
     this.graphics = this.graphics.concat(text);
   }
 

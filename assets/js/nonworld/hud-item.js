@@ -1,4 +1,4 @@
-import ViewableObject from './viewable-object';
+import ViewableObject from '../viewable-object';
 import {Text} from "pixi.js";
 
 export default class HUDItem extends ViewableObject {
