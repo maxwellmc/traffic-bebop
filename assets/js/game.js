@@ -5,7 +5,7 @@ import HUD from './nonworld/hud';
 import GameState from './game-state';
 import Dispatcher from './events/dispatcher';
 import Map from './map';
-import Menubar from './nonworld/menubar';
+import Menubar from './nonworld/menu/menubar';
 
 // This block is to get the PixiJS Chrome devtool to work
 PIXI.useDeprecated();
@@ -22,6 +22,7 @@ export default class Game {
   static appHeight = 1000;
   static EVENT_MONEY_DEDUCTED = 'money.deducted';
   static EVENT_TIME_INCREASED = 'time.increased';
+  static EVENT_SPEED_SET = 'speed.set';
 
   // Class properties
   /** @type PIXI.Ticker */
@@ -88,12 +89,14 @@ export default class Game {
   }
 
   gameLoop(delta) {
+
     // Dispatch an event that the time has increased
     this.#eventDispatcher.dispatch(Game.EVENT_TIME_INCREASED, this.#ticker.deltaMS);
 
     this.updateGrid();
     this.updateToolbar();
     this.updateHUD();
+    this.updateMenubar();
     this.#renderer.render(this.#stage);
   }
 
@@ -169,6 +172,42 @@ export default class Game {
       for (const graphic of menu.graphics) {
         this.#stage.addChild(graphic);
       }
+    }
+  }
+
+  updateMenubar() {
+    for (const menu of this.#menubar.menus) {
+      Game.replaceGraphics(this.#stage, menu);
+      if(menu.open){
+        for (const item of menu.items) {
+          Game.replaceGraphics(this.#stage, item);
+        }
+      }else if(menu.items.length > 0){
+        for (const item of menu.items) {
+          if(item.graphics.length > 0) {
+            item.removeAllGraphics();
+          }
+        }
+      }
+    }
+  }
+
+  /**
+   *
+   * @param {PIXI.Container} stage
+   * @param {ViewableObject} viewableObject
+   */
+  static replaceGraphics(stage, viewableObject){
+
+    // Remove the existing graphics
+    viewableObject.removeAllGraphics();
+
+    // Generate the new graphics
+    viewableObject.generateGraphics();
+
+    // Individually add each new graphic to the stage
+    for (const graphic of viewableObject.graphics) {
+      stage.addChild(graphic);
     }
   }
 

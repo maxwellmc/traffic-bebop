@@ -1,4 +1,5 @@
 import Menu from './menu';
+import SpeedMenu from './speed-menu';
 
 /**
  * A non-world container for Menus.
@@ -10,22 +11,18 @@ export default class Menubar {
   static STARTING_Y = 0;
   static HEIGHT = 40;
   static SPEED_MENU = 0;
-  static MENUS = [
-    {
-      'id': Menubar.SPEED_MENU,
-      'label': 'Speed',
-    },
-  ];
 
   // Class properties
   #game;
-  /** @type array */
+  /** @type {Menu[]} */
   #menus;
 
   constructor(game) {
 
     this.#game = game;
-    this.#menus = [];
+    this.#menus = [
+        new SpeedMenu(this)
+    ];
 
     this.generateGraphics();
   }
@@ -34,19 +31,16 @@ export default class Menubar {
     let x = Menubar.STARTING_X;
     let y = Menubar.STARTING_Y;
 
-    for (let i = 0; i < Menubar.MENUS.length; i++) {
-      const menu = Menubar.MENUS[i];
-      this.addMenu(new Menu(this, menu.id, menu.label, x, y));
+    for (let i = 0; i < this.#menus.length; i++) {
+      const menu = this.#menus[i];
+      menu.x = x;
+      menu.y = y;
       y += Menubar.HEIGHT;
     }
   }
 
   addMenu(menu) {
     this.#menus.push(menu);
-  }
-
-  onMenuClick(e, menu) {
-    console.log('onMenuClick: ' + menu);
   }
 
   // Getters and setters -------------------------------------------------------

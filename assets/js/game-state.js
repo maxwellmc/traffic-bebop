@@ -9,6 +9,7 @@ export default class GameState {
   static STARTING_MONEY = 1000000;
   static EVENT_MONEY_CHANGED = 'game-state.money';
   static EVENT_TIME_CHANGED = 'game-state.time';
+  static EVENT_SPEED_CHANGED = 'game-state.speed';
   static SPEED_PAUSED = 0;
   static SPEED_NORMAL = 1;
 
@@ -27,6 +28,7 @@ export default class GameState {
     // Listen for events that should update the state
     this.#game.eventDispatcher.registerListener(Game.EVENT_MONEY_DEDUCTED, (args) => this.onMoneyUpdated(args));
     this.#game.eventDispatcher.registerListener(Game.EVENT_TIME_INCREASED, (args) => this.onTimeIncreased(args));
+    this.#game.eventDispatcher.registerListener(Game.EVENT_SPEED_SET, (args) => this.onSpeedSet(args));
   }
 
   onMoneyUpdated(amount){
@@ -37,6 +39,11 @@ export default class GameState {
   onTimeIncreased(milliseconds){
     this.#time += milliseconds;
     this.#game.eventDispatcher.dispatch(GameState.EVENT_TIME_CHANGED, this.#time);
+  }
+
+  onSpeedSet(speed){
+    this.#speed = speed;
+    this.#game.eventDispatcher.dispatch(GameState.EVENT_SPEED_CHANGED, this.#speed);
   }
 
   // Getters and setters -------------------------------------------------------

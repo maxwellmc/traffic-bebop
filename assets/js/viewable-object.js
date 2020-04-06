@@ -2,10 +2,46 @@ import {Graphics, Text} from 'pixi.js';
 
 export default class ViewableObject {
 
+  /** @type {PIXI.DisplayObject[]} */
   #graphics;
 
   constructor() {
     this.#graphics = [];
+  }
+
+  generateGraphics(){
+    throw new Error('Implementation required');
+  }
+
+  /**
+   *
+   * @param {PIXI.DisplayObject} graphic
+   */
+  removeGraphic(graphic){
+
+    // Actually remove the item from the array
+    const index = this.#graphics.indexOf(graphic);
+    if (index > -1) {
+      this.#graphics = this.#graphics.splice(index, 1);
+    }
+
+    // Destroy the DisplayObject in Pixi
+    graphic.destroy();
+  }
+
+  removeAllGraphics(){
+
+    // Get a reference to the graphics
+    /** @type {PIXI.DisplayObject[]} */
+    const graphics = this.#graphics;
+
+    // Clear the array
+    this.#graphics = [];
+
+    // Destroy the DisplayObjects in Pixi
+    for(const graphic of graphics){
+      graphic.destroy();
+    }
   }
 
   static generateRectangle(lineWidth, lineColor, lineAlpha, fillColor, width, height, x, y){

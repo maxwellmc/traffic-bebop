@@ -68,15 +68,6 @@ export default class Toolbar {
     console.log('onToolClick: ' + this.game.toolInUse.label);
   }
 
-  findToolByGraphic(graphic) {
-    for (const tool of this.#tools) {
-      if (tool.graphics[0] === graphic) {
-        return tool;
-      }
-    }
-    return null;
-  }
-
   // Getters and setters -------------------------------------------------------
 
   get game() {
