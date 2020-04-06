@@ -26,24 +26,25 @@ export default class GameState {
     this._speed = GameState.SPEED_PAUSED;
 
     // Listen for events that should update the state
-    this._game.eventDispatcher.on(Game.EVENT_MONEY_DEDUCTED, (args) => this.onMoneyUpdated(args));
-    this._game.eventDispatcher.on(Game.EVENT_TIME_INCREASED, (args) => this.onTimeIncreased(args));
-    this._game.eventDispatcher.on(Game.EVENT_SPEED_SET, (args) => this.onSpeedSet(args));
+    this._game.eventEmitter.on(Game.EVENT_MONEY_DEDUCTED, (args) => this.onMoneyUpdated(args));
+    this._game.eventEmitter.on(Game.EVENT_TIME_INCREASED, (args) => this.onTimeIncreased(args));
+    this._game.eventEmitter.on(Game.EVENT_SPEED_SET, (args) => this.onSpeedSet(args));
   }
 
   onMoneyUpdated(amount: number): void{
     this._money += amount;
-    this._game.eventDispatcher.emit(GameState.EVENT_MONEY_CHANGED, this._money);
+    this._game.eventEmitter.emit(GameState.EVENT_MONEY_CHANGED, this._money);
   }
 
   onTimeIncreased(milliseconds: number): void{
-    this._time += milliseconds;
-    this._game.eventDispatcher.emit(GameState.EVENT_TIME_CHANGED, this._time);
+    // We scale the real-life milliseconds based on the current game speed
+    this._time += milliseconds * this._speed;
+    this._game.eventEmitter.emit(GameState.EVENT_TIME_CHANGED, this._time);
   }
 
   onSpeedSet(speed: number): void{
     this._speed = speed;
-    this._game.eventDispatcher.emit(GameState.EVENT_SPEED_CHANGED, this._speed);
+    this._game.eventEmitter.emit(GameState.EVENT_SPEED_CHANGED, this._speed);
   }
 
   // Getters and setters -------------------------------------------------------

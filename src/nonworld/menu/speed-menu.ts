@@ -1,6 +1,8 @@
 import Menu from './menu';
 import MenuItem from './menu-item';
 import Menubar from "./menubar";
+import GameState from "../../game-state";
+import Game from "../../game";
 
 export default class SpeedMenu extends Menu {
 
@@ -32,11 +34,11 @@ export default class SpeedMenu extends Menu {
   onMenuItemClick(menuItem: MenuItem): void{
     console.log('onMenuItemClick');
     switch(menuItem.id){
-      case SpeedMenu.NORMAL_ITEM:
-        console.log('onMenuItemClick: normal');
-        break;
       case SpeedMenu.PAUSED_ITEM:
-        console.log('onMenuItemClick: paused');
+        this._menubar.game.eventEmitter.emit(Game.EVENT_SPEED_SET, GameState.SPEED_PAUSED);
+        break;
+      case SpeedMenu.NORMAL_ITEM:
+        this._menubar.game.eventEmitter.emit(Game.EVENT_SPEED_SET, GameState.SPEED_NORMAL);
         break;
     }
   }

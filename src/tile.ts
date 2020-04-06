@@ -1,4 +1,3 @@
-import {Graphics} from 'pixi.js';
 import ViewableObject from './viewable-object';
 import Grid from './grid';
 import Cell from './cell';
@@ -27,14 +26,10 @@ export default class Tile extends ViewableObject {
     this._y = y;
     this._cell = cell;
 
-    this.updateTileGraphic();
+    this.generateGraphics();
   }
 
   generateGraphics(): void {
-    // TODO
-  }
-
-  updateTileGraphic(): void {
 
     let fillColor = '0x';
 

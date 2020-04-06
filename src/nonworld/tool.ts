@@ -1,4 +1,3 @@
-import {Graphics, Text} from 'pixi.js';
 import ViewableObject from '../viewable-object';
 import Toolbar from './toolbar';
 

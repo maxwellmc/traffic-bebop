@@ -19,31 +19,31 @@ import Tool from "./nonworld/tool";
 export default class Game {
 
   // Constants
-  public static readonly appWidth = 1200;
-  public static readonly appHeight = 1000;
+  public static readonly APP_WIDTH = 1200;
+  public static readonly APP_HEIGHT = 1000;
   public static readonly EVENT_MONEY_DEDUCTED = 'money.deducted';
   public static readonly EVENT_TIME_INCREASED = 'time.increased';
   public static readonly EVENT_SPEED_SET = 'speed.set';
 
   // Class properties
   private _ticker: PIXI.Ticker;
-  private _renderer;
+  private _renderer: PIXI.Renderer;
   private _stage: PIXI.Container;
-  private _gameState;
+  private _gameState: GameState;
   private _eventEmitter: EventEmitter;
-  private _map;
-  private _grid;
-  private _menubar;
-  private _toolbar;
-  private _toolInUse;
-  private _hud;
+  private _map: Map;
+  private _grid: Grid;
+  private _menubar: Menubar;
+  private _toolbar: Toolbar;
+  private _toolInUse: Tool;
+  private _hud: HUD;
 
   constructor() {
 
     this._ticker = new PIXI.Ticker();
     this._renderer = new PIXI.Renderer({
-      width: Game.appWidth,
-      height: Game.appHeight,
+      width: Game.APP_WIDTH,
+      height: Game.APP_HEIGHT,
       antialias: true,
       transparent: false,
       resolution: 1,
@@ -52,10 +52,10 @@ export default class Game {
     this._eventEmitter = new EventEmitter();
     this._gameState = new GameState(this);
     this._map = new Map();
-    this._grid = new Grid(this, Game.appWidth, Game.appHeight);
+    this._grid = new Grid(this, Game.APP_WIDTH, Game.APP_HEIGHT);
     this._menubar = new Menubar(this);
     this._toolbar = new Toolbar(this);
-    this._hud = new HUD(this, this._gameState, Game.appWidth, Game.appHeight);
+    this._hud = new HUD(this, this._gameState, Game.APP_WIDTH, Game.APP_HEIGHT);
 
     // Set the default "tool in use"
     this._toolInUse = this._toolbar.tools[0];
@@ -99,7 +99,7 @@ export default class Game {
 
   drawGrid(): void {
     for (const tile of this._grid.tiles) {
-      tile.updateTileGraphic();
+      tile.generateGraphics();
       for (const graphic of tile.graphics) {
         this._stage.addChild(graphic);
       }
@@ -108,11 +108,7 @@ export default class Game {
 
   updateGrid(): void {
     for (const tile of this._grid.tiles) {
-      const oldGraphic = tile.graphics[0];
-      tile.updateTileGraphic();
-      oldGraphic.destroy();
-      const newGraphic = tile.graphics[0];
-      this._stage.addChild(newGraphic);
+      Game.replaceGraphics(this._stage, tile);
     }
   }
 
@@ -126,15 +122,7 @@ export default class Game {
 
   updateToolbar(): void {
     for (const tool of this._toolbar.tools) {
-      const oldGraphic1 = tool.graphics[0];
-      const oldGraphic2 = tool.graphics[1];
-      tool.generateGraphics();
-      oldGraphic1.destroy();
-      oldGraphic2.destroy();
-      const newGraphic1 = tool.graphics[0];
-      const newGraphic2 = tool.graphics[1];
-      this._stage.addChild(newGraphic1);
-      this._stage.addChild(newGraphic2);
+      Game.replaceGraphics(this._stage, tool);
     }
   }
 
@@ -175,6 +163,7 @@ export default class Game {
   updateMenubar(): void {
     for (const menu of this._menubar.menus) {
       Game.replaceGraphics(this._stage, menu);
+      // If this menu is open
       if(menu.open){
         for (const item of menu.items) {
           Game.replaceGraphics(this._stage, item);
@@ -182,6 +171,7 @@ export default class Game {
       }else if(menu.items.length > 0){
         for (const item of menu.items) {
           if(item.graphics.length > 0) {
+            // The menu isn't open, but there's a menu item with graphics, so remove them
             item.removeAllGraphics();
           }
         }
@@ -214,7 +204,7 @@ export default class Game {
     return this._gameState;
   }
 
-  get eventDispatcher(): EventEmitter {
+  get eventEmitter(): EventEmitter {
     return this._eventEmitter;
   }
 

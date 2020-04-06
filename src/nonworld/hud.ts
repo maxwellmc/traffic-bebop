@@ -38,17 +38,17 @@ export default class HUD extends ViewableObject {
     this.setGraphicsPositioning();
 
     // Update the money graphic when it changes
-    this._game.eventDispatcher.on(GameState.EVENT_MONEY_CHANGED, (args) => this.onMoneyChanged(args));
+    this._game.eventEmitter.on(GameState.EVENT_MONEY_CHANGED, (args) => this.onMoneyChanged(args));
 
     // Update the game time graphic when it changes
-    this._game.eventDispatcher.on(GameState.EVENT_TIME_CHANGED, (args) => this.onTimeChanged(args));
+    this._game.eventEmitter.on(GameState.EVENT_TIME_CHANGED, (args) => this.onTimeChanged(args));
   }
 
   generateGraphics(): void{
     // Rectangle
     const rectangle = new Graphics();
     rectangle.beginFill(HUD.FILL_COLOR);
-    rectangle.drawRect(this._startingX, this._startingY, Game.appWidth, HUD.HEIGHT);
+    rectangle.drawRect(this._startingX, this._startingY, Game.APP_WIDTH, HUD.HEIGHT);
     rectangle.endFill();
 
     this.graphics = [rectangle];

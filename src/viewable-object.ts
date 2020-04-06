@@ -1,4 +1,4 @@
-import {Graphics, Text, DisplayObject} from 'pixi.js';
+import {DisplayObject, Graphics, Text} from 'pixi.js';
 
 export default abstract class ViewableObject {
 

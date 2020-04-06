@@ -1,5 +1,4 @@
 import ViewableObject from '../../viewable-object';
-import Toolbar from '../toolbar';
 import Menu from "./menu";
 
 export default class MenuItem extends ViewableObject {

@@ -61,11 +61,9 @@ export default class Grid extends ViewableObject {
   }
 
   updateGraphics(): void {
-
     for(const tile of this._tiles){
-      tile.updateTileGraphic();
+      tile.generateGraphics();
     }
-
   }
 
   onTileClick(e, tile): void {
@@ -75,7 +73,7 @@ export default class Grid extends ViewableObject {
     switch(this._game.toolInUse.id){
       case Toolbar.ROAD_TOOL:
         tile.cell.terrainType = Cell.TERRAIN_TYPE_ROAD;
-        this._game.eventDispatcher.emit(Game.EVENT_MONEY_DEDUCTED, -10);
+        this._game.eventEmitter.emit(Game.EVENT_MONEY_DEDUCTED, -10);
         break;
       case Toolbar.BULLDOZE_TOOL:
         tile.cell.terrainType = Cell.TERRAIN_TYPE_GRASS;
@@ -83,7 +81,7 @@ export default class Grid extends ViewableObject {
       case Toolbar.RESIDENTIAL_ZONE_TOOL:
         tile.cell.terrainType = Cell.TERRAIN_TYPE_GRASS;
         tile.cell.zoneType = Cell.ZONE_TYPE_RESIDENTIAL;
-        this._game.eventDispatcher.emit(Game.EVENT_MONEY_DEDUCTED, -100);
+        this._game.eventEmitter.emit(Game.EVENT_MONEY_DEDUCTED, -100);
         break;
     }
     console.log(
