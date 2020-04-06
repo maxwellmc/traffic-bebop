@@ -3,6 +3,7 @@ import ViewableObject from '../viewable-object';
 import {Graphics} from "pixi.js";
 import Game from '../game';
 import GameState from '../game-state';
+import {Speeds} from "./speed";
 
 /**
  * The heads-up display to show the game state to the user.
@@ -31,7 +32,7 @@ export default class HUD extends ViewableObject {
     this._items = [
       new HUDItem('Money', String(this._gameState.money)),
       new HUDItem('Days', String(this._gameState.time)),
-      new HUDItem('Speed', GameState.SPEEDS_DICTIONARY[this._gameState.speed]),
+      new HUDItem('Speed', Speeds[this._gameState.speed]),
     ];
 
     this.generateGraphics();
@@ -79,7 +80,7 @@ export default class HUD extends ViewableObject {
   }
 
   onSpeedChanged(speed): void{
-    this._items[2].value = GameState.SPEEDS_DICTIONARY[speed];
+    this._items[2].value = Speeds[speed];
   }
 
   // Getters and setters -------------------------------------------------------

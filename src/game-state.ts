@@ -1,4 +1,5 @@
 import Game from './game';
+import {Speeds, SpeedUtil} from "./nonworld/speed";
 
 /**
  * Represents the properties of the game as they exist right now.
@@ -10,12 +11,6 @@ export default class GameState {
   public static readonly EVENT_MONEY_CHANGED = 'game-state.money';
   public static readonly EVENT_TIME_CHANGED = 'game-state.time';
   public static readonly EVENT_SPEED_CHANGED = 'game-state.speed';
-  public static readonly SPEED_PAUSED = 0;
-  public static readonly SPEED_NORMAL = 1;
-  public static readonly SPEEDS_DICTIONARY = {
-    [GameState.SPEED_PAUSED]: 'Paused',
-    [GameState.SPEED_NORMAL]: 'Normal'
-  };
 
   // Class properties
   private _game: Game;
@@ -27,7 +22,7 @@ export default class GameState {
     this._game = game;
     this._money = GameState.STARTING_MONEY;
     this._time = 0;
-    this._speed = GameState.SPEED_PAUSED;
+    this._speed = Speeds.Paused;
 
     // Listen for events that should update the state
     this._game.eventEmitter.on(Game.EVENT_MONEY_DEDUCTED, (args) => this.onMoneyUpdated(args));
@@ -42,7 +37,7 @@ export default class GameState {
 
   onTimeIncreased(milliseconds: number): void{
     // We scale the real-life milliseconds based on the current game speed
-    this._time += milliseconds * this._speed;
+    this._time += milliseconds * SpeedUtil.getMultiplier(this._speed);
     this._game.eventEmitter.emit(GameState.EVENT_TIME_CHANGED, this._time);
   }
 
