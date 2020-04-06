@@ -39,10 +39,10 @@ export default class HUD extends ViewableObject {
     this.setGraphicsPositioning();
 
     // Update the money graphic when it changes
-    this.#game.eventDispatcher.registerListener(GameState.EVENT_MONEY_CHANGED, (args) => this.onMoneyChanged(args));
+    this.#game.eventDispatcher.on(GameState.EVENT_MONEY_CHANGED, (args) => this.onMoneyChanged(args));
 
     // Update the game time graphic when it changes
-    this.#game.eventDispatcher.registerListener(GameState.EVENT_TIME_CHANGED, (args) => this.onTimeChanged(args));
+    this.#game.eventDispatcher.on(GameState.EVENT_TIME_CHANGED, (args) => this.onTimeChanged(args));
   }
 
   generateGraphics(x, y, width, height){

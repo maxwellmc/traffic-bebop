@@ -3,9 +3,9 @@ import Toolbar from './nonworld/toolbar';
 import Grid from './grid';
 import HUD from './nonworld/hud';
 import GameState from './game-state';
-import Dispatcher from './events/dispatcher';
 import Map from './map';
 import Menubar from './nonworld/menu/menubar';
+import EventEmitter from 'eventemitter3';
 
 // This block is to get the PixiJS Chrome devtool to work
 PIXI.useDeprecated();
@@ -31,7 +31,8 @@ export default class Game {
   /** @type PIXI.Container */
   #stage;
   #gameState;
-  #eventDispatcher;
+  /** @type EventEmitter */
+  #eventEmitter;
   #map;
   #grid;
   #menubar;
@@ -50,7 +51,7 @@ export default class Game {
       resolution: 1,
     });
     this.#stage = new PIXI.Container();
-    this.#eventDispatcher = new Dispatcher();
+    this.#eventEmitter = new EventEmitter();
     this.#gameState = new GameState(this);
     this.#map = new Map();
     this.#grid = new Grid(this, Game.appWidth, Game.appHeight);
@@ -91,7 +92,7 @@ export default class Game {
   gameLoop(delta) {
 
     // Dispatch an event that the time has increased
-    this.#eventDispatcher.dispatch(Game.EVENT_TIME_INCREASED, this.#ticker.deltaMS);
+    this.#eventEmitter.emit(Game.EVENT_TIME_INCREASED, this.#ticker.deltaMS);
 
     this.updateGrid();
     this.updateToolbar();
@@ -218,7 +219,7 @@ export default class Game {
   }
 
   get eventDispatcher() {
-    return this.#eventDispatcher;
+    return this.#eventEmitter;
   }
 
   get map() {

@@ -4,6 +4,7 @@
   "description": "A traffic management web game",
   "main": "index.js",
   "dependencies": {
+    "eventemitter3": "^4.0.0",
     "pixi.js": "^5.2.1"
   },
   "devDependencies": {

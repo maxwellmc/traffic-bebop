@@ -26,24 +26,24 @@ export default class GameState {
     this.#speed = GameState.SPEED_PAUSED;
 
     // Listen for events that should update the state
-    this.#game.eventDispatcher.registerListener(Game.EVENT_MONEY_DEDUCTED, (args) => this.onMoneyUpdated(args));
-    this.#game.eventDispatcher.registerListener(Game.EVENT_TIME_INCREASED, (args) => this.onTimeIncreased(args));
-    this.#game.eventDispatcher.registerListener(Game.EVENT_SPEED_SET, (args) => this.onSpeedSet(args));
+    this.#game.eventDispatcher.on(Game.EVENT_MONEY_DEDUCTED, (args) => this.onMoneyUpdated(args));
+    this.#game.eventDispatcher.on(Game.EVENT_TIME_INCREASED, (args) => this.onTimeIncreased(args));
+    this.#game.eventDispatcher.on(Game.EVENT_SPEED_SET, (args) => this.onSpeedSet(args));
   }
 
   onMoneyUpdated(amount){
     this.#money += amount;
-    this.#game.eventDispatcher.dispatch(GameState.EVENT_MONEY_CHANGED, this.#money);
+    this.#game.eventDispatcher.emit(GameState.EVENT_MONEY_CHANGED, this.#money);
   }
 
   onTimeIncreased(milliseconds){
     this.#time += milliseconds;
-    this.#game.eventDispatcher.dispatch(GameState.EVENT_TIME_CHANGED, this.#time);
+    this.#game.eventDispatcher.emit(GameState.EVENT_TIME_CHANGED, this.#time);
   }
 
   onSpeedSet(speed){
     this.#speed = speed;
-    this.#game.eventDispatcher.dispatch(GameState.EVENT_SPEED_CHANGED, this.#speed);
+    this.#game.eventDispatcher.emit(GameState.EVENT_SPEED_CHANGED, this.#speed);
   }
 
   // Getters and setters -------------------------------------------------------
