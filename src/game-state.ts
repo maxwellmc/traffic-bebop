@@ -12,6 +12,10 @@ export default class GameState {
   public static readonly EVENT_SPEED_CHANGED = 'game-state.speed';
   public static readonly SPEED_PAUSED = 0;
   public static readonly SPEED_NORMAL = 1;
+  public static readonly SPEEDS_DICTIONARY = {
+    [GameState.SPEED_PAUSED]: 'Paused',
+    [GameState.SPEED_NORMAL]: 'Normal'
+  };
 
   // Class properties
   private _game: Game;
@@ -63,5 +67,13 @@ export default class GameState {
 
   set time(value){
     this._time = value;
+  }
+
+  get speed(): number {
+    return this._speed;
+  }
+
+  set speed(value: number) {
+    this._speed = value;
   }
 }

@@ -29,8 +29,9 @@ export default class HUD extends ViewableObject {
     this._startingY = appHeight - HUD.HEIGHT;
 
     this._items = [
-      new HUDItem('Money', this._gameState.money),
-      new HUDItem('Days', this._gameState.time)
+      new HUDItem('Money', String(this._gameState.money)),
+      new HUDItem('Days', String(this._gameState.time)),
+      new HUDItem('Speed', GameState.SPEEDS_DICTIONARY[this._gameState.speed]),
     ];
 
     this.generateGraphics();
@@ -42,6 +43,9 @@ export default class HUD extends ViewableObject {
 
     // Update the game time graphic when it changes
     this._game.eventEmitter.on(GameState.EVENT_TIME_CHANGED, (args) => this.onTimeChanged(args));
+
+    // Update the speed graphic when it changes
+    this._game.eventEmitter.on(GameState.EVENT_SPEED_CHANGED, (args) => this.onSpeedChanged(args));
   }
 
   generateGraphics(): void{
@@ -66,12 +70,16 @@ export default class HUD extends ViewableObject {
     }
   }
 
-  onMoneyChanged(amount): void{
-    this._items[0].value = amount;
+  onMoneyChanged(amount: number): void{
+    this._items[0].value = String(amount);
   }
 
-  onTimeChanged(milliseconds): void{
-    this._items[1].value = Math.round(milliseconds / 2000);
+  onTimeChanged(milliseconds: number): void{
+    this._items[1].value = String(Math.round(milliseconds / 2000));
+  }
+
+  onSpeedChanged(speed): void{
+    this._items[2].value = GameState.SPEEDS_DICTIONARY[speed];
   }
 
   // Getters and setters -------------------------------------------------------

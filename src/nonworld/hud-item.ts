@@ -9,9 +9,9 @@ export default class HUDItem extends ViewableObject {
 
   // CLass properties
   private _label: string;
-  private _value: number;
+  private _value: string;
 
-  constructor(label: string, value: number) {
+  constructor(label: string, value: string) {
     super();
 
     this._label = label;
@@ -45,11 +45,11 @@ export default class HUDItem extends ViewableObject {
     return this._label;
   }
 
-  get value(): number{
+  get value(): string{
     return this._value;
   }
 
-  set value(value){
+  set value(value: string){
     this._value = value;
   }
 }
