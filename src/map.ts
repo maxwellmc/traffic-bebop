@@ -7,14 +7,14 @@ import Cell from './cell';
 export default class Map {
 
   // Constants
-  static MAP_ROWS = 20;
-  static MAP_COLS = 20;
+  public static readonly MAP_ROWS = 20;
+  public static readonly MAP_COLS = 20;
 
   // Class properties
-  #map;
+  private _map: Cell[][];
 
   constructor() {
-    this.#map = [];
+    this._map = [];
 
     for (let row = 0; row < Map.MAP_ROWS; row++) {
       let rowItems = [];
@@ -22,21 +22,21 @@ export default class Map {
         // Add a cell with a default terrain of grass
         rowItems.push(new Cell(Cell.TERRAIN_TYPE_GRASS));
       }
-      this.#map.push(rowItems);
+      this._map.push(rowItems);
     }
   }
 
-  findCellByRowColumn(row, col){
-    return this.#map[row][col];
+  findCellByRowColumn(row, col): Cell{
+    return this._map[row][col];
   }
 
   // Getters and setters -------------------------------------------------------
 
-  get map() {
-    return this.#map;
+  get map(): Cell[][] {
+    return this._map;
   }
 
   set map(value) {
-    this.#map = value;
+    this._map = value;
   }
 }

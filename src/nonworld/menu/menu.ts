@@ -1,34 +1,33 @@
 import ViewableObject from '../../viewable-object';
 import {Graphics, Text} from 'pixi.js';
 import Menubar from './menubar';
+import MenuItem from "./menu-item";
 
 /**
  * Selected by the user to manipulate the game state.
  */
-export default class Menu extends ViewableObject {
+export default abstract class Menu extends ViewableObject {
 
   // Constants
-  static HEIGHT = 40;
-  static WIDTH = 100;
-  static FILL_COLOR = 0xbcbabb;
-  static LINE_COLOR = 0xdedede;
-  static TEXT_COLOR = 0x010000;
+  public static readonly HEIGHT = 40;
+  public static readonly WIDTH = 100;
+  public static readonly FILL_COLOR = 0xbcbabb;
+  public static readonly LINE_COLOR = 0xdedede;
+  public static readonly TEXT_COLOR = 0x010000;
 
   // Class properties
-  /** @type Menubar */
-  _menubar;
-  _x;
-  _y;
-  _open;
-  _label;
-  /** @type {MenuItem[]} */
-  _items;
+  protected _menubar: Menubar;
+  protected _x: number;
+  protected _y: number;
+  protected _open: boolean;
+  protected _label: string;
+  protected _items: MenuItem[];
 
   /**
    *
    * @param {Menubar} menubar
    */
-  constructor(menubar) {
+  protected constructor(menubar: Menubar) {
     super();
     this._menubar = menubar;
     this._x = 0;
@@ -40,36 +39,34 @@ export default class Menu extends ViewableObject {
     this.generateGraphics();
   }
 
-  generateGraphics(){
+  generateGraphics(): void{
 
     // Rectangle
     const rectangle = ViewableObject.generateRectangle(4, Menu.LINE_COLOR, 1, Menu.FILL_COLOR, Menu.WIDTH, Menu.HEIGHT, 0, 0);
 
     rectangle.on('mousedown', () => this.onMenuClick());
 
-    this.graphics = [rectangle];
+    this._graphics = [rectangle];
 
     // Text
     const text = ViewableObject.generateText(this._label, 24, Menu.TEXT_COLOR, this._x + 5, this._y + 5);
 
-    this.graphics = this.graphics.concat(text);
+    this._graphics = this.graphics.concat(text);
   }
 
-  onMenuClick(){
+  onMenuClick(): void{
     this.toggleOpen();
   }
 
-  toggleOpen(){
+  toggleOpen(): void{
     this._open = !this._open;
   }
 
-  onMenuItemClick(){
-    throw new Error('Implementation required');
-  }
+  abstract onMenuItemClick(menuItem: MenuItem): void;
 
   // Getters and setters -------------------------------------------------------
 
-  get x() {
+  get x(): number {
     return this._x;
   }
 
@@ -77,7 +74,7 @@ export default class Menu extends ViewableObject {
     this._x = value;
   }
 
-  get y() {
+  get y(): number {
     return this._y;
   }
 
@@ -85,7 +82,7 @@ export default class Menu extends ViewableObject {
     this._y = value;
   }
 
-  get open() {
+  get open(): boolean {
     return this._open;
   }
 
@@ -93,7 +90,7 @@ export default class Menu extends ViewableObject {
     this._open = value;
   }
 
-  get label() {
+  get label(): string {
     return this._label;
   }
 
@@ -101,7 +98,7 @@ export default class Menu extends ViewableObject {
     this._label = value;
   }
 
-  get items() {
+  get items(): MenuItem[] {
     return this._items;
   }
 

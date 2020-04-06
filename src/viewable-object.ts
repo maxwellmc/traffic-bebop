@@ -1,42 +1,34 @@
-import {Graphics, Text} from 'pixi.js';
+import {Graphics, Text, DisplayObject} from 'pixi.js';
 
-export default class ViewableObject {
+export default abstract class ViewableObject {
 
-  /** @type {PIXI.DisplayObject[]} */
-  #graphics;
+  protected _graphics: DisplayObject[];
 
-  constructor() {
-    this.#graphics = [];
+  protected constructor() {
+    this._graphics = [];
   }
 
-  generateGraphics(){
-    throw new Error('Implementation required');
-  }
+  abstract generateGraphics(): void;
 
-  /**
-   *
-   * @param {PIXI.DisplayObject} graphic
-   */
-  removeGraphic(graphic){
+  removeGraphic(graphic: DisplayObject): void{
 
     // Actually remove the item from the array
-    const index = this.#graphics.indexOf(graphic);
+    const index = this._graphics.indexOf(graphic);
     if (index > -1) {
-      this.#graphics = this.#graphics.splice(index, 1);
+      this._graphics = this._graphics.splice(index, 1);
     }
 
     // Destroy the DisplayObject in Pixi
     graphic.destroy();
   }
 
-  removeAllGraphics(){
+  removeAllGraphics(): void{
 
     // Get a reference to the graphics
-    /** @type {PIXI.DisplayObject[]} */
-    const graphics = this.#graphics;
+    const graphics = this._graphics;
 
     // Clear the array
-    this.#graphics = [];
+    this._graphics = [];
 
     // Destroy the DisplayObjects in Pixi
     for(const graphic of graphics){
@@ -44,7 +36,7 @@ export default class ViewableObject {
     }
   }
 
-  static generateRectangle(lineWidth, lineColor, lineAlpha, fillColor, width, height, x, y){
+  static generateRectangle(lineWidth, lineColor, lineAlpha, fillColor, width, height, x, y): Graphics{
     const rectangle = new Graphics();
     rectangle.lineStyle(lineWidth, lineColor, lineAlpha);
     rectangle.beginFill(fillColor);
@@ -56,7 +48,7 @@ export default class ViewableObject {
     return rectangle;
   }
 
-  static generateText(actualText, fontSize, fillColor, x, y){
+  static generateText(actualText, fontSize, fillColor, x, y): Text{
     const text = new Text(actualText, {
       fontFamily: 'Arial',
       fontSize: fontSize,
@@ -70,11 +62,11 @@ export default class ViewableObject {
 
   // Getters and setters -------------------------------------------------------
 
-  get graphics() {
-    return this.#graphics;
+  get graphics(): DisplayObject[] {
+    return this._graphics;
   }
 
   set graphics(value) {
-    this.#graphics = value;
+    this._graphics = value;
   }
 }

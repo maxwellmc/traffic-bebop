@@ -1,12 +1,13 @@
 import Menu from './menu';
 import MenuItem from './menu-item';
+import Menubar from "./menubar";
 
 export default class SpeedMenu extends Menu {
 
   // Constants
-  static PAUSED_ITEM = 0;
-  static NORMAL_ITEM = 1;
-  static ITEMS = [
+  public static readonly PAUSED_ITEM = 0;
+  public static readonly NORMAL_ITEM = 1;
+  public static readonly ITEMS = [
     {
       'id': SpeedMenu.PAUSED_ITEM,
       'label': 'Paused',
@@ -17,7 +18,7 @@ export default class SpeedMenu extends Menu {
     },
   ];
 
-  constructor(menubar) {
+  constructor(menubar: Menubar) {
     super(menubar);
     this._label = 'Speed';
 
@@ -28,11 +29,7 @@ export default class SpeedMenu extends Menu {
     }
   }
 
-  /**
-   *
-   * @param {MenuItem} menuItem
-   */
-  onMenuItemClick(menuItem){
+  onMenuItemClick(menuItem: MenuItem): void{
     console.log('onMenuItemClick');
     switch(menuItem.id){
       case SpeedMenu.NORMAL_ITEM:

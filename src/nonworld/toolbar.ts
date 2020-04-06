@@ -1,4 +1,5 @@
 import Tool from './tool';
+import Game from "../game";
 
 /**
  * A non-world container for Tools.
@@ -6,16 +7,16 @@ import Tool from './tool';
 export default class Toolbar {
 
   // Constants
-  static TOOLBAR_STARTING_X = 20;
-  static TOOLBAR_STARTING_Y = 80;
-  static TOOL_WIDTH = 110;
-  static TOOL_HEIGHT = 40;
+  public static readonly TOOLBAR_STARTING_X = 20;
+  public static readonly TOOLBAR_STARTING_Y = 80;
+  public static readonly TOOL_WIDTH = 110;
+  public static readonly TOOL_HEIGHT = 40;
 
-  static SELECT_TOOL = 0;
-  static ROAD_TOOL = 1;
-  static BULLDOZE_TOOL = 2;
-  static RESIDENTIAL_ZONE_TOOL = 3;
-  static TOOLS = [
+  public static readonly SELECT_TOOL = 0;
+  public static readonly ROAD_TOOL = 1;
+  public static readonly BULLDOZE_TOOL = 2;
+  public static readonly RESIDENTIAL_ZONE_TOOL = 3;
+  public static readonly TOOLS = [
     {
       'id': Toolbar.SELECT_TOOL,
       'label': 'Select',
@@ -35,19 +36,18 @@ export default class Toolbar {
   ];
 
   // Class properties
-  #game;
-  /** @type array */
-  #tools;
+  private _game: Game;
+  private _tools: Tool[];
 
-  constructor(game) {
+  constructor(game: Game) {
 
-    this.#game = game;
-    this.#tools = [];
+    this._game = game;
+    this._tools = [];
 
     this.generateGraphics();
   }
 
-  generateGraphics() {
+  generateGraphics(): void {
     let x = Toolbar.TOOLBAR_STARTING_X;
     let y = Toolbar.TOOLBAR_STARTING_Y;
 
@@ -58,31 +58,31 @@ export default class Toolbar {
     }
   }
 
-  addTool(tool) {
-    this.#tools.push(tool);
+  addTool(tool): void {
+    this._tools.push(tool);
   }
 
-  onToolClick(e, tool) {
+  onToolClick(e, tool): void {
 
-    this.#game.toolInUse = tool;
+    this._game.toolInUse = tool;
     console.log('onToolClick: ' + this.game.toolInUse.label);
   }
 
   // Getters and setters -------------------------------------------------------
 
-  get game() {
-    return this.#game;
+  get game(): Game {
+    return this._game;
   }
 
   set game(value) {
-    this.#game = value;
+    this._game = value;
   }
 
-  get tools() {
-    return this.#tools;
+  get tools(): Tool[] {
+    return this._tools;
   }
 
   set tools(value) {
-    this.#tools = value;
+    this._tools = value;
   }
 }
