@@ -6,12 +6,12 @@ import Cell from './cell';
  * A cell within the world.
  */
 export default class Tile extends ViewableObject {
-    // Constants
+    /* Constants ---------------------------------------------------------------------------------------------------- */
     public static readonly COLOR_GRASS = '7fcd91';
     public static readonly COLOR_ROAD = '5b5656';
     public static readonly COLOR_RESIDENTIAL_ZONE = '639a67';
 
-    // Class properties
+    /* Class Properties --------------------------------------------------------------------------------------------- */
     private _grid: Grid;
     private _x: number;
     private _y: number;
@@ -63,7 +63,7 @@ export default class Tile extends ViewableObject {
         this._graphics = [rectangle];
     }
 
-    // Getters and setters -------------------------------------------------------
+    /* Getters & Setters -------------------------------------------------------------------------------------------- */
 
     get x(): number {
         return this._x;

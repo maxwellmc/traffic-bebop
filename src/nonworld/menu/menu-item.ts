@@ -2,14 +2,14 @@ import ViewableObject from '../../viewable-object';
 import Menu from './menu';
 
 export default class MenuItem extends ViewableObject {
-    // Constants
+    /* Constants ---------------------------------------------------------------------------------------------------- */
     public static readonly FILL_COLOR = 0xeeeeee;
     public static readonly LINE_COLOR = 0xdedede;
     public static readonly TEXT_COLOR = 0xc10000;
     public static readonly WIDTH = 70;
     public static readonly HEIGHT = 30;
 
-    // Class properties
+    /* Class Properties --------------------------------------------------------------------------------------------- */
     private _menu: Menu;
     private _id: number;
     private _label: string;
@@ -48,7 +48,7 @@ export default class MenuItem extends ViewableObject {
         this._graphics = this.graphics.concat(text);
     }
 
-    // Getters and setters -------------------------------------------------------
+    /* Getters & Setters -------------------------------------------------------------------------------------------- */
 
     get id(): number {
         return this._id;

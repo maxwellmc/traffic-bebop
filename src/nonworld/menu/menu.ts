@@ -6,14 +6,14 @@ import MenuItem from './menu-item';
  * Selected by the user to manipulate the game state.
  */
 export default abstract class Menu extends ViewableObject {
-    // Constants
+    /* Constants ---------------------------------------------------------------------------------------------------- */
     public static readonly HEIGHT = 40;
     public static readonly WIDTH = 100;
     public static readonly FILL_COLOR = 0xbcbabb;
     public static readonly LINE_COLOR = 0xdedede;
     public static readonly TEXT_COLOR = 0x010000;
 
-    // Class properties
+    /* Class Properties --------------------------------------------------------------------------------------------- */
     protected _menubar: Menubar;
     protected _x: number;
     protected _y: number;
@@ -70,7 +70,7 @@ export default abstract class Menu extends ViewableObject {
 
     abstract onMenuItemClick(menuItem: MenuItem): void;
 
-    // Getters and setters -------------------------------------------------------
+    /* Getters & Setters -------------------------------------------------------------------------------------------- */
 
     get x(): number {
         return this._x;

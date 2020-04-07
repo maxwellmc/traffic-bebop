@@ -2,11 +2,11 @@ import ViewableObject from '../viewable-object';
 import { Text } from 'pixi.js';
 
 export default class HUDItem extends ViewableObject {
-    // Constants
+    /* Constants ---------------------------------------------------------------------------------------------------- */
     public static readonly WIDTH = 100;
     public static readonly TEXT_COLOR = 0xf5f5f5;
 
-    // CLass properties
+    /* Class Properties --------------------------------------------------------------------------------------------- */
     private _label: string;
     private _value: string;
 
@@ -38,7 +38,7 @@ export default class HUDItem extends ViewableObject {
         this.graphics[0].y = value;
     }
 
-    // Getters and setters -------------------------------------------------------
+    /* Getters & Setters -------------------------------------------------------------------------------------------- */
 
     get label(): string {
         return this._label;

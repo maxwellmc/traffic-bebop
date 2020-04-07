@@ -10,7 +10,7 @@ import Map from './map';
  * viewable Tiles.
  */
 export default class Grid extends ViewableObject {
-    // Constants
+    /* Constants ---------------------------------------------------------------------------------------------------- */
     public static readonly TILE_WIDTH = 40;
     public static readonly TILE_HEIGHT = 40;
     public static readonly TILE_LABEL_DICTIONARY = {
@@ -18,7 +18,7 @@ export default class Grid extends ViewableObject {
         [Cell.TERRAIN_TYPE_ROAD]: 'Road',
     };
 
-    // Class properties
+    /* Class Properties --------------------------------------------------------------------------------------------- */
     private _game: Game;
     private _startingX: number;
     private _startingY: number;
@@ -83,7 +83,7 @@ export default class Grid extends ViewableObject {
         console.log('onTileClick after: ' + Grid.TILE_LABEL_DICTIONARY[tile.cell.terrainType]);
     }
 
-    // Getters and setters -------------------------------------------------------
+    /* Getters & Setters -------------------------------------------------------------------------------------------- */
 
     get tiles(): Tile[] {
         return this._tiles;

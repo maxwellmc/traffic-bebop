@@ -13,14 +13,14 @@ import ViewableObject from './viewable-object';
  * Manages the Pixi Application, the game loop, and calling the draw-ers.
  */
 export default class Game {
-    // Constants
+    /* Constants ---------------------------------------------------------------------------------------------------- */
     public static readonly APP_WIDTH = 1200;
     public static readonly APP_HEIGHT = 1000;
     public static readonly EVENT_MONEY_DEDUCTED = 'money.deducted';
     public static readonly EVENT_TIME_INCREASED = 'time.increased';
     public static readonly EVENT_SPEED_SET = 'speed.set';
 
-    // Class properties
+    /* Class Properties --------------------------------------------------------------------------------------------- */
     private _ticker: PIXI.Ticker;
     private _renderer: PIXI.Renderer;
     private _stage: PIXI.Container;
@@ -180,7 +180,7 @@ export default class Game {
         }
     }
 
-    // Getters and setters -------------------------------------------------------
+    /* Getters & Setters -------------------------------------------------------------------------------------------- */
 
     get gameState(): GameState {
         return this._gameState;

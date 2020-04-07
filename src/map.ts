@@ -5,11 +5,11 @@ import Cell from './cell';
  * in terms of rows and columns.
  */
 export default class Map {
-    // Constants
+    /* Constants ---------------------------------------------------------------------------------------------------- */
     public static readonly MAP_ROWS = 20;
     public static readonly MAP_COLS = 20;
 
-    // Class properties
+    /* Class Properties --------------------------------------------------------------------------------------------- */
     private _map: Cell[][];
 
     constructor() {
@@ -29,7 +29,7 @@ export default class Map {
         return this._map[row][col];
     }
 
-    // Getters and setters -------------------------------------------------------
+    /* Getters & Setters -------------------------------------------------------------------------------------------- */
 
     get map(): Cell[][] {
         return this._map;

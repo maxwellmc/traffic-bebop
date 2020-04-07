@@ -9,11 +9,11 @@ import { Speeds } from './speed';
  * The heads-up display to show the game state to the user.
  */
 export default class HUD extends ViewableObject {
-    // Constants
+    /* Constants ---------------------------------------------------------------------------------------------------- */
     public static readonly HEIGHT = 48;
     public static readonly FILL_COLOR = 0x2f89fc;
 
-    // Class properties
+    /* Class Properties --------------------------------------------------------------------------------------------- */
     private _game: Game;
     private _items: HUDItem[];
     private _gameState: GameState;
@@ -82,7 +82,7 @@ export default class HUD extends ViewableObject {
         this._items[2].value = Speeds[speed];
     }
 
-    // Getters and setters -------------------------------------------------------
+    /* Getters & Setters -------------------------------------------------------------------------------------------- */
 
     get game(): Game {
         return this._game;

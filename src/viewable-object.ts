@@ -57,7 +57,7 @@ export default abstract class ViewableObject {
         return text;
     }
 
-    // Getters and setters -------------------------------------------------------
+    /* Getters & Setters -------------------------------------------------------------------------------------------- */
 
     get graphics(): DisplayObject[] {
         return this._graphics;

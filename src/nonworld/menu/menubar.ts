@@ -6,13 +6,13 @@ import Game from '../../game';
  * A non-world container for Menus.
  */
 export default class Menubar {
-    // Constants
+    /* Constants ---------------------------------------------------------------------------------------------------- */
     public static readonly STARTING_X = 0;
     public static readonly STARTING_Y = 0;
     public static readonly HEIGHT = 40;
     public static readonly SPEED_MENU = 0;
 
-    // Class properties
+    /* Class Properties --------------------------------------------------------------------------------------------- */
     private _game: Game;
     private _menus: Menu[];
 
@@ -39,7 +39,7 @@ export default class Menubar {
         this._menus.push(menu);
     }
 
-    // Getters and setters -------------------------------------------------------
+    /* Getters & Setters -------------------------------------------------------------------------------------------- */
 
     get game(): Game {
         return this._game;

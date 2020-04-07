@@ -5,12 +5,12 @@ import Toolbar from './toolbar';
  * Selected by the user to manipulate individual cells in the world.
  */
 export default class Tool extends ViewableObject {
-    // Constants
+    /* Constants ---------------------------------------------------------------------------------------------------- */
     public static readonly FILL_COLOR = 0xeeeeee;
     public static readonly LINE_COLOR = 0xdedede;
     public static readonly TEXT_COLOR = 0xc10000;
 
-    // Class properties
+    /* Class Properties --------------------------------------------------------------------------------------------- */
     private _toolbar: Toolbar;
     private _id: number;
     private _label: string;
@@ -51,7 +51,7 @@ export default class Tool extends ViewableObject {
         this.graphics = this.graphics.concat(text);
     }
 
-    // Getters and setters -------------------------------------------------------
+    /* Getters & Setters -------------------------------------------------------------------------------------------- */
 
     get id(): number {
         return this._id;

@@ -5,7 +5,7 @@ import Game from '../game';
  * A non-world container for Tools.
  */
 export default class Toolbar {
-    // Constants
+    /* Constants ---------------------------------------------------------------------------------------------------- */
     public static readonly TOOLBAR_STARTING_X = 20;
     public static readonly TOOLBAR_STARTING_Y = 80;
     public static readonly TOOL_WIDTH = 110;
@@ -34,7 +34,7 @@ export default class Toolbar {
         },
     ];
 
-    // Class properties
+    /* Class Properties --------------------------------------------------------------------------------------------- */
     private _game: Game;
     private _tools: Tool[];
 
@@ -65,7 +65,7 @@ export default class Toolbar {
         console.log('onToolClick: ' + this.game.toolInUse.label);
     }
 
-    // Getters and setters -------------------------------------------------------
+    /* Getters & Setters -------------------------------------------------------------------------------------------- */
 
     get game(): Game {
         return this._game;

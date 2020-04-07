@@ -3,12 +3,12 @@
  * piece that it is hosting.
  */
 export default class Cell {
-    // Constants
+    /* Constants ---------------------------------------------------------------------------------------------------- */
     public static readonly TERRAIN_TYPE_GRASS = 0;
     public static readonly TERRAIN_TYPE_ROAD = 1;
     public static readonly ZONE_TYPE_RESIDENTIAL = 0;
 
-    // Class properties
+    /* Class Properties --------------------------------------------------------------------------------------------- */
     private _terrainType: number;
     private _zoneType: number;
     private _gamePiece; // TODO
@@ -17,7 +17,7 @@ export default class Cell {
         this._terrainType = terrainType;
     }
 
-    // Getters and setters -------------------------------------------------------
+    /* Getters & Setters -------------------------------------------------------------------------------------------- */
 
     get terrainType(): number {
         return this._terrainType;

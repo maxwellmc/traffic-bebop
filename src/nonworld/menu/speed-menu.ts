@@ -6,7 +6,7 @@ import Game from '../../game';
 import { Speeds } from '../speed';
 
 export default class SpeedMenu extends Menu {
-    // Constants
+    /* Constants ---------------------------------------------------------------------------------------------------- */
     public static readonly PAUSED_ITEM = 0;
     public static readonly NORMAL_ITEM = 1;
     public static readonly FAST_ITEM = 2;
