@@ -25,8 +25,21 @@ export default class Map {
         }
     }
 
-    findCellByRowColumn(row, col): Cell {
+    getCellByRowColumn(row, col): Cell {
         return this._map[row][col];
+    }
+
+    findCellsByZoneAndStructure(zoneType: number, structureType: number): Cell[] {
+        const matchingCells = [];
+        for (let row = 0; row < Map.MAP_ROWS; row++) {
+            for (let col = 0; col < Map.MAP_COLS; col++) {
+                const cell = this.getCellByRowColumn(row, col);
+                if (cell.zoneType === zoneType && cell.structureType === structureType) {
+                    matchingCells.push(cell);
+                }
+            }
+        }
+        return matchingCells;
     }
 
     /* Getters & Setters -------------------------------------------------------------------------------------------- */

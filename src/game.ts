@@ -8,6 +8,7 @@ import Menubar from './nonworld/menu/menubar';
 import * as EventEmitter from 'eventemitter3';
 import Tool from './nonworld/tool';
 import ViewableObject from './viewable-object';
+import Simulator from './simulator';
 
 /**
  * Manages the Pixi Application, the game loop, and calling the draw-ers.
@@ -27,6 +28,7 @@ export default class Game {
     private _gameState: GameState;
     private _eventEmitter: EventEmitter;
     private _map: Map;
+    private _simulator: Simulator;
     private _grid: Grid;
     private _menubar: Menubar;
     private _toolbar: Toolbar;
@@ -46,6 +48,7 @@ export default class Game {
         this._eventEmitter = new EventEmitter();
         this._gameState = new GameState(this);
         this._map = new Map();
+        this._simulator = new Simulator(this);
         this._grid = new Grid(this, Game.APP_WIDTH, Game.APP_HEIGHT);
         this._menubar = new Menubar(this);
         this._toolbar = new Toolbar(this);
@@ -192,6 +195,10 @@ export default class Game {
 
     get map(): Map {
         return this._map;
+    }
+
+    get simulator(): Simulator {
+        return this._simulator;
     }
 
     get toolInUse(): Tool {

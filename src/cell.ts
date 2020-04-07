@@ -6,15 +6,20 @@ export default class Cell {
     /* Constants ---------------------------------------------------------------------------------------------------- */
     public static readonly TERRAIN_TYPE_GRASS = 0;
     public static readonly TERRAIN_TYPE_ROAD = 1;
-    public static readonly ZONE_TYPE_RESIDENTIAL = 0;
+    public static readonly ZONE_TYPE_UNZONED = 0;
+    public static readonly ZONE_TYPE_RESIDENTIAL = 1;
+    public static readonly STRUCTURE_TYPE_EMPTY = 0;
+    public static readonly STRUCTURE_TYPE_HOUSE = 1;
 
     /* Class Properties --------------------------------------------------------------------------------------------- */
     private _terrainType: number;
     private _zoneType: number;
-    private _gamePiece; // TODO
+    private _structureType: number;
 
     constructor(terrainType: number) {
         this._terrainType = terrainType;
+        this._zoneType = Cell.ZONE_TYPE_UNZONED;
+        this._structureType = Cell.STRUCTURE_TYPE_EMPTY;
     }
 
     /* Getters & Setters -------------------------------------------------------------------------------------------- */
@@ -33,5 +38,13 @@ export default class Cell {
 
     set zoneType(value) {
         this._zoneType = value;
+    }
+
+    get structureType(): number {
+        return this._structureType;
+    }
+
+    set structureType(value: number) {
+        this._structureType = value;
     }
 }

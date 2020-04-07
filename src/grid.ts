@@ -43,7 +43,7 @@ export default class Grid extends ViewableObject {
         for (let row = 0; row < Map.MAP_ROWS; row++) {
             for (let col = 0; col < Map.MAP_COLS; col++) {
                 // Find the Cell for this row/column combination
-                const cell = this._game.map.findCellByRowColumn(row, col);
+                const cell = this._game.map.getCellByRowColumn(row, col);
 
                 // Create a new Tile for it
                 const tile = new Tile(this, x, y, cell);

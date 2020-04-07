@@ -75,7 +75,7 @@ export default class HUD extends ViewableObject {
     }
 
     onTimeChanged(milliseconds: number): void {
-        this._items[1].value = String(GameState.calculateGameTimeInDays(milliseconds));
+        this._items[1].value = String(Math.round(GameState.calculateGameTimeInDays(milliseconds)));
     }
 
     onSpeedChanged(speed): void {

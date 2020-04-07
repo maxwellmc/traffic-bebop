@@ -10,6 +10,7 @@ export default class Tile extends ViewableObject {
     public static readonly COLOR_GRASS = '7fcd91';
     public static readonly COLOR_ROAD = '5b5656';
     public static readonly COLOR_RESIDENTIAL_ZONE = '639a67';
+    public static readonly COLOR_STRUCTURE_HOUSE = '18b0b0';
 
     /* Class Properties --------------------------------------------------------------------------------------------- */
     private _grid: Grid;
@@ -42,7 +43,15 @@ export default class Tile extends ViewableObject {
 
         switch (this._cell.zoneType) {
             case Cell.ZONE_TYPE_RESIDENTIAL:
+                fillColor = '0x';
                 fillColor += Tile.COLOR_RESIDENTIAL_ZONE;
+                break;
+        }
+
+        switch (this._cell.structureType) {
+            case Cell.STRUCTURE_TYPE_HOUSE:
+                fillColor = '0x';
+                fillColor += Tile.COLOR_STRUCTURE_HOUSE;
                 break;
         }
 
