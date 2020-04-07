@@ -1,61 +1,68 @@
 import ViewableObject from '../../viewable-object';
-import Menu from "./menu";
+import Menu from './menu';
 
 export default class MenuItem extends ViewableObject {
+    // Constants
+    public static readonly FILL_COLOR = 0xeeeeee;
+    public static readonly LINE_COLOR = 0xdedede;
+    public static readonly TEXT_COLOR = 0xc10000;
+    public static readonly WIDTH = 70;
+    public static readonly HEIGHT = 30;
 
-  // Constants
-  public static readonly FILL_COLOR = 0xeeeeee;
-  public static readonly LINE_COLOR = 0xdedede;
-  public static readonly TEXT_COLOR = 0xc10000;
-  public static readonly WIDTH = 70;
-  public static readonly HEIGHT = 30;
+    // Class properties
+    private _menu: Menu;
+    private _id: number;
+    private _label: string;
+    private _x: number;
+    private _y: number;
 
-  // Class properties
-  private _menu: Menu;
-  private _id: number;
-  private _label: string;
-  private _x: number;
-  private _y: number;
+    constructor(menu: Menu, id: number, label: string, x: number, y: number) {
+        super();
+        this._menu = menu;
+        this._id = id;
+        this._label = label;
+        this._x = x;
+        this._y = y;
+    }
 
-  constructor(menu: Menu, id: number, label: string, x: number, y: number) {
-    super();
-    this._menu = menu;
-    this._id = id;
-    this._label = label;
-    this._x = x;
-    this._y = y;
-  }
+    generateGraphics(): void {
+        // Rectangle
+        const rectangle = ViewableObject.generateRectangle(
+            4,
+            MenuItem.LINE_COLOR,
+            1,
+            MenuItem.FILL_COLOR,
+            MenuItem.WIDTH,
+            MenuItem.HEIGHT,
+            this._x,
+            this._y,
+        );
 
-  generateGraphics(): void{
+        rectangle.on('mousedown', () => this._menu.onMenuItemClick(this));
 
-    // Rectangle
-    const rectangle = ViewableObject.generateRectangle(4, MenuItem.LINE_COLOR, 1, MenuItem.FILL_COLOR, MenuItem.WIDTH, MenuItem.HEIGHT, this._x, this._y);
+        this._graphics = [rectangle];
 
-    rectangle.on('mousedown', () => this._menu.onMenuItemClick(this));
+        // Text
+        const text = ViewableObject.generateText(this._label, 12, MenuItem.TEXT_COLOR, this._x + 5, this._y + 5);
 
-    this._graphics = [rectangle];
+        this._graphics = this.graphics.concat(text);
+    }
 
-    // Text
-    const text = ViewableObject.generateText(this._label, 12, MenuItem.TEXT_COLOR, this._x + 5, this._y + 5)
+    // Getters and setters -------------------------------------------------------
 
-    this._graphics = this.graphics.concat(text);
-  }
+    get id(): number {
+        return this._id;
+    }
 
-  // Getters and setters -------------------------------------------------------
+    set id(value) {
+        this._id = value;
+    }
 
-  get id(): number {
-    return this._id;
-  }
+    get label(): string {
+        return this._label;
+    }
 
-  set id(value) {
-    this._id = value;
-  }
-
-  get label(): string {
-    return this._label;
-  }
-
-  set label(value) {
-    this._label = value;
-  }
+    set label(value) {
+        this._label = value;
+    }
 }

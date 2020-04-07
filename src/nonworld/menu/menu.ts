@@ -1,107 +1,114 @@
 import ViewableObject from '../../viewable-object';
 import Menubar from './menubar';
-import MenuItem from "./menu-item";
+import MenuItem from './menu-item';
 
 /**
  * Selected by the user to manipulate the game state.
  */
 export default abstract class Menu extends ViewableObject {
+    // Constants
+    public static readonly HEIGHT = 40;
+    public static readonly WIDTH = 100;
+    public static readonly FILL_COLOR = 0xbcbabb;
+    public static readonly LINE_COLOR = 0xdedede;
+    public static readonly TEXT_COLOR = 0x010000;
 
-  // Constants
-  public static readonly HEIGHT = 40;
-  public static readonly WIDTH = 100;
-  public static readonly FILL_COLOR = 0xbcbabb;
-  public static readonly LINE_COLOR = 0xdedede;
-  public static readonly TEXT_COLOR = 0x010000;
+    // Class properties
+    protected _menubar: Menubar;
+    protected _x: number;
+    protected _y: number;
+    protected _open: boolean;
+    protected _label: string;
+    protected _items: MenuItem[];
 
-  // Class properties
-  protected _menubar: Menubar;
-  protected _x: number;
-  protected _y: number;
-  protected _open: boolean;
-  protected _label: string;
-  protected _items: MenuItem[];
+    /**
+     *
+     * @param {Menubar} menubar
+     */
+    protected constructor(menubar: Menubar) {
+        super();
+        this._menubar = menubar;
+        this._x = 0;
+        this._y = 0;
+        this._open = false;
+        this._label = '';
+        this._items = [];
 
-  /**
-   *
-   * @param {Menubar} menubar
-   */
-  protected constructor(menubar: Menubar) {
-    super();
-    this._menubar = menubar;
-    this._x = 0;
-    this._y = 0;
-    this._open = false;
-    this._label = '';
-    this._items = [];
+        this.generateGraphics();
+    }
 
-    this.generateGraphics();
-  }
+    generateGraphics(): void {
+        // Rectangle
+        const rectangle = ViewableObject.generateRectangle(
+            4,
+            Menu.LINE_COLOR,
+            1,
+            Menu.FILL_COLOR,
+            Menu.WIDTH,
+            Menu.HEIGHT,
+            0,
+            0,
+        );
 
-  generateGraphics(): void{
+        rectangle.on('mousedown', () => this.onMenuClick());
 
-    // Rectangle
-    const rectangle = ViewableObject.generateRectangle(4, Menu.LINE_COLOR, 1, Menu.FILL_COLOR, Menu.WIDTH, Menu.HEIGHT, 0, 0);
+        this._graphics = [rectangle];
 
-    rectangle.on('mousedown', () => this.onMenuClick());
+        // Text
+        const text = ViewableObject.generateText(this._label, 24, Menu.TEXT_COLOR, this._x + 5, this._y + 5);
 
-    this._graphics = [rectangle];
+        this._graphics = this.graphics.concat(text);
+    }
 
-    // Text
-    const text = ViewableObject.generateText(this._label, 24, Menu.TEXT_COLOR, this._x + 5, this._y + 5);
+    onMenuClick(): void {
+        this.toggleOpen();
+    }
 
-    this._graphics = this.graphics.concat(text);
-  }
+    toggleOpen(): void {
+        this._open = !this._open;
+    }
 
-  onMenuClick(): void{
-    this.toggleOpen();
-  }
+    abstract onMenuItemClick(menuItem: MenuItem): void;
 
-  toggleOpen(): void{
-    this._open = !this._open;
-  }
+    // Getters and setters -------------------------------------------------------
 
-  abstract onMenuItemClick(menuItem: MenuItem): void;
+    get x(): number {
+        return this._x;
+    }
 
-  // Getters and setters -------------------------------------------------------
+    set x(value) {
+        this._x = value;
+    }
 
-  get x(): number {
-    return this._x;
-  }
+    get y(): number {
+        return this._y;
+    }
 
-  set x(value) {
-    this._x = value;
-  }
+    set y(value) {
+        this._y = value;
+    }
 
-  get y(): number {
-    return this._y;
-  }
+    get open(): boolean {
+        return this._open;
+    }
 
-  set y(value) {
-    this._y = value;
-  }
+    set open(value) {
+        this._open = value;
+    }
 
-  get open(): boolean {
-    return this._open;
-  }
+    get label(): string {
+        return this._label;
+    }
 
-  set open(value) {
-    this._open = value;
-  }
+    set label(value) {
+        this._label = value;
+    }
 
-  get label(): string {
-    return this._label;
-  }
+    get items(): MenuItem[] {
+        return this._items;
+    }
 
-  set label(value) {
-    this._label = value;
-  }
-
-  get items(): MenuItem[] {
-    return this._items;
-  }
-
-  set items(value) {
-    this._items = value;
-  }
+    set items(value) {
+        this._items = value;
+    }
 }

@@ -6,221 +6,202 @@ import GameState from './game-state';
 import Map from './map';
 import Menubar from './nonworld/menu/menubar';
 import * as EventEmitter from 'eventemitter3';
-import Tool from "./nonworld/tool";
-
-// This block is to get the PixiJS Chrome devtool to work
-// PIXI.useDeprecated();
-// window.__PIXI_INSPECTOR_GLOBAL_HOOK__ &&
-// window.__PIXI_INSPECTOR_GLOBAL_HOOK__.register({PIXI: PIXI});
+import Tool from './nonworld/tool';
+import ViewableObject from './viewable-object';
 
 /**
  * Manages the Pixi Application, the game loop, and calling the draw-ers.
  */
 export default class Game {
+    // Constants
+    public static readonly APP_WIDTH = 1200;
+    public static readonly APP_HEIGHT = 1000;
+    public static readonly EVENT_MONEY_DEDUCTED = 'money.deducted';
+    public static readonly EVENT_TIME_INCREASED = 'time.increased';
+    public static readonly EVENT_SPEED_SET = 'speed.set';
 
-  // Constants
-  public static readonly APP_WIDTH = 1200;
-  public static readonly APP_HEIGHT = 1000;
-  public static readonly EVENT_MONEY_DEDUCTED = 'money.deducted';
-  public static readonly EVENT_TIME_INCREASED = 'time.increased';
-  public static readonly EVENT_SPEED_SET = 'speed.set';
+    // Class properties
+    private _ticker: PIXI.Ticker;
+    private _renderer: PIXI.Renderer;
+    private _stage: PIXI.Container;
+    private _gameState: GameState;
+    private _eventEmitter: EventEmitter;
+    private _map: Map;
+    private _grid: Grid;
+    private _menubar: Menubar;
+    private _toolbar: Toolbar;
+    private _toolInUse: Tool;
+    private _hud: HUD;
 
-  // Class properties
-  private _ticker: PIXI.Ticker;
-  private _renderer: PIXI.Renderer;
-  private _stage: PIXI.Container;
-  private _gameState: GameState;
-  private _eventEmitter: EventEmitter;
-  private _map: Map;
-  private _grid: Grid;
-  private _menubar: Menubar;
-  private _toolbar: Toolbar;
-  private _toolInUse: Tool;
-  private _hud: HUD;
+    constructor() {
+        this._ticker = new PIXI.Ticker();
+        this._renderer = new PIXI.Renderer({
+            width: Game.APP_WIDTH,
+            height: Game.APP_HEIGHT,
+            antialias: true,
+            transparent: false,
+            resolution: 1,
+        });
+        this._stage = new PIXI.Container();
+        this._eventEmitter = new EventEmitter();
+        this._gameState = new GameState(this);
+        this._map = new Map();
+        this._grid = new Grid(this, Game.APP_WIDTH, Game.APP_HEIGHT);
+        this._menubar = new Menubar(this);
+        this._toolbar = new Toolbar(this);
+        this._hud = new HUD(this, this._gameState, Game.APP_WIDTH, Game.APP_HEIGHT);
 
-  constructor() {
+        // Set the default "tool in use"
+        this._toolInUse = this._toolbar.tools[0];
 
-    this._ticker = new PIXI.Ticker();
-    this._renderer = new PIXI.Renderer({
-      width: Game.APP_WIDTH,
-      height: Game.APP_HEIGHT,
-      antialias: true,
-      transparent: false,
-      resolution: 1,
-    });
-    this._stage = new PIXI.Container();
-    this._eventEmitter = new EventEmitter();
-    this._gameState = new GameState(this);
-    this._map = new Map();
-    this._grid = new Grid(this, Game.APP_WIDTH, Game.APP_HEIGHT);
-    this._menubar = new Menubar(this);
-    this._toolbar = new Toolbar(this);
-    this._hud = new HUD(this, this._gameState, Game.APP_WIDTH, Game.APP_HEIGHT);
-
-    // Set the default "tool in use"
-    this._toolInUse = this._toolbar.tools[0];
-
-    this._grid.generateGraphics();
-    this.drawGrid();
-    this.drawToolbar();
-    this.drawHUD();
-    this.drawMenubar();
-  }
-
-  init(): void {
-    console.log('init');
-
-    // Add the canvas that Pixi automatically created for you to the HTML document
-    document.body.appendChild(this._renderer.view);
-
-    console.log('init - loading');
-    PIXI.Loader.shared.load(() => this.load());
-  }
-
-  load(): void {
-    console.log('load');
-
-    //Start the game loop
-    this._ticker.add((delta) => this.gameLoop(delta));
-    this._ticker.start();
-  }
-
-  gameLoop(delta): void {
-
-    // Dispatch an event that the time has increased
-    this._eventEmitter.emit(Game.EVENT_TIME_INCREASED, this._ticker.deltaMS);
-
-    this.updateGrid();
-    this.updateToolbar();
-    this.updateHUD();
-    this.updateMenubar();
-    this._renderer.render(this._stage);
-  }
-
-  drawGrid(): void {
-    for (const tile of this._grid.tiles) {
-      tile.generateGraphics();
-      for (const graphic of tile.graphics) {
-        this._stage.addChild(graphic);
-      }
-    }
-  }
-
-  updateGrid(): void {
-    for (const tile of this._grid.tiles) {
-      Game.replaceGraphics(this._stage, tile);
-    }
-  }
-
-  drawToolbar(): void {
-    for (const tool of this._toolbar.tools) {
-      for (const graphic of tool.graphics) {
-        this._stage.addChild(graphic);
-      }
-    }
-  }
-
-  updateToolbar(): void {
-    for (const tool of this._toolbar.tools) {
-      Game.replaceGraphics(this._stage, tool);
-    }
-  }
-
-  drawHUD(): void {
-    // Draw the Hud
-    for (const graphic of this._hud.graphics) {
-      this._stage.addChild(graphic);
+        this._grid.generateGraphics();
+        this.drawGrid();
+        this.drawToolbar();
+        this.drawHUD();
+        this.drawMenubar();
     }
 
-    // Draw the Hud items
-    for (const hudItem of this._hud.items) {
-      for (const graphic of hudItem.graphics) {
-        this._stage.addChild(graphic);
-      }
-    }
-  }
+    init(): void {
+        // Add the canvas that Pixi automatically created to the HTML document
+        document.body.appendChild(this._renderer.view);
 
-  updateHUD(): void {
-    // Redraw the Hud items
-    for (const hudItem of this._hud.items) {
-      const oldGraphic = hudItem.graphics[0];
-      hudItem.generateGraphics();
-      oldGraphic.destroy();
-      this._hud.setGraphicsPositioning();
-      const newGraphic = hudItem.graphics[0];
-      this._stage.addChild(newGraphic);
+        PIXI.Loader.shared.load(() => this.load());
     }
-  }
 
-  drawMenubar(): void {
-    for (const menu of this._menubar.menus) {
-      for (const graphic of menu.graphics) {
-        this._stage.addChild(graphic);
-      }
+    load(): void {
+        //Start the game loop
+        this._ticker.add((delta) => this.gameLoop(delta));
+        this._ticker.start();
     }
-  }
 
-  updateMenubar(): void {
-    for (const menu of this._menubar.menus) {
-      Game.replaceGraphics(this._stage, menu);
-      // If this menu is open
-      if(menu.open){
-        for (const item of menu.items) {
-          Game.replaceGraphics(this._stage, item);
+    gameLoop(delta): void {
+        // Dispatch an event that the time has increased
+        this._eventEmitter.emit(Game.EVENT_TIME_INCREASED, this._ticker.deltaMS);
+
+        this.updateGrid();
+        this.updateToolbar();
+        this.updateHUD();
+        this.updateMenubar();
+        this._renderer.render(this._stage);
+    }
+
+    drawGrid(): void {
+        for (const tile of this._grid.tiles) {
+            tile.generateGraphics();
+            for (const graphic of tile.graphics) {
+                this._stage.addChild(graphic);
+            }
         }
-      }else if(menu.items.length > 0){
-        for (const item of menu.items) {
-          if(item.graphics.length > 0) {
-            // The menu isn't open, but there's a menu item with graphics, so remove them
-            item.removeAllGraphics();
-          }
+    }
+
+    updateGrid(): void {
+        for (const tile of this._grid.tiles) {
+            Game.replaceGraphics(this._stage, tile);
         }
-      }
     }
-  }
 
-  /**
-   *
-   * @param {PIXI.Container} stage
-   * @param {ViewableObject} viewableObject
-   */
-  static replaceGraphics(stage, viewableObject): void{
-
-    // Remove the existing graphics
-    viewableObject.removeAllGraphics();
-
-    // Generate the new graphics
-    viewableObject.generateGraphics();
-
-    // Individually add each new graphic to the stage
-    for (const graphic of viewableObject.graphics) {
-      stage.addChild(graphic);
+    drawToolbar(): void {
+        for (const tool of this._toolbar.tools) {
+            for (const graphic of tool.graphics) {
+                this._stage.addChild(graphic);
+            }
+        }
     }
-  }
 
-  // Getters and setters -------------------------------------------------------
+    updateToolbar(): void {
+        for (const tool of this._toolbar.tools) {
+            Game.replaceGraphics(this._stage, tool);
+        }
+    }
 
-  get gameState(): GameState {
-    return this._gameState;
-  }
+    drawHUD(): void {
+        // Draw the Hud
+        for (const graphic of this._hud.graphics) {
+            this._stage.addChild(graphic);
+        }
 
-  get eventEmitter(): EventEmitter {
-    return this._eventEmitter;
-  }
+        // Draw the Hud items
+        for (const hudItem of this._hud.items) {
+            for (const graphic of hudItem.graphics) {
+                this._stage.addChild(graphic);
+            }
+        }
+    }
 
-  get map(): Map {
-    return this._map;
-  }
+    updateHUD(): void {
+        // Redraw the Hud items
+        for (const hudItem of this._hud.items) {
+            const oldGraphic = hudItem.graphics[0];
+            hudItem.generateGraphics();
+            oldGraphic.destroy();
+            this._hud.setGraphicsPositioning();
+            const newGraphic = hudItem.graphics[0];
+            this._stage.addChild(newGraphic);
+        }
+    }
 
-  get toolInUse(): Tool {
-    return this._toolInUse;
-  }
+    drawMenubar(): void {
+        for (const menu of this._menubar.menus) {
+            for (const graphic of menu.graphics) {
+                this._stage.addChild(graphic);
+            }
+        }
+    }
 
-  set toolInUse(value) {
-    this._toolInUse = value;
-  }
+    updateMenubar(): void {
+        for (const menu of this._menubar.menus) {
+            Game.replaceGraphics(this._stage, menu);
+            // If this menu is open
+            if (menu.open) {
+                for (const item of menu.items) {
+                    Game.replaceGraphics(this._stage, item);
+                }
+            } else if (menu.items.length > 0) {
+                for (const item of menu.items) {
+                    if (item.graphics.length > 0) {
+                        // The menu isn't open, but there's a menu item with graphics, so remove them
+                        item.removeAllGraphics();
+                    }
+                }
+            }
+        }
+    }
+
+    static replaceGraphics(stage: PIXI.Container, viewableObject: ViewableObject): void {
+        // Remove the existing graphics
+        viewableObject.removeAllGraphics();
+
+        // Generate the new graphics
+        viewableObject.generateGraphics();
+
+        // Individually add each new graphic to the stage
+        for (const graphic of viewableObject.graphics) {
+            stage.addChild(graphic);
+        }
+    }
+
+    // Getters and setters -------------------------------------------------------
+
+    get gameState(): GameState {
+        return this._gameState;
+    }
+
+    get eventEmitter(): EventEmitter {
+        return this._eventEmitter;
+    }
+
+    get map(): Map {
+        return this._map;
+    }
+
+    get toolInUse(): Tool {
+        return this._toolInUse;
+    }
+
+    set toolInUse(value) {
+        this._toolInUse = value;
+    }
 }
 
-console.log('foo');
 const game = new Game();
 game.init();
