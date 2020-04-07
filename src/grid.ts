@@ -11,11 +11,10 @@ import Map from './map';
  */
 export default class Grid extends ViewableObject {
     /* Constants ---------------------------------------------------------------------------------------------------- */
-    public static readonly TILE_WIDTH = 40;
-    public static readonly TILE_HEIGHT = 40;
+    public static readonly TILE_WIDTH = 32;
+    public static readonly TILE_HEIGHT = 32;
     public static readonly TILE_LABEL_DICTIONARY = {
         [Cell.TERRAIN_TYPE_GRASS]: 'Grass',
-        [Cell.TERRAIN_TYPE_ROAD]: 'Road',
     };
 
     /* Class Properties --------------------------------------------------------------------------------------------- */
@@ -29,11 +28,9 @@ export default class Grid extends ViewableObject {
 
         this._game = game;
         // Center the grid in the app
-        this._startingX = appWidth / 2 - (Map.MAP_COLS * Grid.TILE_WIDTH) / 2;
-        this._startingY = appHeight / 2 - (Map.MAP_ROWS * Grid.TILE_HEIGHT) / 2;
+        this._startingX = appWidth / 2 - (Map.MAP_COLS * (Grid.TILE_WIDTH * Game.SPRITE_SCALE)) / 2;
+        this._startingY = appHeight / 2 - (Map.MAP_ROWS * (Grid.TILE_HEIGHT * Game.SPRITE_SCALE)) / 2;
         this._tiles = [];
-
-        this.generateGraphics();
     }
 
     generateGraphics(): void {
@@ -46,14 +43,14 @@ export default class Grid extends ViewableObject {
                 const cell = this._game.map.getCellByRowColumn(row, col);
 
                 // Create a new Tile for it
-                const tile = new Tile(this, x, y, cell);
+                const tile = new Tile(this, x, y, cell, this._game.spritesheet);
 
                 // Add the Tile to our list
                 this._tiles = this._tiles.concat(tile);
 
-                x += Grid.TILE_WIDTH;
+                x += Grid.TILE_WIDTH * Game.SPRITE_SCALE;
             }
-            y += Grid.TILE_HEIGHT;
+            y += Grid.TILE_HEIGHT * Game.SPRITE_SCALE;
             x = this._startingX;
         }
     }
@@ -68,11 +65,11 @@ export default class Grid extends ViewableObject {
         console.log('onTileClick before: ' + Grid.TILE_LABEL_DICTIONARY[tile.cell.terrainType]);
         switch (this._game.toolInUse.id) {
             case Toolbar.ROAD_TOOL:
-                tile.cell.terrainType = Cell.TERRAIN_TYPE_ROAD;
+                tile.cell.structureType = Cell.STRUCTURE_TYPE_ROAD;
                 this._game.eventEmitter.emit(Game.EVENT_MONEY_DEDUCTED, -10);
                 break;
             case Toolbar.BULLDOZE_TOOL:
-                tile.cell.terrainType = Cell.TERRAIN_TYPE_GRASS;
+                tile.cell.structureType = Cell.STRUCTURE_TYPE_EMPTY;
                 break;
             case Toolbar.RESIDENTIAL_ZONE_TOOL:
                 tile.cell.terrainType = Cell.TERRAIN_TYPE_GRASS;

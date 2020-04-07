@@ -9,7 +9,7 @@ export default class Toolbar {
     public static readonly TOOLBAR_STARTING_X = 20;
     public static readonly TOOLBAR_STARTING_Y = 80;
     public static readonly TOOL_WIDTH = 110;
-    public static readonly TOOL_HEIGHT = 40;
+    public static readonly TOOL_HEIGHT = 32;
 
     public static readonly SELECT_TOOL = 0;
     public static readonly ROAD_TOOL = 1;
@@ -41,8 +41,6 @@ export default class Toolbar {
     constructor(game: Game) {
         this._game = game;
         this._tools = [];
-
-        this.generateGraphics();
     }
 
     generateGraphics(): void {
@@ -51,8 +49,8 @@ export default class Toolbar {
 
         for (let i = 0; i < Toolbar.TOOLS.length; i++) {
             const tool = Toolbar.TOOLS[i];
-            this.addTool(new Tool(this, tool.id, tool.label, x, y));
-            y += Toolbar.TOOL_HEIGHT;
+            this.addTool(new Tool(this, tool.id, tool.label, x, y, this._game.spritesheet));
+            y += Toolbar.TOOL_HEIGHT * Game.SPRITE_SCALE;
         }
     }
 

@@ -17,6 +17,7 @@ export default class Game {
     /* Constants ---------------------------------------------------------------------------------------------------- */
     public static readonly APP_WIDTH = 1200;
     public static readonly APP_HEIGHT = 1000;
+    public static readonly SPRITE_SCALE = 2;
     public static readonly EVENT_MONEY_DEDUCTED = 'money.deducted';
     public static readonly EVENT_TIME_INCREASED = 'time.increased';
     public static readonly EVENT_SPEED_SET = 'speed.set';
@@ -29,6 +30,7 @@ export default class Game {
     private _eventEmitter: EventEmitter;
     private _map: Map;
     private _simulator: Simulator;
+    private _spritesheet: PIXI.LoaderResource;
     private _grid: Grid;
     private _menubar: Menubar;
     private _toolbar: Toolbar;
@@ -36,6 +38,9 @@ export default class Game {
     private _hud: HUD;
 
     constructor() {
+        // Set Pixi settings
+        PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
+
         this._ticker = new PIXI.Ticker();
         this._renderer = new PIXI.Renderer({
             width: Game.APP_WIDTH,
@@ -56,23 +61,28 @@ export default class Game {
 
         // Set the default "tool in use"
         this._toolInUse = this._toolbar.tools[0];
+    }
 
+    init(): void {
+        console.log('init');
+        // Add the canvas that Pixi automatically created to the HTML document
+        document.body.appendChild(this._renderer.view);
+
+        PIXI.Loader.shared.add('dist/assets/sprites.json').load(() => this.load());
+    }
+
+    load(): void {
+        // Keep a reference to the spritesheet
+        this._spritesheet = PIXI.Loader.shared.resources['dist/assets/sprites.json'];
+
+        // Draw the initial graphics
         this._grid.generateGraphics();
         this.drawGrid();
         this.drawToolbar();
         this.drawHUD();
         this.drawMenubar();
-    }
 
-    init(): void {
-        // Add the canvas that Pixi automatically created to the HTML document
-        document.body.appendChild(this._renderer.view);
-
-        PIXI.Loader.shared.load(() => this.load());
-    }
-
-    load(): void {
-        //Start the game loop
+        // Start the game loop
         this._ticker.add((delta) => this.gameLoop(delta));
         this._ticker.start();
     }
@@ -104,7 +114,9 @@ export default class Game {
     }
 
     drawToolbar(): void {
+        this._toolbar.generateGraphics();
         for (const tool of this._toolbar.tools) {
+            tool.generateGraphics();
             for (const graphic of tool.graphics) {
                 this._stage.addChild(graphic);
             }
@@ -132,6 +144,8 @@ export default class Game {
     }
 
     updateHUD(): void {
+        // Redraw the Hud
+        Game.replaceGraphics(this._stage, this._hud);
         // Redraw the Hud items
         for (const hudItem of this._hud.items) {
             const oldGraphic = hudItem.graphics[0];
@@ -199,6 +213,10 @@ export default class Game {
 
     get simulator(): Simulator {
         return this._simulator;
+    }
+
+    get spritesheet(): PIXI.LoaderResource {
+        return this._spritesheet;
     }
 
     get toolInUse(): Tool {

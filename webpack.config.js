@@ -1,4 +1,5 @@
 const path = require('path');
+const CopyPlugin = require('copy-webpack-plugin');
 
 module.exports = {
     mode: 'development',
@@ -20,5 +21,10 @@ module.exports = {
                 exclude: /node_modules/,
             }
         ]
-    }
+    },
+    plugins: [
+        new CopyPlugin([
+            { from: 'src/assets', to: 'assets' },
+        ]),
+    ],
 };

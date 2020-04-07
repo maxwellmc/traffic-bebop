@@ -5,11 +5,11 @@
 export default class Cell {
     /* Constants ---------------------------------------------------------------------------------------------------- */
     public static readonly TERRAIN_TYPE_GRASS = 0;
-    public static readonly TERRAIN_TYPE_ROAD = 1;
     public static readonly ZONE_TYPE_UNZONED = 0;
     public static readonly ZONE_TYPE_RESIDENTIAL = 1;
     public static readonly STRUCTURE_TYPE_EMPTY = 0;
-    public static readonly STRUCTURE_TYPE_HOUSE = 1;
+    public static readonly STRUCTURE_TYPE_ROAD = 1;
+    public static readonly STRUCTURE_TYPE_HOUSE = 2;
 
     /* Class Properties --------------------------------------------------------------------------------------------- */
     private _terrainType: number;
