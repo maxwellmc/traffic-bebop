@@ -19,14 +19,36 @@ export default class Map {
             const rowItems = [];
             for (let col = 0; col < Map.MAP_COLS; col++) {
                 // Add a cell with a default terrain of grass
-                rowItems.push(new Cell(Cell.TERRAIN_TYPE_GRASS));
+                rowItems.push(new Cell(this, Cell.TERRAIN_TYPE_GRASS));
             }
             this._map.push(rowItems);
         }
     }
 
-    getCellByRowColumn(row, col): Cell {
+    getCellByRowColumn(row: number, col: number): Cell {
         return this._map[row][col];
+    }
+
+    getRowByCell(cell: Cell): number | null {
+        for (let row = 0; row < Map.MAP_ROWS; row++) {
+            for (let col = 0; col < Map.MAP_COLS; col++) {
+                if (this._map[row][col] === cell) {
+                    return row;
+                }
+            }
+        }
+        return null;
+    }
+
+    getColByCell(cell: Cell): number | null {
+        for (let row = 0; row < Map.MAP_ROWS; row++) {
+            for (let col = 0; col < Map.MAP_COLS; col++) {
+                if (this._map[row][col] === cell) {
+                    return col;
+                }
+            }
+        }
+        return null;
     }
 
     findCellsByZoneAndStructure(zoneType: number, structureType: number): Cell[] {
