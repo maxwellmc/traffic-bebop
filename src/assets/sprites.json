@@ -10,7 +10,7 @@
 },
 "grid.png":
 {
-	"frame": {"x":1,"y":35,"w":32,"h":32},
+	"frame": {"x":35,"y":1,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -18,7 +18,7 @@
 },
 "house1.png":
 {
-	"frame": {"x":1,"y":69,"w":32,"h":32},
+	"frame": {"x":69,"y":1,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -26,39 +26,39 @@
 },
 "road-bl.png":
 {
-	"frame": {"x":69,"y":35,"w":31,"h":32},
-	"rotated": false,
+	"frame": {"x":69,"y":102,"w":31,"h":32},
+	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":1,"y":0,"w":31,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
 "road-br.png":
 {
-	"frame": {"x":102,"y":69,"w":32,"h":31},
-	"rotated": true,
+	"frame": {"x":35,"y":69,"w":32,"h":31},
+	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":31},
 	"sourceSize": {"w":32,"h":32}
 },
 "road-ib.png":
 {
-	"frame": {"x":135,"y":35,"w":32,"h":31},
-	"rotated": true,
+	"frame": {"x":69,"y":69,"w":32,"h":31},
+	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":31},
 	"sourceSize": {"w":32,"h":32}
 },
 "road-il.png":
 {
-	"frame": {"x":69,"y":69,"w":31,"h":32},
-	"rotated": false,
+	"frame": {"x":35,"y":135,"w":31,"h":32},
+	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":1,"y":0,"w":31,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
 "road-im.png":
 {
-	"frame": {"x":35,"y":1,"w":32,"h":32},
+	"frame": {"x":1,"y":35,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -66,23 +66,23 @@
 },
 "road-ir.png":
 {
-	"frame": {"x":102,"y":35,"w":31,"h":32},
-	"rotated": false,
+	"frame": {"x":1,"y":136,"w":31,"h":32},
+	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":0,"y":0,"w":31,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
 "road-it.png":
 {
-	"frame": {"x":136,"y":1,"w":32,"h":31},
-	"rotated": true,
+	"frame": {"x":35,"y":102,"w":32,"h":31},
+	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":0,"y":1,"w":32,"h":31},
 	"sourceSize": {"w":32,"h":32}
 },
 "road-m.png":
 {
-	"frame": {"x":201,"y":67,"w":30,"h":30},
+	"frame": {"x":67,"y":201,"w":30,"h":30},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":1,"y":1,"w":30,"h":30},
@@ -90,23 +90,23 @@
 },
 "road-tl.png":
 {
-	"frame": {"x":135,"y":69,"w":32,"h":31},
-	"rotated": true,
+	"frame": {"x":1,"y":103,"w":32,"h":31},
+	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":0,"y":1,"w":32,"h":31},
 	"sourceSize": {"w":32,"h":32}
 },
 "road-tr.png":
 {
-	"frame": {"x":103,"y":1,"w":31,"h":32},
-	"rotated": false,
+	"frame": {"x":69,"y":135,"w":31,"h":32},
+	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":0,"y":0,"w":31,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
 "road-x.png":
 {
-	"frame": {"x":169,"y":1,"w":32,"h":30},
+	"frame": {"x":1,"y":203,"w":32,"h":30},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":0,"y":1,"w":32,"h":30},
@@ -114,23 +114,23 @@
 },
 "road-xl.png":
 {
-	"frame": {"x":169,"y":33,"w":31,"h":30},
-	"rotated": false,
+	"frame": {"x":65,"y":168,"w":31,"h":30},
+	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":1,"y":1,"w":31,"h":30},
 	"sourceSize": {"w":32,"h":32}
 },
 "road-xr.png":
 {
-	"frame": {"x":202,"y":35,"w":31,"h":30},
-	"rotated": false,
+	"frame": {"x":97,"y":168,"w":31,"h":30},
+	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":0,"y":1,"w":31,"h":30},
 	"sourceSize": {"w":32,"h":32}
 },
 "road-y.png":
 {
-	"frame": {"x":203,"y":1,"w":30,"h":32},
+	"frame": {"x":1,"y":169,"w":30,"h":32},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":1,"y":0,"w":30,"h":32},
@@ -138,16 +138,16 @@
 },
 "road-yb.png":
 {
-	"frame": {"x":168,"y":65,"w":30,"h":31},
-	"rotated": true,
+	"frame": {"x":33,"y":169,"w":30,"h":31},
+	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":1,"y":0,"w":30,"h":31},
 	"sourceSize": {"w":32,"h":32}
 },
 "road-yt.png":
 {
-	"frame": {"x":168,"y":97,"w":30,"h":31},
-	"rotated": true,
+	"frame": {"x":35,"y":202,"w":30,"h":31},
+	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":1,"y":1,"w":30,"h":31},
 	"sourceSize": {"w":32,"h":32}
@@ -162,7 +162,7 @@
 },
 "tool-bg.png":
 {
-	"frame": {"x":35,"y":69,"w":32,"h":32},
+	"frame": {"x":69,"y":35,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -170,31 +170,31 @@
 },
 "tool-bulldoze.png":
 {
-	"frame": {"x":49,"y":103,"w":21,"h":19},
-	"rotated": true,
+	"frame": {"x":103,"y":45,"w":21,"h":19},
+	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":6,"y":6,"w":21,"h":19},
 	"sourceSize": {"w":32,"h":32}
 },
 "tool-residential.png":
 {
-	"frame": {"x":1,"y":103,"w":22,"h":22},
+	"frame": {"x":103,"y":25,"w":22,"h":18},
 	"rotated": false,
 	"trimmed": true,
-	"spriteSourceSize": {"x":5,"y":5,"w":22,"h":22},
+	"spriteSourceSize": {"x":5,"y":6,"w":22,"h":18},
 	"sourceSize": {"w":32,"h":32}
 },
 "tool-road.png":
 {
-	"frame": {"x":70,"y":103,"w":14,"h":20},
-	"rotated": false,
+	"frame": {"x":103,"y":66,"w":14,"h":20},
+	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":9,"y":6,"w":14,"h":20},
 	"sourceSize": {"w":32,"h":32}
 },
 "tool-select.png":
 {
-	"frame": {"x":25,"y":103,"w":22,"h":22},
+	"frame": {"x":103,"y":1,"w":22,"h":22},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":5,"y":5,"w":22,"h":22},
@@ -202,7 +202,7 @@
 },
 "zone-r.png":
 {
-	"frame": {"x":69,"y":1,"w":32,"h":32},
+	"frame": {"x":1,"y":69,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -215,8 +215,8 @@
 	"version": "1.0",
 	"image": "sprites.png",
 	"format": "RGBA8888",
-	"size": {"w":234,"h":128},
+	"size": {"w":128,"h":234},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:dd9911394cbd09415fd87359447ffb68:9f3c185fd31e0633d0bb8dd03d244680:1eabdf11f75e3a4fe3147baf7b5be24b$"
+	"smartupdate": "$TexturePacker:SmartUpdate:21c9f272afc71bae6538c5e482218de4:32d45fdf169a3b486d0668503e4aa357:1eabdf11f75e3a4fe3147baf7b5be24b$"
 }
 }

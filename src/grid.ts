@@ -4,6 +4,7 @@ import Toolbar from './nonworld/toolbar';
 import Game from './game';
 import Cell from './cell';
 import Map from './map';
+import { Container } from 'pixi.js';
 
 /**
  * Visually represents the Map, as translated to an arrangement of
@@ -11,6 +12,7 @@ import Map from './map';
  */
 export default class Grid extends ViewableObject {
     /* Constants ---------------------------------------------------------------------------------------------------- */
+    public static readonly GRID_MARGIN = 50; // Will be scaled by the zoom level
     public static readonly TILE_WIDTH = 32;
     public static readonly TILE_HEIGHT = 32;
     public static readonly TILE_LABEL_DICTIONARY = {
@@ -19,18 +21,44 @@ export default class Grid extends ViewableObject {
 
     /* Class Properties --------------------------------------------------------------------------------------------- */
     private _game: Game;
+    private _grid: Container;
     private _startingX: number;
     private _startingY: number;
+    private _width: number;
+    private _height: number;
     private _tiles: Tile[];
+    private _dragging: boolean;
+    private _dragEvent;
 
     constructor(game: Game, appWidth: number, appHeight: number) {
         super();
 
         this._game = game;
-        // Center the grid in the app
-        this._startingX = appWidth / 2 - (Map.MAP_COLS * (Grid.TILE_WIDTH * Game.SPRITE_SCALE)) / 2;
-        this._startingY = appHeight / 2 - (Map.MAP_ROWS * (Grid.TILE_HEIGHT * Game.SPRITE_SCALE)) / 2;
+        this._grid = new Container();
+        this._startingX = 0;
+        this._startingY = 0;
         this._tiles = [];
+        this._dragging = false;
+
+        // Center the grid in the app
+        this._width = Map.MAP_COLS * (Grid.TILE_WIDTH * Game.SPRITE_SCALE);
+        this._height = Map.MAP_ROWS * (Grid.TILE_HEIGHT * Game.SPRITE_SCALE);
+        this._grid.x = appWidth / 2 - this._width / 2;
+        this._grid.y = appHeight / 2 - this._height / 2;
+
+        this._grid.interactive = true;
+        this._grid
+            // events for drag start
+            .on('mousedown', (e) => this.onDragStart(e))
+            .on('touchstart', (e) => this.onDragStart(e))
+            // events for drag end
+            .on('mouseup', () => this.onDragEnd())
+            .on('mouseupoutside', () => this.onDragEnd())
+            .on('touchend', () => this.onDragEnd())
+            .on('touchendoutside', () => this.onDragEnd())
+            // events for drag move
+            .on('mousemove', () => this.onDragMove())
+            .on('touchmove', () => this.onDragMove());
     }
 
     generateGraphics(): void {
@@ -61,9 +89,11 @@ export default class Grid extends ViewableObject {
         }
     }
 
-    onTileClick(e, tile): void {
-        console.log('onTileClick before: ' + Grid.TILE_LABEL_DICTIONARY[tile.cell.terrainType]);
+    onTileClick(e, tile): boolean {
         switch (this._game.toolInUse.id) {
+            case Toolbar.SELECT_TOOL:
+                // Return true to propagate this event up to the grid
+                return true;
             case Toolbar.ROAD_TOOL:
                 tile.cell.structureType = Cell.STRUCTURE_TYPE_ROAD;
                 this._game.eventEmitter.emit(Game.EVENT_MONEY_DEDUCTED, -10);
@@ -77,10 +107,54 @@ export default class Grid extends ViewableObject {
                 this._game.eventEmitter.emit(Game.EVENT_MONEY_DEDUCTED, -100);
                 break;
         }
-        console.log('onTileClick after: ' + Grid.TILE_LABEL_DICTIONARY[tile.cell.terrainType]);
+    }
+
+    onDragStart(event): void {
+        // If the "select" tool isn't in use, then return
+        if(this._game.toolInUse.id !== Toolbar.SELECT_TOOL){
+            return;
+        }
+
+        // store a reference to the data
+        // the reason for this is because of multitouch
+        // we want to track the movement of this particular touch
+        this._dragEvent = event.data;
+        this._dragging = true;
+    }
+
+    onDragEnd(): void {
+        this._dragging = false;
+        // set the interaction data to null
+        this._dragEvent = null;
+    }
+
+    onDragMove(): void {
+        if (this._dragging) {
+            const movementX = this._dragEvent.originalEvent.movementX,
+                movementY = this._dragEvent.originalEvent.movementY,
+                scaledMargin = Grid.GRID_MARGIN * Game.SPRITE_SCALE,
+                targetX = this._grid.x + movementX,
+                targetY = this._grid.y + movementY;
+
+            // If we won't go beyond the margin
+            if(targetX < scaledMargin && targetX + this._width - this._game.renderer.width + scaledMargin > 0 ) {
+                this._grid.x += movementX;
+            }
+            if(targetY < scaledMargin && targetY + this._height - this._game.renderer.height + scaledMargin > 0 ) {
+                this._grid.y += movementY;
+            }
+        }
     }
 
     /* Getters & Setters -------------------------------------------------------------------------------------------- */
+
+    get grid(): PIXI.Container {
+        return this._grid;
+    }
+
+    set grid(value: PIXI.Container) {
+        this._grid = value;
+    }
 
     get tiles(): Tile[] {
         return this._tiles;

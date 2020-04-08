@@ -7,7 +7,7 @@ import Cell from './cell';
 export default class Map {
     /* Constants ---------------------------------------------------------------------------------------------------- */
     public static readonly MAP_ROWS = 20;
-    public static readonly MAP_COLS = 20;
+    public static readonly MAP_COLS = 30;
 
     /* Class Properties --------------------------------------------------------------------------------------------- */
     private _map: Cell[][];

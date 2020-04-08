@@ -58,9 +58,6 @@ export default class Game {
         this._menubar = new Menubar(this);
         this._toolbar = new Toolbar(this);
         this._hud = new HUD(this, this._gameState, Game.APP_WIDTH, Game.APP_HEIGHT);
-
-        // Set the default "tool in use"
-        this._toolInUse = this._toolbar.tools[0];
     }
 
     init(): void {
@@ -99,22 +96,25 @@ export default class Game {
     }
 
     drawGrid(): void {
+        this._stage.addChild(this._grid.grid);
         for (const tile of this._grid.tiles) {
             tile.generateGraphics();
             for (const graphic of tile.graphics) {
-                this._stage.addChild(graphic);
+                this._grid.grid.addChild(graphic);
             }
         }
     }
 
     updateGrid(): void {
         for (const tile of this._grid.tiles) {
-            Game.replaceGraphics(this._stage, tile);
+            Game.replaceGraphics(this._grid.grid, tile);
         }
     }
 
     drawToolbar(): void {
         this._toolbar.generateGraphics();
+        // Set the default "tool in use"
+        this._toolInUse = this._toolbar.tools[0];
         for (const tool of this._toolbar.tools) {
             tool.generateGraphics();
             for (const graphic of tool.graphics) {
@@ -198,6 +198,10 @@ export default class Game {
     }
 
     /* Getters & Setters -------------------------------------------------------------------------------------------- */
+
+    get renderer(): PIXI.Renderer {
+        return this._renderer;
+    }
 
     get gameState(): GameState {
         return this._gameState;
