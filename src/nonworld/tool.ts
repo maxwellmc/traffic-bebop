@@ -34,7 +34,14 @@ export default class Tool extends ViewableObject {
 
     generateGraphics(): void {
         const graphics = [];
-        const backgroundGraphic = new Sprite(this._spritesheet.textures['tool-bg.png']);
+
+        let filename = 'tool-bg.png';
+        // Show the tool as depressed if it's the one in use
+        if(this._toolbar.game.toolInUse === this){
+            filename = 'tool-bg-d.png';
+        }
+
+        const backgroundGraphic = new Sprite(this._spritesheet.textures[filename]);
         backgroundGraphic.x = this._x;
         backgroundGraphic.y = this._y;
         backgroundGraphic.scale.set(Game.SPRITE_SCALE);

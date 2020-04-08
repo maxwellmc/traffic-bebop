@@ -51,7 +51,6 @@ export default class Tile extends ViewableObject {
                     const zoneGraphic = new Sprite(this._spritesheet.textures['zone-r.png']);
                     zoneGraphic.x = this._x;
                     zoneGraphic.y = this._y;
-                    zoneGraphic.alpha = 0.7;
                     zoneGraphic.scale.set(Game.SPRITE_SCALE);
                     zoneGraphic.interactive = true;
                     tileGraphics.push(zoneGraphic);

@@ -72,7 +72,7 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
-"tool-bg.png":
+"tool-bg-d.png":
 {
 	"frame": {"x":288,"y":0,"w":32,"h":32},
 	"rotated": false,
@@ -80,7 +80,7 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
-"tool-bulldoze.png":
+"tool-bg.png":
 {
 	"frame": {"x":320,"y":0,"w":32,"h":32},
 	"rotated": false,
@@ -88,7 +88,7 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
-"tool-residential.png":
+"tool-bulldoze.png":
 {
 	"frame": {"x":352,"y":0,"w":32,"h":32},
 	"rotated": false,
@@ -96,7 +96,7 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
-"tool-road.png":
+"tool-residential.png":
 {
 	"frame": {"x":384,"y":0,"w":32,"h":32},
 	"rotated": false,
@@ -104,7 +104,7 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
-"tool-select.png":
+"tool-road.png":
 {
 	"frame": {"x":416,"y":0,"w":32,"h":32},
 	"rotated": false,
@@ -112,9 +112,17 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
-"zone-r.png":
+"tool-select.png":
 {
 	"frame": {"x":448,"y":0,"w":32,"h":32},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
+	"sourceSize": {"w":32,"h":32}
+},
+"zone-r.png":
+{
+	"frame": {"x":480,"y":0,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -127,8 +135,8 @@
 	"version": "1.0",
 	"image": "sprites.png",
 	"format": "RGBA8888",
-	"size": {"w":480,"h":32},
+	"size": {"w":512,"h":32},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:3cd4e894d72255ac36f4e05c0af7e581:16ac8131fd52393bdbdd275d8fbfea4e:1eabdf11f75e3a4fe3147baf7b5be24b$"
+	"smartupdate": "$TexturePacker:SmartUpdate:219b8054acce45bc8b0f638a588fecf9:331b97c640080a5fc78c06350cf6b88a:1eabdf11f75e3a4fe3147baf7b5be24b$"
 }
 }
