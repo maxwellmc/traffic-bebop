@@ -4,7 +4,7 @@ import Toolbar from './nonworld/toolbar';
 import Game from './game';
 import Cell from './cell';
 import Map from './map';
-import { Container, Point } from 'pixi.js';
+import { Container, Point, DisplayObject } from 'pixi.js';
 
 /**
  * Visually represents the Map, as translated to an arrangement of
@@ -30,6 +30,8 @@ export default class Grid extends ViewableObject {
     private _dragging: boolean;
     private _dragEvent;
     private _draggingTiles: Tile[];
+    private _dragFirstX: number;
+    private _dragFirstY: number;
 
     constructor(game: Game, appWidth: number, appHeight: number) {
         super();
@@ -121,6 +123,8 @@ export default class Grid extends ViewableObject {
         // Store a reference to the data (because of multitouch)
         this._dragEvent = event.data;
         this._dragging = true;
+        this._dragFirstX = event.data.originalEvent.x;
+        this._dragFirstY = event.data.originalEvent.y;
 
         // Call `onDragMove` because we're considering a single, non-moving click as a "drag"
         this.onDragMove();
@@ -156,14 +160,80 @@ export default class Grid extends ViewableObject {
                 if (targetY < scaledMargin && targetY + this._height - this._game.renderer.height + scaledMargin > 0) {
                     this._grid.y += movementY;
                 }
+            } else if (this._game.toolInUse.id === Toolbar.RESIDENTIAL_ZONE_TOOL) {
+                // We're dragging with a zoning tool
+                const draggingTiles = this.findDraggingTilesForRectangle();
+                if (draggingTiles) {
+                    this._draggingTiles = draggingTiles;
+                }
             } else {
-                // We're dragging with a tool that affects structures/zones on tiles
+                // We're dragging with a tool that affects individual structures/zones on tiles
                 const point = new Point(this._dragEvent.originalEvent.x, this._dragEvent.originalEvent.y),
                     hit = this._game.renderer.plugins.interaction.hitTest(point),
                     hitXYArray = hit.name.split(',');
                 this.addDraggingTile(this.findTileByXY(Number(hitXYArray[0]), Number(hitXYArray[1])));
             }
         }
+    }
+
+    findDraggingTilesForRectangle(): Tile[] {
+        // Get the coordinates of the mouse at this moment
+        const currentX = this._dragEvent.originalEvent.x,
+            currentY = this._dragEvent.originalEvent.y;
+
+        // Make a bounding box for intersection-testing
+        let boundingBoxX, boundingBoxY, boundingBoxWidth, boundingBoxHeight;
+        if (currentX < this._dragFirstX) {
+            // We're moving to the left
+            boundingBoxX = currentX;
+            boundingBoxWidth = this._dragFirstX - currentX;
+        } else {
+            // We're moving to the right
+            boundingBoxX = this._dragFirstX;
+            boundingBoxWidth = currentX - this._dragFirstX;
+        }
+        if (currentY < this._dragFirstY) {
+            // We're moving up
+            boundingBoxY = currentY;
+            boundingBoxHeight = this._dragFirstY - currentY;
+        } else {
+            // We're moving down
+            boundingBoxY = this._dragFirstY;
+            boundingBoxHeight = currentY - this._dragFirstY;
+        }
+
+        const intersectingTiles = [];
+        // Loop through each Tile to find ones that intersect with our bounding box
+        for (const tile of this._tiles) {
+            if (
+                Grid.areContainersIntersecting(
+                    tile.x + this._grid.x,
+                    tile.y + this._grid.y,
+                    Grid.TILE_WIDTH * Game.SPRITE_SCALE,
+                    Grid.TILE_HEIGHT * Game.SPRITE_SCALE,
+                    boundingBoxX,
+                    boundingBoxY,
+                    boundingBoxWidth,
+                    boundingBoxHeight,
+                )
+            ) {
+                intersectingTiles.push(tile);
+            }
+        }
+        return intersectingTiles;
+    }
+
+    static areContainersIntersecting(
+        r1X: number,
+        r1Y: number,
+        r1W: number,
+        r1H: number,
+        r2X: number,
+        r2Y: number,
+        r2W: number,
+        r2H: number,
+    ): boolean {
+        return !(r2X > r1X + r1W || r2X + r2W < r1X || r2Y > r1Y + r1H || r2Y + r2H < r1Y);
     }
 
     findTileByXY(x: number, y: number): Tile | null {
