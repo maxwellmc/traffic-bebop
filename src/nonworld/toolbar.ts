@@ -60,7 +60,6 @@ export default class Toolbar {
 
     onToolClick(e, tool): void {
         this._game.toolInUse = tool;
-        console.log('onToolClick: ' + this.game.toolInUse.label);
     }
 
     /* Getters & Setters -------------------------------------------------------------------------------------------- */

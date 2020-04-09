@@ -4,7 +4,7 @@ import Toolbar from './nonworld/toolbar';
 import Game from './game';
 import Cell from './cell';
 import Map from './map';
-import { Container } from 'pixi.js';
+import { Container, Point } from 'pixi.js';
 
 /**
  * Visually represents the Map, as translated to an arrangement of
@@ -29,6 +29,7 @@ export default class Grid extends ViewableObject {
     private _tiles: Tile[];
     private _dragging: boolean;
     private _dragEvent;
+    private _draggingTiles: Tile[];
 
     constructor(game: Game, appWidth: number, appHeight: number) {
         super();
@@ -39,6 +40,7 @@ export default class Grid extends ViewableObject {
         this._startingY = 0;
         this._tiles = [];
         this._dragging = false;
+        this._draggingTiles = [];
 
         // Center the grid in the app
         this._width = Map.MAP_COLS * (Grid.TILE_WIDTH * Game.SPRITE_SCALE);
@@ -89,7 +91,13 @@ export default class Grid extends ViewableObject {
         }
     }
 
-    onTileClick(e, tile): boolean {
+    applyToolToTiles(tiles: Tile[]): void {
+        for (const tile of tiles) {
+            this.applyToolToTile(tile);
+        }
+    }
+
+    applyToolToTile(tile): boolean {
         switch (this._game.toolInUse.id) {
             case Toolbar.SELECT_TOOL:
                 // Return true to propagate this event up to the grid
@@ -110,40 +118,82 @@ export default class Grid extends ViewableObject {
     }
 
     onDragStart(event): void {
-        // If the "select" tool isn't in use, then return
-        if(this._game.toolInUse.id !== Toolbar.SELECT_TOOL){
-            return;
-        }
-
-        // store a reference to the data
-        // the reason for this is because of multitouch
-        // we want to track the movement of this particular touch
+        // Store a reference to the data (because of multitouch)
         this._dragEvent = event.data;
         this._dragging = true;
+
+        // Call `onDragMove` because we're considering a single, non-moving click as a "drag"
+        this.onDragMove();
     }
 
     onDragEnd(): void {
         this._dragging = false;
         // set the interaction data to null
         this._dragEvent = null;
+
+        // Apply the "tool in use" to these tiles
+        this.applyToolToTiles(this._draggingTiles);
+
+        // Reset the array of tiles in the drag event
+        this._draggingTiles = [];
     }
 
     onDragMove(): void {
+        // If we're dragging
         if (this._dragging) {
-            const movementX = this._dragEvent.originalEvent.movementX,
-                movementY = this._dragEvent.originalEvent.movementY,
-                scaledMargin = Grid.GRID_MARGIN * Game.SPRITE_SCALE,
-                targetX = this._grid.x + movementX,
-                targetY = this._grid.y + movementY;
+            // If we're dragging with the Select tool
+            if (this._game.toolInUse.id === Toolbar.SELECT_TOOL) {
+                const movementX = this._dragEvent.originalEvent.movementX,
+                    movementY = this._dragEvent.originalEvent.movementY,
+                    scaledMargin = Grid.GRID_MARGIN * Game.SPRITE_SCALE,
+                    targetX = this._grid.x + movementX,
+                    targetY = this._grid.y + movementY;
 
-            // If we won't go beyond the margin
-            if(targetX < scaledMargin && targetX + this._width - this._game.renderer.width + scaledMargin > 0 ) {
-                this._grid.x += movementX;
-            }
-            if(targetY < scaledMargin && targetY + this._height - this._game.renderer.height + scaledMargin > 0 ) {
-                this._grid.y += movementY;
+                // If we won't go beyond the margins
+                if (targetX < scaledMargin && targetX + this._width - this._game.renderer.width + scaledMargin > 0) {
+                    this._grid.x += movementX;
+                }
+                if (targetY < scaledMargin && targetY + this._height - this._game.renderer.height + scaledMargin > 0) {
+                    this._grid.y += movementY;
+                }
+            } else {
+                // We're dragging with a tool that affects structures/zones on tiles
+                const point = new Point(this._dragEvent.originalEvent.x, this._dragEvent.originalEvent.y),
+                    hit = this._game.renderer.plugins.interaction.hitTest(point),
+                    hitXYArray = hit.name.split(',');
+                this.addDraggingTile(this.findTileByXY(Number(hitXYArray[0]), Number(hitXYArray[1])));
             }
         }
+    }
+
+    findTileByXY(x: number, y: number): Tile | null {
+        for (const tile of this._tiles) {
+            if (tile.x === x && tile.y === y) {
+                return tile;
+            }
+        }
+        return null;
+    }
+
+    addDraggingTile(tile: Tile): void {
+        if (tile === null) {
+            return;
+        }
+        for (const existingTile of this._draggingTiles) {
+            if (existingTile === tile) {
+                return;
+            }
+        }
+        this._draggingTiles.push(tile);
+    }
+
+    isTileInDrag(tile: Tile): boolean {
+        for (const existingTile of this._draggingTiles) {
+            if (existingTile === tile) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /* Getters & Setters -------------------------------------------------------------------------------------------- */

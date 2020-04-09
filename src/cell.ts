@@ -15,43 +15,35 @@ export default class Cell {
 
     /* Class Properties --------------------------------------------------------------------------------------------- */
     private _map: Map;
+    private _row: number;
+    private _col: number;
     private _terrainType: number;
     private _zoneType: number;
     private _structureType: number;
 
-    constructor(map: Map, terrainType: number) {
+    constructor(map: Map, row: number, col: number, terrainType: number) {
         this._map = map;
+        this._row = row;
+        this._col = col;
         this._terrainType = terrainType;
         this._zoneType = Cell.ZONE_TYPE_UNZONED;
         this._structureType = Cell.STRUCTURE_TYPE_EMPTY;
     }
 
     getLeftNeighbor(): Cell | null {
-        const row = this._map.getRowByCell(this),
-            col = this._map.getColByCell(this);
-
-        return this._map.getCellByRowColumn(row, col - 1);
+        return this._map.getCellByRowColumn(this._row, this._col - 1);
     }
 
     getRightNeighbor(): Cell | null {
-        const row = this._map.getRowByCell(this),
-            col = this._map.getColByCell(this);
-
-        return this._map.getCellByRowColumn(row, col + 1);
+        return this._map.getCellByRowColumn(this._row, this._col + 1);
     }
 
     getTopNeighbor(): Cell | null {
-        const row = this._map.getRowByCell(this),
-            col = this._map.getColByCell(this);
-
-        return this._map.getCellByRowColumn(row - 1, col);
+        return this._map.getCellByRowColumn(this._row - 1, this._col);
     }
 
     getBottomNeighbor(): Cell | null {
-        const row = this._map.getRowByCell(this),
-            col = this._map.getColByCell(this);
-
-        return this._map.getCellByRowColumn(row + 1, col);
+        return this._map.getCellByRowColumn(this._row + 1, this._col);
     }
 
     doesLeftNeighborHaveStructure(structureType: number): boolean {
@@ -78,6 +70,22 @@ export default class Cell {
 
     set map(value: Map) {
         this._map = value;
+    }
+
+    get row(): number {
+        return this._row;
+    }
+
+    set row(value: number) {
+        this._row = value;
+    }
+
+    get col(): number {
+        return this._col;
+    }
+
+    set col(value: number) {
+        this._col = value;
     }
 
     get terrainType(): number {

@@ -9,6 +9,7 @@ import Game from './game';
  */
 export default class Tile extends ViewableObject {
     /* Constants ---------------------------------------------------------------------------------------------------- */
+    public static readonly SPRITE_FILE_DRAG = 'drag.png';
     public static readonly SPRITE_FILE_ROAD_MIDDLE = 'road-m.png';
     public static readonly SPRITE_FILE_ROAD_X = 'road-x.png';
     public static readonly SPRITE_FILE_ROAD_X_LEFT = 'road-xl.png';
@@ -46,7 +47,8 @@ export default class Tile extends ViewableObject {
     }
 
     generateGraphics(): void {
-        const tileGraphics = [];
+        const tile = new Container(),
+            name = `${this._x},${this._y}`;
 
         if (this._cell.terrainType === Cell.TERRAIN_TYPE_GRASS) {
             const grassGraphic = new Sprite(this._spritesheet.textures['grass.png']);
@@ -54,10 +56,8 @@ export default class Tile extends ViewableObject {
             grassGraphic.y = this._y;
             grassGraphic.scale.set(Game.SPRITE_SCALE);
             grassGraphic.interactive = true;
-
-            grassGraphic.on('mousedown', (e) => this._grid.onTileClick(e, this));
-
-            tileGraphics.push(grassGraphic);
+            grassGraphic.name = name;
+            tile.addChild(grassGraphic);
 
             if (this._cell.structureType === Cell.STRUCTURE_TYPE_EMPTY) {
                 if (this._cell.zoneType === Cell.ZONE_TYPE_RESIDENTIAL) {
@@ -67,7 +67,7 @@ export default class Tile extends ViewableObject {
                     zoneGraphic.y = this._y;
                     zoneGraphic.scale.set(Game.SPRITE_SCALE);
                     zoneGraphic.interactive = true;
-                    tileGraphics.push(zoneGraphic);
+                    tile.addChild(zoneGraphic);
                 }
             }
 
@@ -79,16 +79,16 @@ export default class Tile extends ViewableObject {
                 roadGraphic.y = this._y;
                 roadGraphic.scale.set(Game.SPRITE_SCALE);
                 roadGraphic.interactive = true;
-                tileGraphics.push(roadGraphic);
-
-                roadGraphic.on('mousedown', (e) => this._grid.onTileClick(e, this));
+                roadGraphic.name = name;
+                tile.addChild(roadGraphic);
             } else if (this._cell.structureType === Cell.STRUCTURE_TYPE_HOUSE) {
                 const houseGraphic = new Sprite(this._spritesheet.textures['house1.png']);
                 houseGraphic.x = this._x;
                 houseGraphic.y = this._y;
                 houseGraphic.scale.set(Game.SPRITE_SCALE);
                 houseGraphic.interactive = true;
-                tileGraphics.push(houseGraphic);
+                houseGraphic.name = name;
+                tile.addChild(houseGraphic);
             }
 
             // Add the grid sprite
@@ -96,12 +96,22 @@ export default class Tile extends ViewableObject {
             gridGraphic.x = this._x;
             gridGraphic.y = this._y;
             gridGraphic.scale.set(Game.SPRITE_SCALE);
-            gridGraphic.interactive = true;
-            gridGraphic.on('mousedown', (e) => this._grid.onTileClick(e, this));
-            tileGraphics.push(gridGraphic);
+            gridGraphic.interactive = false;
+            gridGraphic.name = name;
+            tile.addChild(gridGraphic);
         }
 
-        this._graphics = tileGraphics;
+        // If this tile is part of a mouse-drag event, then add an overlay
+        if (this._grid.isTileInDrag(this)) {
+            const dragGraphic = new Sprite(this._spritesheet.textures[Tile.SPRITE_FILE_DRAG]);
+            dragGraphic.x = this._x;
+            dragGraphic.y = this._y;
+            dragGraphic.scale.set(Game.SPRITE_SCALE);
+            dragGraphic.interactive = false;
+            tile.addChild(dragGraphic);
+        }
+
+        this._graphics = [tile];
     }
 
     determineRoadOrientation(): string {
@@ -197,6 +207,14 @@ export default class Tile extends ViewableObject {
 
     set x(value) {
         this._x = value;
+    }
+
+    get y(): number {
+        return this._y;
+    }
+
+    set y(value: number) {
+        this._y = value;
     }
 
     get cell(): Cell {
