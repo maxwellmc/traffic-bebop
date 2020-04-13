@@ -160,6 +160,12 @@ export default class Grid extends ViewableObject {
                 if (targetY < scaledMargin && targetY + this._height - this._game.renderer.height + scaledMargin > 0) {
                     this._grid.y += movementY;
                 }
+            } else if (this._game.toolInUse.id === Toolbar.ROAD_TOOL) {
+                // We're dragging with the road tool
+                const draggingTiles = this.findDraggingTilesForLine();
+                if (draggingTiles) {
+                    this._draggingTiles = draggingTiles;
+                }
             } else if (this._game.toolInUse.id === Toolbar.RESIDENTIAL_ZONE_TOOL) {
                 // We're dragging with a zoning tool
                 const draggingTiles = this.findDraggingTilesForRectangle();
@@ -174,6 +180,44 @@ export default class Grid extends ViewableObject {
                 this.addDraggingTile(this.findTileByXY(Number(hitXYArray[0]), Number(hitXYArray[1])));
             }
         }
+    }
+
+    findDraggingTilesForLine(): Tile[] {
+        // Get the coordinates of the mouse at this moment
+        const currentX = this._dragEvent.originalEvent.x,
+            currentY = this._dragEvent.originalEvent.y,
+            absDiffX = Math.abs(this._dragFirstX - currentX),
+            absDiffY = Math.abs(this._dragFirstY - currentY);
+
+        // Make a bounding box for intersection-testing
+        let boundingBoxX, boundingBoxY, boundingBoxWidth, boundingBoxHeight;
+        if (absDiffX > absDiffY) {
+            boundingBoxY = this._dragFirstY;
+            boundingBoxHeight = 1;
+            if (currentX < this._dragFirstX) {
+                // We're moving to the left
+                boundingBoxX = currentX;
+                boundingBoxWidth = this._dragFirstX - currentX;
+            } else {
+                // We're moving to the right
+                boundingBoxX = this._dragFirstX;
+                boundingBoxWidth = currentX - this._dragFirstX;
+            }
+        } else {
+            boundingBoxX = this._dragFirstX;
+            boundingBoxWidth = 1;
+            if (currentY < this._dragFirstY) {
+                // We're moving up
+                boundingBoxY = currentY;
+                boundingBoxHeight = this._dragFirstY - currentY;
+            } else {
+                // We're moving down
+                boundingBoxY = this._dragFirstY;
+                boundingBoxHeight = currentY - this._dragFirstY;
+            }
+        }
+
+        return this.findInsersectingTiles(boundingBoxX, boundingBoxY, boundingBoxWidth, boundingBoxHeight);
     }
 
     findDraggingTilesForRectangle(): Tile[] {
@@ -202,6 +246,10 @@ export default class Grid extends ViewableObject {
             boundingBoxHeight = currentY - this._dragFirstY;
         }
 
+        return this.findInsersectingTiles(boundingBoxX, boundingBoxY, boundingBoxWidth, boundingBoxHeight);
+    }
+
+    findInsersectingTiles(boundingBoxX, boundingBoxY, boundingBoxWidth, boundingBoxHeight): Tile[] {
         const intersectingTiles = [];
         // Loop through each Tile to find ones that intersect with our bounding box
         for (const tile of this._tiles) {

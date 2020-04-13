@@ -117,6 +117,10 @@ export default class Tile extends ViewableObject {
             if (this._layers.get(TileGraphicLayer.Structure) !== Tile.SPRITE_FILE_STRUCTURE_HOUSE_1) {
                 this.setLayerSprite(TileGraphicLayer.Structure, Tile.SPRITE_FILE_STRUCTURE_HOUSE_1);
             }
+        }else{
+            if (this._layers.get(TileGraphicLayer.Structure) !== Tile.SPRITE_BLANK) {
+                this.setLayerSprite(TileGraphicLayer.Structure, Tile.SPRITE_BLANK);
+            }
         }
 
         // Set the grid
