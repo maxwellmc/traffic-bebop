@@ -1,7 +1,6 @@
-import ViewableObject from '../viewable-object';
 import { Text } from 'pixi.js';
 
-export default class HUDItem extends ViewableObject {
+export default class HUDItem {
     /* Constants ---------------------------------------------------------------------------------------------------- */
     public static readonly WIDTH = 100;
     public static readonly TEXT_COLOR = 0xf5f5f5;
@@ -9,9 +8,9 @@ export default class HUDItem extends ViewableObject {
     /* Class Properties --------------------------------------------------------------------------------------------- */
     private _label: string;
     private _value: string;
+    private _graphic: Text;
 
     constructor(label: string, value: string) {
-        super();
 
         this._label = label;
         this._value = value;
@@ -21,21 +20,28 @@ export default class HUDItem extends ViewableObject {
 
     generateGraphics(): void {
         // Text
-        const text = new Text(this._label + ': ' + this._value, {
+        this._graphic = new Text(this.generateFullText(), {
             fontFamily: 'Arial',
             fontSize: 20,
             fill: HUDItem.TEXT_COLOR,
             align: 'center',
         });
-        this.graphics = [text];
+    }
+
+    updateGraphics(): void {
+        this._graphic.text = this.generateFullText();
+    }
+
+    generateFullText(): string {
+        return this._label + ': ' + this._value;
     }
 
     changeX(value): void {
-        this.graphics[0].x = value;
+        this._graphic.x = value;
     }
 
     changeY(value): void {
-        this.graphics[0].y = value;
+        this._graphic.y = value;
     }
 
     /* Getters & Setters -------------------------------------------------------------------------------------------- */
@@ -50,5 +56,9 @@ export default class HUDItem extends ViewableObject {
 
     set value(value: string) {
         this._value = value;
+    }
+
+    get graphic(): PIXI.Text {
+        return this._graphic;
     }
 }

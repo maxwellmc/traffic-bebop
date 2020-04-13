@@ -9,8 +9,6 @@ import * as EventEmitter from 'eventemitter3';
 import Tool from './nonworld/tool';
 import ViewableObject from './viewable-object';
 import Simulator from './simulator';
-import {Pathfinder} from './nonworld/pathfinding';
-import Cell from './cell';
 
 /**
  * Manages the Pixi Application, the game loop, and calling the draw-ers.
@@ -41,7 +39,6 @@ export default class Game {
     private _hud: HUD;
 
     constructor() {
-
         this._debug = false;
 
         // Set Pixi settings
@@ -105,15 +102,14 @@ export default class Game {
         this._stage.addChild(this._grid.grid);
         for (const tile of this._grid.tiles) {
             tile.generateGraphics();
-            for (const graphic of tile.graphics) {
-                this._grid.grid.addChild(graphic);
-            }
+            this._grid.grid.addChild(tile.container);
+            this._grid.grid.addChild(tile.debugContainer);
         }
     }
 
     updateGrid(): void {
         for (const tile of this._grid.tiles) {
-            Game.replaceGraphics(this._grid.grid, tile);
+            tile.updateGraphics();
         }
     }
 
@@ -123,15 +119,14 @@ export default class Game {
         this._toolInUse = this._toolbar.tools[0];
         for (const tool of this._toolbar.tools) {
             tool.generateGraphics();
-            for (const graphic of tool.graphics) {
-                this._stage.addChild(graphic);
-            }
+            this._stage.addChild(tool.background);
+            this._stage.addChild(tool.foreground);
         }
     }
 
     updateToolbar(): void {
         for (const tool of this._toolbar.tools) {
-            Game.replaceGraphics(this._stage, tool);
+            tool.updateGraphics();
         }
     }
 
@@ -143,23 +138,14 @@ export default class Game {
 
         // Draw the Hud items
         for (const hudItem of this._hud.items) {
-            for (const graphic of hudItem.graphics) {
-                this._stage.addChild(graphic);
-            }
+            this._stage.addChild(hudItem.graphic);
         }
     }
 
     updateHUD(): void {
-        // Redraw the Hud
-        Game.replaceGraphics(this._stage, this._hud);
         // Redraw the Hud items
         for (const hudItem of this._hud.items) {
-            const oldGraphic = hudItem.graphics[0];
-            hudItem.generateGraphics();
-            oldGraphic.destroy();
-            this._hud.setGraphicsPositioning();
-            const newGraphic = hudItem.graphics[0];
-            this._stage.addChild(newGraphic);
+            hudItem.updateGraphics();
         }
     }
 

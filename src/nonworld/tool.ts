@@ -1,4 +1,3 @@
-import ViewableObject from '../viewable-object';
 import Toolbar from './toolbar';
 import { LoaderResource, Sprite } from 'pixi.js';
 import Game from '../game';
@@ -6,11 +5,10 @@ import Game from '../game';
 /**
  * Selected by the user to manipulate individual cells in the world.
  */
-export default class Tool extends ViewableObject {
+export default class Tool {
     /* Constants ---------------------------------------------------------------------------------------------------- */
-    public static readonly FILL_COLOR = 0xeeeeee;
-    public static readonly LINE_COLOR = 0xdedede;
-    public static readonly TEXT_COLOR = 0xc10000;
+    public static readonly SPRITE_FILE_BACKGROUND = 'tool-bg.png';
+    public static readonly SPRITE_FILE_BACKGROUND_DEPRESSED = 'tool-bg-d.png';
 
     /* Class Properties --------------------------------------------------------------------------------------------- */
     private _toolbar: Toolbar;
@@ -19,9 +17,10 @@ export default class Tool extends ViewableObject {
     private _x: number;
     private _y: number;
     private _spritesheet: LoaderResource;
+    private _background: Sprite;
+    private _foreground: Sprite;
 
     constructor(toolbar: Toolbar, id: number, label: string, x: number, y: number, spritesheet: LoaderResource) {
-        super();
         this._toolbar = toolbar;
         this._id = id;
         this._label = label;
@@ -33,12 +32,10 @@ export default class Tool extends ViewableObject {
     }
 
     generateGraphics(): void {
-        const graphics = [];
-
-        let filename = 'tool-bg.png';
+        let filename = Tool.SPRITE_FILE_BACKGROUND;
         // Show the tool as depressed if it's the one in use
-        if(this._toolbar.game.toolInUse === this){
-            filename = 'tool-bg-d.png';
+        if (this._toolbar.game.toolInUse === this) {
+            filename = Tool.SPRITE_FILE_BACKGROUND_DEPRESSED;
         }
 
         const backgroundGraphic = new Sprite(this._spritesheet.textures[filename]);
@@ -49,10 +46,10 @@ export default class Tool extends ViewableObject {
 
         backgroundGraphic.on('mousedown', (e) => this._toolbar.onToolClick(e, this));
 
-        graphics.push(backgroundGraphic);
+        this._background = backgroundGraphic;
 
         let spriteFilename;
-        switch(this._id){
+        switch (this._id) {
             case Toolbar.SELECT_TOOL:
                 spriteFilename = 'tool-select.png';
                 break;
@@ -75,9 +72,16 @@ export default class Tool extends ViewableObject {
 
         toolGraphic.on('mousedown', (e) => this._toolbar.onToolClick(e, this));
 
-        graphics.push(toolGraphic);
+        this._foreground = toolGraphic;
+    }
 
-        this._graphics = graphics;
+    updateGraphics(): void {
+        // Show the tool as depressed if it's the one in use
+        if (this._toolbar.game.toolInUse === this) {
+            this._background.texture = this._spritesheet.textures[Tool.SPRITE_FILE_BACKGROUND_DEPRESSED];
+        } else {
+            this._background.texture = this._spritesheet.textures[Tool.SPRITE_FILE_BACKGROUND];
+        }
     }
 
     /* Getters & Setters -------------------------------------------------------------------------------------------- */
@@ -96,5 +100,13 @@ export default class Tool extends ViewableObject {
 
     set label(value) {
         this._label = value;
+    }
+
+    get background(): PIXI.Sprite {
+        return this._background;
+    }
+
+    get foreground(): PIXI.Sprite {
+        return this._foreground;
     }
 }

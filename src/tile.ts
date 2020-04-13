@@ -1,15 +1,20 @@
 import ViewableObject from './viewable-object';
 import Grid from './grid';
 import Cell from './cell';
-import { LoaderResource, Sprite, Container } from 'pixi.js';
+import { Container, LoaderResource, Sprite, Text } from 'pixi.js';
 import Game from './game';
-import MenuItem from './nonworld/menu/menu-item';
+import { TileGraphicLayer } from './tile-graphic';
 
 /**
  * A cell within the world.
  */
 export default class Tile extends ViewableObject {
     /* Constants ---------------------------------------------------------------------------------------------------- */
+    public static readonly SPRITE_BLANK = '';
+    public static readonly SPRITE_FILE_GRASS = 'grass.png';
+    public static readonly SPRITE_FILE_ZONE_RESIDENTIAL = 'zone-r.png';
+    public static readonly SPRITE_FILE_STRUCTURE_HOUSE_1 = 'house1.png';
+    public static readonly SPRITE_FILE_GRID = 'grid.png';
     public static readonly SPRITE_FILE_DRAG = 'drag.png';
     public static readonly SPRITE_FILE_ROAD_MIDDLE = 'road-m.png';
     public static readonly SPRITE_FILE_ROAD_X = 'road-x.png';
@@ -34,6 +39,9 @@ export default class Tile extends ViewableObject {
     private _y: number;
     private _cell: Cell;
     private _spritesheet: LoaderResource;
+    private _container: Container;
+    private _layers: Map<TileGraphicLayer, string>;
+    private _debugContainer: Container;
 
     constructor(grid: Grid, x: number, y: number, cell: Cell, spritesheet: LoaderResource) {
         super();
@@ -43,81 +51,102 @@ export default class Tile extends ViewableObject {
         this._y = y;
         this._cell = cell;
         this._spritesheet = spritesheet;
-
-        this.generateGraphics();
+        this._container = new Container();
+        this._layers = new Map<TileGraphicLayer, string>();
+        this._debugContainer = new Container();
     }
 
     generateGraphics(): void {
-        const tile = new Container(),
-            name = `${this._x},${this._y}`;
+        const name = `${this._x},${this._y}`;
 
+        this._container.addChild(new Sprite());
+        this._container.addChild(new Sprite());
+        this._container.addChild(new Sprite());
+        this._container.addChild(new Sprite());
+        this._container.addChild(new Sprite());
+        this._layers
+            .set(TileGraphicLayer.Terrain, Tile.SPRITE_BLANK)
+            .set(TileGraphicLayer.Zone, Tile.SPRITE_BLANK)
+            .set(TileGraphicLayer.Structure, Tile.SPRITE_BLANK)
+            .set(TileGraphicLayer.Grid, Tile.SPRITE_BLANK)
+            .set(TileGraphicLayer.Highlight, Tile.SPRITE_BLANK);
+
+        this._container.x = this._x;
+        this._container.y = this._y;
+        this._container.scale.set(Game.SPRITE_SCALE);
+        this._container.interactive = true;
+        this._container.name = name;
+
+        // Create the debug graphic
+        this._debugContainer.addChild(
+            new Text('', {
+                fontFamily: 'Arial',
+                fontSize: 12,
+                fill: 0xff0000,
+                align: 'center',
+            }),
+        );
+        this._debugContainer.x = this._x;
+        this._debugContainer.y = this._y;
+    }
+
+    updateGraphics(): void {
+        // Set the terrain
         if (this._cell.terrainType === Cell.TERRAIN_TYPE_GRASS) {
-            const grassGraphic = new Sprite(this._spritesheet.textures['grass.png']);
-            grassGraphic.x = this._x;
-            grassGraphic.y = this._y;
-            grassGraphic.scale.set(Game.SPRITE_SCALE);
-            grassGraphic.interactive = true;
-            grassGraphic.name = name;
-            tile.addChild(grassGraphic);
+            if (this._layers.get(TileGraphicLayer.Terrain) !== Tile.SPRITE_FILE_GRASS) {
+                this.setLayerSprite(TileGraphicLayer.Terrain, Tile.SPRITE_FILE_GRASS);
+            }
+        }
 
-            if (this._cell.structureType === Cell.STRUCTURE_TYPE_EMPTY) {
-                if (this._cell.zoneType === Cell.ZONE_TYPE_RESIDENTIAL) {
-                    // Add the zone sprite
-                    const zoneGraphic = new Sprite(this._spritesheet.textures['zone-r.png']);
-                    zoneGraphic.x = this._x;
-                    zoneGraphic.y = this._y;
-                    zoneGraphic.scale.set(Game.SPRITE_SCALE);
-                    zoneGraphic.interactive = true;
-                    tile.addChild(zoneGraphic);
+        // Set the zone
+        if (this._cell.structureType === Cell.STRUCTURE_TYPE_EMPTY) {
+            if (this._cell.zoneType === Cell.ZONE_TYPE_RESIDENTIAL) {
+                if (this._layers.get(TileGraphicLayer.Zone) !== Tile.SPRITE_FILE_ZONE_RESIDENTIAL) {
+                    this.setLayerSprite(TileGraphicLayer.Zone, Tile.SPRITE_FILE_ZONE_RESIDENTIAL);
                 }
             }
+        }
 
-            if (this._cell.structureType === Cell.STRUCTURE_TYPE_ROAD) {
-                const roadFilename = this.determineRoadOrientation();
-
-                const roadGraphic = new Sprite(this._spritesheet.textures[roadFilename]);
-                roadGraphic.x = this._x;
-                roadGraphic.y = this._y;
-                roadGraphic.scale.set(Game.SPRITE_SCALE);
-                roadGraphic.interactive = true;
-                roadGraphic.name = name;
-                tile.addChild(roadGraphic);
-            } else if (this._cell.structureType === Cell.STRUCTURE_TYPE_HOUSE) {
-                const houseGraphic = new Sprite(this._spritesheet.textures['house1.png']);
-                houseGraphic.x = this._x;
-                houseGraphic.y = this._y;
-                houseGraphic.scale.set(Game.SPRITE_SCALE);
-                houseGraphic.interactive = true;
-                houseGraphic.name = name;
-                tile.addChild(houseGraphic);
+        // Set the structure
+        if (this._cell.structureType === Cell.STRUCTURE_TYPE_ROAD) {
+            const roadFilename = this.determineRoadOrientation();
+            if (this._layers.get(TileGraphicLayer.Structure) !== roadFilename) {
+                this.setLayerSprite(TileGraphicLayer.Structure, roadFilename);
             }
+        } else if (this._cell.structureType === Cell.STRUCTURE_TYPE_HOUSE) {
+            if (this._layers.get(TileGraphicLayer.Structure) !== Tile.SPRITE_FILE_STRUCTURE_HOUSE_1) {
+                this.setLayerSprite(TileGraphicLayer.Structure, Tile.SPRITE_FILE_STRUCTURE_HOUSE_1);
+            }
+        }
 
-            // Add the grid sprite
-            const gridGraphic = new Sprite(this._spritesheet.textures['grid.png']);
-            gridGraphic.x = this._x;
-            gridGraphic.y = this._y;
-            gridGraphic.scale.set(Game.SPRITE_SCALE);
-            gridGraphic.interactive = false;
-            gridGraphic.name = name;
-            tile.addChild(gridGraphic);
+        // Set the grid
+        if (this._layers.get(TileGraphicLayer.Grid) !== Tile.SPRITE_FILE_GRID) {
+            this.setLayerSprite(TileGraphicLayer.Grid, Tile.SPRITE_FILE_GRID);
         }
 
         // If this tile is part of a mouse-drag event, then add an overlay
         if (this._grid.isTileInDrag(this)) {
-            const dragGraphic = new Sprite(this._spritesheet.textures[Tile.SPRITE_FILE_DRAG]);
-            dragGraphic.x = this._x;
-            dragGraphic.y = this._y;
-            dragGraphic.scale.set(Game.SPRITE_SCALE);
-            dragGraphic.interactive = false;
-            tile.addChild(dragGraphic);
+            if (this._layers.get(TileGraphicLayer.Highlight) !== Tile.SPRITE_FILE_DRAG) {
+                this.setLayerSprite(TileGraphicLayer.Highlight, Tile.SPRITE_FILE_DRAG);
+            }
+        } else {
+            if (this._layers.get(TileGraphicLayer.Highlight) !== Tile.SPRITE_BLANK) {
+                this.setLayerSprite(TileGraphicLayer.Highlight, Tile.SPRITE_BLANK);
+            }
         }
 
-        if(this._grid.game.debug){
-            const text = ViewableObject.generateText(this._cell.id, 12, MenuItem.TEXT_COLOR, this._x + 5, this._y + 5);
-            tile.addChild(text);
+        const debugText = this._debugContainer.getChildAt(0) as Text;
+        if (this._grid.game.debug) {
+            debugText.text = String(this._cell.id);
+        } else {
+            debugText.text = '';
         }
+    }
 
-        this._graphics = [tile];
+    setLayerSprite(layer, spriteFile): void {
+        const sprite = this._container.getChildAt(layer) as Sprite;
+        sprite.texture = this._spritesheet.textures[spriteFile];
+        this._layers.set(layer, spriteFile);
     }
 
     determineRoadOrientation(): string {
@@ -225,5 +254,13 @@ export default class Tile extends ViewableObject {
 
     get cell(): Cell {
         return this._cell;
+    }
+
+    get container(): PIXI.Container {
+        return this._container;
+    }
+
+    get debugContainer(): PIXI.Container {
+        return this._debugContainer;
     }
 }
