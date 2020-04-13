@@ -1,6 +1,7 @@
 import ViewableObject from '../../viewable-object';
 import Menubar from './menubar';
 import MenuItem from './menu-item';
+import { Text, Graphics } from 'pixi.js';
 
 /**
  * Selected by the user to manipulate the game state.
@@ -20,6 +21,8 @@ export default abstract class Menu extends ViewableObject {
     protected _open: boolean;
     protected _label: string;
     protected _items: MenuItem[];
+    private _background: Graphics;
+    private _foreground: Text;
 
     /**
      *
@@ -33,14 +36,12 @@ export default abstract class Menu extends ViewableObject {
         this._open = false;
         this._label = '';
         this._items = [];
-
-        this.generateGraphics();
     }
 
     generateGraphics(): void {
         // Rectangle
         const rectangle = ViewableObject.generateRectangle(
-            4,
+            0,
             Menu.LINE_COLOR,
             1,
             Menu.FILL_COLOR,
@@ -52,12 +53,12 @@ export default abstract class Menu extends ViewableObject {
 
         rectangle.on('mousedown', () => this.onMenuClick());
 
-        this._graphics = [rectangle];
+        this._background = rectangle;
 
         // Text
         const text = ViewableObject.generateText(this._label, 24, Menu.TEXT_COLOR, this._x + 5, this._y + 5);
 
-        this._graphics = this.graphics.concat(text);
+        this._foreground = text;
     }
 
     onMenuClick(): void {
@@ -110,5 +111,13 @@ export default abstract class Menu extends ViewableObject {
 
     set items(value) {
         this._items = value;
+    }
+
+    get background(): PIXI.Graphics {
+        return this._background;
+    }
+
+    get foreground(): PIXI.Text {
+        return this._foreground;
     }
 }

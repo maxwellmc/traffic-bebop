@@ -151,15 +151,14 @@ export default class Game {
 
     drawMenubar(): void {
         for (const menu of this._menubar.menus) {
-            for (const graphic of menu.graphics) {
-                this._stage.addChild(graphic);
-            }
+            menu.generateGraphics();
+            this._stage.addChild(menu.background);
+            this._stage.addChild(menu.foreground);
         }
     }
 
     updateMenubar(): void {
         for (const menu of this._menubar.menus) {
-            Game.replaceGraphics(this._stage, menu);
             // If this menu is open
             if (menu.open) {
                 for (const item of menu.items) {
@@ -201,6 +200,10 @@ export default class Game {
 
     get renderer(): PIXI.Renderer {
         return this._renderer;
+    }
+
+    get stage(): PIXI.Container {
+        return this._stage;
     }
 
     get gameState(): GameState {
