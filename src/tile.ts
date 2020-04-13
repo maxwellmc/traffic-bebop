@@ -15,6 +15,7 @@ export default class Tile extends ViewableObject {
     public static readonly SPRITE_FILE_ZONE_RESIDENTIAL = 'zone-r.png';
     public static readonly SPRITE_FILE_ZONE_COMMERCIAL = 'zone-c.png';
     public static readonly SPRITE_FILE_STRUCTURE_HOUSE_1 = 'house1.png';
+    public static readonly SPRITE_FILE_STRUCTURE_BUSINESS_1 = 'business1.png';
     public static readonly SPRITE_FILE_GRID = 'grid.png';
     public static readonly SPRITE_FILE_DRAG = 'drag.png';
     public static readonly SPRITE_FILE_ROAD_MIDDLE = 'road-m.png';
@@ -121,6 +122,10 @@ export default class Tile extends ViewableObject {
         } else if (this._cell.structureType === Cell.STRUCTURE_TYPE_HOUSE) {
             if (this._layers.get(TileGraphicLayer.Structure) !== Tile.SPRITE_FILE_STRUCTURE_HOUSE_1) {
                 this.setLayerSprite(TileGraphicLayer.Structure, Tile.SPRITE_FILE_STRUCTURE_HOUSE_1);
+            }
+        } else if (this._cell.structureType === Cell.STRUCTURE_TYPE_BUSINESS) {
+            if (this._layers.get(TileGraphicLayer.Structure) !== Tile.SPRITE_FILE_STRUCTURE_BUSINESS_1) {
+                this.setLayerSprite(TileGraphicLayer.Structure, Tile.SPRITE_FILE_STRUCTURE_BUSINESS_1);
             }
         }else{
             if (this._layers.get(TileGraphicLayer.Structure) !== Tile.SPRITE_BLANK) {

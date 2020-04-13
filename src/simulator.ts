@@ -22,6 +22,12 @@ export default class Simulator {
     simulate(): void {
         console.log('simulate');
         const map = this._game.map;
+
+        this.simulateResidences(map);
+        this.simulateBusinesses(map);
+    }
+
+    simulateResidences(map: GameMap): void{
         const emptyResidentialCells = map.findCellsByZoneAndStructure(
             Cell.ZONE_TYPE_RESIDENTIAL,
             Cell.STRUCTURE_TYPE_EMPTY,
@@ -29,13 +35,39 @@ export default class Simulator {
         // Loop through each empty residential zone
         for (const emptyResidentialCell of emptyResidentialCells) {
             // Determine if this cell should be "moved into"
-            if (this.shouldMoveIn(emptyResidentialCell)) {
+            if (this.shouldResidentMoveIn(emptyResidentialCell)) {
                 emptyResidentialCell.structureType = Cell.STRUCTURE_TYPE_HOUSE;
             }
         }
     }
 
-    shouldMoveIn(cell: Cell): boolean {
+    simulateBusinesses(map: GameMap): void{
+        const emptyCommercialCells = map.findCellsByZoneAndStructure(
+            Cell.ZONE_TYPE_COMMERCIAL,
+            Cell.STRUCTURE_TYPE_EMPTY,
+        );
+        // Loop through each empty commercial zone
+        for (const emptyCommercialCell of emptyCommercialCells) {
+            // Determine if this cell should be "moved into"
+            if (this.shouldBusinessMoveIn(emptyCommercialCell)) {
+                emptyCommercialCell.structureType = Cell.STRUCTURE_TYPE_BUSINESS;
+            }
+        }
+    }
+
+    shouldResidentMoveIn(cell: Cell): boolean {
+        // Only even consider moving in if we're within so many tiles of a road
+        const nearestRoadDistance = this.calculateNearestRoadDistance(cell, this._game.map);
+        if (nearestRoadDistance < Simulator.MOVE_IN_ROAD_CUTOFF) {
+            let chance = Simulator.MOVE_IN_CHANCE;
+            // Decrease our chances by how far we are from a road (i.e. the further, the worse)
+            chance *= nearestRoadDistance ** Simulator.MOVE_IN_ROAD_EXPONENTIATION_OPERAND;
+            return Simulator.randomInt(chance) === 0;
+        }
+        return false;
+    }
+
+    shouldBusinessMoveIn(cell: Cell): boolean {
         // Only even consider moving in if we're within so many tiles of a road
         const nearestRoadDistance = this.calculateNearestRoadDistance(cell, this._game.map);
         if (nearestRoadDistance < Simulator.MOVE_IN_ROAD_CUTOFF) {

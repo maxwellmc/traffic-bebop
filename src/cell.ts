@@ -13,6 +13,7 @@ export default class Cell {
     public static readonly STRUCTURE_TYPE_EMPTY = 0;
     public static readonly STRUCTURE_TYPE_ROAD = 1;
     public static readonly STRUCTURE_TYPE_HOUSE = 2;
+    public static readonly STRUCTURE_TYPE_BUSINESS = 3;
 
     /* Class Properties --------------------------------------------------------------------------------------------- */
     private _map: GameMap;
