@@ -3,12 +3,14 @@ import Toolbar from './nonworld/toolbar';
 import Grid from './grid';
 import HUD from './nonworld/hud';
 import GameState from './game-state';
-import Map from './map';
+import GameMap from './gameMap';
 import Menubar from './nonworld/menu/menubar';
 import * as EventEmitter from 'eventemitter3';
 import Tool from './nonworld/tool';
 import ViewableObject from './viewable-object';
 import Simulator from './simulator';
+import {Pathfinder} from './nonworld/pathfinding';
+import Cell from './cell';
 
 /**
  * Manages the Pixi Application, the game loop, and calling the draw-ers.
@@ -23,12 +25,13 @@ export default class Game {
     public static readonly EVENT_SPEED_SET = 'speed.set';
 
     /* Class Properties --------------------------------------------------------------------------------------------- */
+    private _debug: boolean;
     private _ticker: PIXI.Ticker;
     private _renderer: PIXI.Renderer;
     private _stage: PIXI.Container;
     private _gameState: GameState;
     private _eventEmitter: EventEmitter;
-    private _map: Map;
+    private _map: GameMap;
     private _simulator: Simulator;
     private _spritesheet: PIXI.LoaderResource;
     private _grid: Grid;
@@ -38,6 +41,9 @@ export default class Game {
     private _hud: HUD;
 
     constructor() {
+
+        this._debug = false;
+
         // Set Pixi settings
         PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 
@@ -52,7 +58,7 @@ export default class Game {
         this._stage = new PIXI.Container();
         this._eventEmitter = new EventEmitter();
         this._gameState = new GameState(this);
-        this._map = new Map();
+        this._map = new GameMap();
         this._simulator = new Simulator(this);
         this._grid = new Grid(this, Game.APP_WIDTH, Game.APP_HEIGHT);
         this._menubar = new Menubar(this);
@@ -199,6 +205,14 @@ export default class Game {
 
     /* Getters & Setters -------------------------------------------------------------------------------------------- */
 
+    get debug(): boolean {
+        return this._debug;
+    }
+
+    set debug(value: boolean) {
+        this._debug = value;
+    }
+
     get renderer(): PIXI.Renderer {
         return this._renderer;
     }
@@ -211,7 +225,7 @@ export default class Game {
         return this._eventEmitter;
     }
 
-    get map(): Map {
+    get map(): GameMap {
         return this._map;
     }
 

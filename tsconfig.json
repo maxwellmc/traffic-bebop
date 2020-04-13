@@ -5,7 +5,14 @@
     "allowJs": true,
     "module": "es6",
     "target": "es5",
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "lib": [
+      "dom",
+      "es5",
+      "scripthost",
+      "es6"
+    ],
+    "downlevelIteration": true
   },
   "include": [
     "./src/**/*"

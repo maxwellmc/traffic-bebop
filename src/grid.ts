@@ -3,11 +3,11 @@ import Tile from './tile';
 import Toolbar from './nonworld/toolbar';
 import Game from './game';
 import Cell from './cell';
-import Map from './map';
+import GameMap from './gameMap';
 import { Container, Point, DisplayObject } from 'pixi.js';
 
 /**
- * Visually represents the Map, as translated to an arrangement of
+ * Visually represents the GameMap, as translated to an arrangement of
  * viewable Tiles.
  */
 export default class Grid extends ViewableObject {
@@ -45,8 +45,8 @@ export default class Grid extends ViewableObject {
         this._draggingTiles = [];
 
         // Center the grid in the app
-        this._width = Map.MAP_COLS * (Grid.TILE_WIDTH * Game.SPRITE_SCALE);
-        this._height = Map.MAP_ROWS * (Grid.TILE_HEIGHT * Game.SPRITE_SCALE);
+        this._width = GameMap.MAP_COLS * (Grid.TILE_WIDTH * Game.SPRITE_SCALE);
+        this._height = GameMap.MAP_ROWS * (Grid.TILE_HEIGHT * Game.SPRITE_SCALE);
         this._grid.x = appWidth / 2 - this._width / 2;
         this._grid.y = appHeight / 2 - this._height / 2;
 
@@ -69,8 +69,8 @@ export default class Grid extends ViewableObject {
         let x = this._startingX;
         let y = this._startingY;
 
-        for (let row = 0; row < Map.MAP_ROWS; row++) {
-            for (let col = 0; col < Map.MAP_COLS; col++) {
+        for (let row = 0; row < GameMap.MAP_ROWS; row++) {
+            for (let col = 0; col < GameMap.MAP_COLS; col++) {
                 // Find the Cell for this row/column combination
                 const cell = this._game.map.getCellByRowColumn(row, col);
 
@@ -267,6 +267,14 @@ export default class Grid extends ViewableObject {
     }
 
     /* Getters & Setters -------------------------------------------------------------------------------------------- */
+
+    get game(): Game {
+        return this._game;
+    }
+
+    set game(value: Game) {
+        this._game = value;
+    }
 
     get grid(): PIXI.Container {
         return this._grid;

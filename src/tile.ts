@@ -3,6 +3,7 @@ import Grid from './grid';
 import Cell from './cell';
 import { LoaderResource, Sprite, Container } from 'pixi.js';
 import Game from './game';
+import MenuItem from './nonworld/menu/menu-item';
 
 /**
  * A cell within the world.
@@ -109,6 +110,11 @@ export default class Tile extends ViewableObject {
             dragGraphic.scale.set(Game.SPRITE_SCALE);
             dragGraphic.interactive = false;
             tile.addChild(dragGraphic);
+        }
+
+        if(this._grid.game.debug){
+            const text = ViewableObject.generateText(this._cell.id, 12, MenuItem.TEXT_COLOR, this._x + 5, this._y + 5);
+            tile.addChild(text);
         }
 
         this._graphics = [tile];

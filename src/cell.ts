@@ -1,8 +1,8 @@
 /**
- * Represents a location on a Map, with a terrain type and optionally the game
+ * Represents a location on a GameMap, with a terrain type and optionally the game
  * piece that it is hosting.
  */
-import Map from './map';
+import GameMap from './gameMap';
 
 export default class Cell {
     /* Constants ---------------------------------------------------------------------------------------------------- */
@@ -14,15 +14,17 @@ export default class Cell {
     public static readonly STRUCTURE_TYPE_HOUSE = 2;
 
     /* Class Properties --------------------------------------------------------------------------------------------- */
-    private _map: Map;
+    private _map: GameMap;
+    private _id: number;
     private _row: number;
     private _col: number;
     private _terrainType: number;
     private _zoneType: number;
     private _structureType: number;
 
-    constructor(map: Map, row: number, col: number, terrainType: number) {
+    constructor(map: GameMap, id: number, row: number, col: number, terrainType: number) {
         this._map = map;
+        this._id = id;
         this._row = row;
         this._col = col;
         this._terrainType = terrainType;
@@ -62,14 +64,31 @@ export default class Cell {
         return this.getBottomNeighbor().structureType === structureType;
     }
 
+    doesAnyNeighborHaveStructure(structureType: number): boolean {
+        return (
+            this.doesLeftNeighborHaveStructure(structureType) ||
+            this.doesRightNeighborHaveStructure(structureType) ||
+            this.doesTopNeighborHaveStructure(structureType) ||
+            this.doesBottomNeighborHaveStructure(structureType)
+        );
+    }
+
     /* Getters & Setters -------------------------------------------------------------------------------------------- */
 
-    get map(): Map {
+    get map(): GameMap {
         return this._map;
     }
 
-    set map(value: Map) {
+    set map(value: GameMap) {
         this._map = value;
+    }
+
+    get id(): number {
+        return this._id;
+    }
+
+    set id(value: number) {
+        this._id = value;
     }
 
     get row(): number {
