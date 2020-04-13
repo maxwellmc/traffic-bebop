@@ -15,6 +15,7 @@ export default class Toolbar {
     public static readonly ROAD_TOOL = 1;
     public static readonly BULLDOZE_TOOL = 2;
     public static readonly RESIDENTIAL_ZONE_TOOL = 3;
+    public static readonly COMMERCIAL_ZONE_TOOL = 4;
     public static readonly TOOLS = [
         {
             id: Toolbar.SELECT_TOOL,
@@ -31,6 +32,10 @@ export default class Toolbar {
         {
             id: Toolbar.RESIDENTIAL_ZONE_TOOL,
             label: 'Residential',
+        },
+        {
+            id: Toolbar.COMMERCIAL_ZONE_TOOL,
+            label: 'Commercial',
         },
     ];
 

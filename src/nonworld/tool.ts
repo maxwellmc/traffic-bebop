@@ -62,6 +62,9 @@ export default class Tool {
             case Toolbar.RESIDENTIAL_ZONE_TOOL:
                 spriteFilename = 'tool-residential.png';
                 break;
+            case Toolbar.COMMERCIAL_ZONE_TOOL:
+                spriteFilename = 'tool-commercial.png';
+                break;
         }
 
         const toolGraphic = new Sprite(this._spritesheet.textures[spriteFilename]);

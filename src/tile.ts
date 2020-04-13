@@ -13,6 +13,7 @@ export default class Tile extends ViewableObject {
     public static readonly SPRITE_BLANK = '';
     public static readonly SPRITE_FILE_GRASS = 'grass.png';
     public static readonly SPRITE_FILE_ZONE_RESIDENTIAL = 'zone-r.png';
+    public static readonly SPRITE_FILE_ZONE_COMMERCIAL = 'zone-c.png';
     public static readonly SPRITE_FILE_STRUCTURE_HOUSE_1 = 'house1.png';
     public static readonly SPRITE_FILE_GRID = 'grid.png';
     public static readonly SPRITE_FILE_DRAG = 'drag.png';
@@ -103,6 +104,10 @@ export default class Tile extends ViewableObject {
             if (this._cell.zoneType === Cell.ZONE_TYPE_RESIDENTIAL) {
                 if (this._layers.get(TileGraphicLayer.Zone) !== Tile.SPRITE_FILE_ZONE_RESIDENTIAL) {
                     this.setLayerSprite(TileGraphicLayer.Zone, Tile.SPRITE_FILE_ZONE_RESIDENTIAL);
+                }
+            } else if (this._cell.zoneType === Cell.ZONE_TYPE_COMMERCIAL){
+                if (this._layers.get(TileGraphicLayer.Zone) !== Tile.SPRITE_FILE_ZONE_COMMERCIAL) {
+                    this.setLayerSprite(TileGraphicLayer.Zone, Tile.SPRITE_FILE_ZONE_COMMERCIAL);
                 }
             }
         }

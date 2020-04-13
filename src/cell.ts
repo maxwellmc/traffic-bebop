@@ -9,6 +9,7 @@ export default class Cell {
     public static readonly TERRAIN_TYPE_GRASS = 0;
     public static readonly ZONE_TYPE_UNZONED = 0;
     public static readonly ZONE_TYPE_RESIDENTIAL = 1;
+    public static readonly ZONE_TYPE_COMMERCIAL = 2;
     public static readonly STRUCTURE_TYPE_EMPTY = 0;
     public static readonly STRUCTURE_TYPE_ROAD = 1;
     public static readonly STRUCTURE_TYPE_HOUSE = 2;

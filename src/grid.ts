@@ -116,6 +116,11 @@ export default class Grid extends ViewableObject {
                 tile.cell.zoneType = Cell.ZONE_TYPE_RESIDENTIAL;
                 this._game.eventEmitter.emit(Game.EVENT_MONEY_DEDUCTED, -100);
                 break;
+            case Toolbar.COMMERCIAL_ZONE_TOOL:
+                tile.cell.terrainType = Cell.TERRAIN_TYPE_GRASS;
+                tile.cell.zoneType = Cell.ZONE_TYPE_COMMERCIAL;
+                this._game.eventEmitter.emit(Game.EVENT_MONEY_DEDUCTED, -100);
+                break;
         }
     }
 
@@ -168,6 +173,7 @@ export default class Grid extends ViewableObject {
                 }
             } else if (
                 this._game.toolInUse.id === Toolbar.RESIDENTIAL_ZONE_TOOL ||
+                this._game.toolInUse.id === Toolbar.COMMERCIAL_ZONE_TOOL ||
                 this._game.toolInUse.id === Toolbar.BULLDOZE_TOOL
             ) {
                 // We're dragging with a zoning or bulldozing tool
