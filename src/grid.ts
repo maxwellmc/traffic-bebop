@@ -166,8 +166,11 @@ export default class Grid extends ViewableObject {
                 if (draggingTiles) {
                     this._draggingTiles = draggingTiles;
                 }
-            } else if (this._game.toolInUse.id === Toolbar.RESIDENTIAL_ZONE_TOOL) {
-                // We're dragging with a zoning tool
+            } else if (
+                this._game.toolInUse.id === Toolbar.RESIDENTIAL_ZONE_TOOL ||
+                this._game.toolInUse.id === Toolbar.BULLDOZE_TOOL
+            ) {
+                // We're dragging with a zoning or bulldozing tool
                 const draggingTiles = this.findDraggingTilesForRectangle();
                 if (draggingTiles) {
                     this._draggingTiles = draggingTiles;
