@@ -57,6 +57,7 @@ export enum MiscSpriteFiles {
     Blank = '',
     Grid = 'grid.png',
     Drag = 'drag.png',
+    Vehicle = 'vehicle.png',
 }
 
 /**
@@ -176,6 +177,11 @@ export default class Tile extends ViewableObject {
         if (this._grid.isTileInDrag(this)) {
             if (this._layers.get(TileGraphicLayer.Highlight) !== MiscSpriteFiles.Drag) {
                 this.setLayerSprite(TileGraphicLayer.Highlight, MiscSpriteFiles.Drag);
+            }
+        }else if(this._cell.vehicle){
+            // This Cell has a vehicle on it
+            if (this._layers.get(TileGraphicLayer.Highlight) !== MiscSpriteFiles.Vehicle) {
+                this.setLayerSprite(TileGraphicLayer.Highlight, MiscSpriteFiles.Vehicle);
             }
         } else {
             if (this._layers.get(TileGraphicLayer.Highlight) !== MiscSpriteFiles.Blank) {

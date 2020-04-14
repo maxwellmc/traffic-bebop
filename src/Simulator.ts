@@ -19,6 +19,8 @@
 import Cell, { StructureTypes, ZoneTypes } from './Cell';
 import GameMap from './GameMap';
 import { Pathfinder } from './Pathfinding';
+import Game from './Game';
+import TravelTrip from './TravelTrip';
 
 /**
  * Handles the changes to the Map each tick, based on set logic and varying amounts of randomness.
@@ -31,7 +33,7 @@ export default class Simulator {
     public static readonly MOVE_IN_ROAD_EXPONENTIATION_OPERAND = 4;
 
     /* Class Properties --------------------------------------------------------------------------------------------- */
-    private _game;
+    private _game: Game;
 
     constructor(game) {
         this._game = game;
@@ -46,8 +48,13 @@ export default class Simulator {
         console.log('simulate');
         const map = this._game.map;
 
-        this.simulateResidences(map);
-        this.simulateBusinesses(map);
+        // Simulate real estate
+        this.simulateResidentialRealEstate(map);
+        this.simulateCommercialRealEstate(map);
+
+        // Simulate traffic
+        this.simulateResidentialTraffic(map);
+        this.advanceTravelTrips();
     }
 
     /**
@@ -55,7 +62,7 @@ export default class Simulator {
      *
      * @param map
      */
-    simulateResidences(map: GameMap): void {
+    simulateResidentialRealEstate(map: GameMap): void {
         const emptyResidentialCells = map.findCellsByZoneAndStructure(ZoneTypes.Residential, StructureTypes.Empty);
         // Loop through each empty residential zone
         for (const emptyResidentialCell of emptyResidentialCells) {
@@ -71,13 +78,59 @@ export default class Simulator {
      *
      * @param map
      */
-    simulateBusinesses(map: GameMap): void {
+    simulateCommercialRealEstate(map: GameMap): void {
         const emptyCommercialCells = map.findCellsByZoneAndStructure(ZoneTypes.Commercial, StructureTypes.Empty);
         // Loop through each empty commercial zone
         for (const emptyCommercialCell of emptyCommercialCells) {
             // Determine if this cell should be "moved into"
             if (this.shouldBusinessMoveIn(emptyCommercialCell)) {
                 emptyCommercialCell.structureType = StructureTypes.Business;
+            }
+        }
+    }
+
+    simulateResidentialTraffic(map: GameMap): void {
+        const houseCells = map.findCellsByStructure(StructureTypes.House);
+        // Loop through each occupied residential Cell
+        for (const houseCell of houseCells) {
+            // Determine if this resident should travel to another lot
+            if (this.shouldResidentTravel(houseCell)) {
+                console.log('shouldtravel');
+                // Find a random commercial destination
+                const destinationCell = this._game.map.findRandomCellByZoneAndStructure(
+                    ZoneTypes.Commercial,
+                    StructureTypes.Business,
+                );
+                if (destinationCell) {
+                    this.startTravelTrip(houseCell, destinationCell);
+                }
+            }
+        }
+    }
+
+    startTravelTrip(startingCell: Cell, destinationCell: Cell): void {
+        console.log('startTravelTrip');
+        const graph = Pathfinder.generateGraphFromMap(this._game.map, true);
+        const path = Pathfinder.findShortestPathWithOneDestinationWithDijkstra(
+            graph,
+            startingCell.id,
+            destinationCell.id,
+        );
+        const travelTrip = new TravelTrip(this._game.map, startingCell.id, destinationCell.id, path, startingCell.id);
+        this._game.gameState.travelTrips.add(travelTrip);
+        console.log('path', path);
+    }
+
+    advanceTravelTrips(): void {
+        if (!this._game.gameState.travelTrips.size) {
+            return;
+        }
+
+        console.log('advanceTravelTrips');
+        for (const trip of this._game.gameState.travelTrips) {
+            if (!trip.advance()) {
+                // If advancing returned false, then that was the end of this trip
+                this._game.gameState.travelTrips.delete(trip);
             }
         }
     }
@@ -116,6 +169,11 @@ export default class Simulator {
             return Simulator.randomInt(chance) === 0;
         }
         return false;
+    }
+
+    shouldResidentTravel(cell: Cell): boolean {
+        // TODO
+        return Simulator.randomInt(50) === 0;
     }
 
     /* -------------------------------------------------------------------------------------------------------------- */

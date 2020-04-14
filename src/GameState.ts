@@ -18,6 +18,7 @@
 
 import Game, { GameEvents } from './Game';
 import { Speeds, SpeedUtil } from './Speed';
+import TravelTrip from './TravelTrip';
 
 export enum GameStateEvents {
     MoneyChanged = 'game-state.money',
@@ -27,6 +28,7 @@ export enum GameStateEvents {
 
 /**
  * Represents the properties of the game as they exist right now.
+ * When deciding what belongs here, consider that this should represent what would go into a hypothetical "save file".
  */
 export default class GameState {
     /* Constants ---------------------------------------------------------------------------------------------------- */
@@ -40,6 +42,7 @@ export default class GameState {
     private _time: number;
     private _speed: number;
     private _lastSimulationTickTime: number;
+    private _travelTrips: Set<TravelTrip>;
 
     constructor(game: Game) {
         this._game = game;
@@ -47,6 +50,7 @@ export default class GameState {
         this._time = 0;
         this._speed = Speeds.Paused;
         this._lastSimulationTickTime = 0;
+        this._travelTrips = new Set<TravelTrip>();
 
         // Listen for events that should update the state
         this._game.eventEmitter.on(GameEvents.MoneyDeducted, (args) => this.onMoneyUpdated(args));
@@ -63,6 +67,7 @@ export default class GameState {
         // We scale the real-life milliseconds based on the current game speed, then set that as the game time
         this._time += milliseconds * SpeedUtil.getMultiplier(this._speed);
         // If the game day has now increased since the last increase
+        // FIXME: What happens if more than 1 game day passed in between ticks?
         if (this._time - this._lastSimulationTickTime > GameState.GAME_DAYS_IN_MILLISECONDS) {
             // Set the "last simulation tick time" to now
             this._lastSimulationTickTime = this._time;
@@ -110,5 +115,13 @@ export default class GameState {
 
     set speed(value: number) {
         this._speed = value;
+    }
+
+    get travelTrips(): Set<TravelTrip> {
+        return this._travelTrips;
+    }
+
+    set travelTrips(value: Set<TravelTrip>) {
+        this._travelTrips = value;
     }
 }

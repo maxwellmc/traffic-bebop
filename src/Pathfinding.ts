@@ -17,6 +17,7 @@
  */
 
 import GameMap from './GameMap';
+import { StructureTypes } from './Cell';
 
 /**
  * The file houses multiple classes used for the pathfinding algorithms.
@@ -113,6 +114,41 @@ export class PriorityQueue {
  */
 export class Pathfinder {
     /**
+     * An implementation of Dijkstra's algorithm. This simply processes the Graph per the algorithm.
+     * What is done with the processed queue, backtrace, etc. should be handled by another function.
+     *
+     * @param graph
+     * @param startNode
+     * @param times
+     * @param backtrace
+     * @param priorityQueue
+     */
+    static processDijkstra(graph: Graph, startNode: number, times, backtrace, priorityQueue): void {
+        times.set(startNode, 0);
+
+        graph.nodes.forEach((node) => {
+            if (node !== startNode) {
+                times.set(node, Infinity);
+            }
+        });
+
+        priorityQueue.enqueue(new PriorityQueueItem(startNode, 0));
+
+        while (!priorityQueue.isEmpty()) {
+            const shortestStep = priorityQueue.dequeue();
+            const currentNode = shortestStep.element;
+            for (const neighbor of graph.adjacencyList[currentNode]) {
+                const time = times.get(currentNode) + neighbor.weight;
+                if (time < times.get(neighbor.node)) {
+                    times.set(neighbor.node, time);
+                    backtrace.set(neighbor.node, currentNode);
+                    priorityQueue.enqueue(new PriorityQueueItem(neighbor.node, time));
+                }
+            }
+        }
+    }
+
+    /**
      * An implementation of Dijkstra's algorithm, with modifications for the fact that there are multiple
      * destinations, and we just want the time to the closest destination.
      *
@@ -125,32 +161,11 @@ export class Pathfinder {
         startNode: number,
         endNodes: number[],
     ): number {
-        const times: Map<number, number> = new Map();
-        const backtrace: Map<number, number> = new Map();
-        const pq: PriorityQueue = new PriorityQueue();
+        const times: Map<number, number> = new Map(),
+            backtrace: Map<number, number> = new Map(),
+            priorityQueue: PriorityQueue = new PriorityQueue();
 
-        times.set(startNode, 0);
-
-        graph.nodes.forEach((node) => {
-            if (node !== startNode) {
-                times.set(node, Infinity);
-            }
-        });
-
-        pq.enqueue(new PriorityQueueItem(startNode, 0));
-
-        while (!pq.isEmpty()) {
-            const shortestStep = pq.dequeue();
-            const currentNode = shortestStep.element;
-            for (const neighbor of graph.adjacencyList[currentNode]) {
-                const time = times.get(currentNode) + neighbor.weight;
-                if (time < times.get(neighbor.node)) {
-                    times.set(neighbor.node, time);
-                    backtrace.set(neighbor.node, currentNode);
-                    pq.enqueue(new PriorityQueueItem(neighbor.node, time));
-                }
-            }
-        }
+        Pathfinder.processDijkstra(graph, startNode, times, backtrace, priorityQueue);
 
         let shortestTime = Infinity;
         // Loop through each node that's considered a destination
@@ -162,6 +177,16 @@ export class Pathfinder {
         }
 
         return shortestTime;
+    }
+
+    static findShortestPathWithOneDestinationWithDijkstra(graph: Graph, startNode: number, endNode: number): number[] {
+        const times: Map<number, number> = new Map(),
+            backtrace: Map<number, number> = new Map(),
+            priorityQueue: PriorityQueue = new PriorityQueue();
+
+        Pathfinder.processDijkstra(graph, startNode, times, backtrace, priorityQueue);
+
+        return Pathfinder.getPathOfEndNode(startNode, endNode, backtrace);
     }
 
     /**
@@ -186,8 +211,9 @@ export class Pathfinder {
      * Given a GameMap full of Cells, this converts it to a Graph full of nodes and edges.
      *
      * @param gameMap
+     * @param preferRoads
      */
-    static generateGraphFromMap(gameMap: GameMap): Graph {
+    static generateGraphFromMap(gameMap: GameMap, preferRoads = false): Graph {
         const graph = new Graph();
 
         // Add all the nodes
@@ -201,19 +227,28 @@ export class Pathfinder {
         // Add all the edges to the nodes
         for (const row of gameMap.map) {
             for (const cell of row) {
+                const leftNeighbor = cell.getLeftNeighbor(),
+                    rightNeighbor = cell.getRightNeighbor(),
+                    topNeighbor = cell.getTopNeighbor(),
+                    bottomNeighbor = cell.getBottomNeighbor();
+
+                let weight;
                 // Add an edge for each neighboring Cell (to the left, to the right, above, and below)
-                if (cell.getLeftNeighbor()) {
-                    // Each edge has the same weight of 1 because this is a grid
-                    graph.addEdge(cell.id, cell.getLeftNeighbor().id, 1);
+                if (leftNeighbor) {
+                    weight = preferRoads ? (leftNeighbor.structureType === StructureTypes.Road ? 1 : 500) : 1;
+                    graph.addEdge(cell.id, leftNeighbor.id, weight);
                 }
-                if (cell.getRightNeighbor()) {
-                    graph.addEdge(cell.id, cell.getRightNeighbor().id, 1);
+                if (rightNeighbor) {
+                    weight = preferRoads ? (rightNeighbor.structureType === StructureTypes.Road ? 1 : 500) : 1;
+                    graph.addEdge(cell.id, rightNeighbor.id, weight);
                 }
-                if (cell.getTopNeighbor()) {
-                    graph.addEdge(cell.id, cell.getTopNeighbor().id, 1);
+                if (topNeighbor) {
+                    weight = preferRoads ? (topNeighbor.structureType === StructureTypes.Road ? 1 : 500) : 1;
+                    graph.addEdge(cell.id, topNeighbor.id, weight);
                 }
-                if (cell.getBottomNeighbor()) {
-                    graph.addEdge(cell.id, cell.getBottomNeighbor().id, 1);
+                if (bottomNeighbor) {
+                    weight = preferRoads ? (bottomNeighbor.structureType === StructureTypes.Road ? 1 : 500) : 1;
+                    graph.addEdge(cell.id, bottomNeighbor.id, weight);
                 }
             }
         }

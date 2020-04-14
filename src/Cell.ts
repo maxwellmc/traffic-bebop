@@ -49,6 +49,7 @@ export default class Cell {
     private _terrainType: number;
     private _zoneType: number;
     private _structureType: number;
+    private _vehicle: boolean;
 
     constructor(map: GameMap, id: number, row: number, col: number, terrainType: number) {
         this._map = map;
@@ -58,6 +59,7 @@ export default class Cell {
         this._terrainType = terrainType;
         this._zoneType = ZoneTypes.Unzoned;
         this._structureType = StructureTypes.Empty;
+        this._vehicle = false;
     }
 
     getLeftNeighbor(): Cell | null {
@@ -157,5 +159,13 @@ export default class Cell {
 
     set structureType(value: number) {
         this._structureType = value;
+    }
+
+    get vehicle(): boolean {
+        return this._vehicle;
+    }
+
+    set vehicle(value: boolean) {
+        this._vehicle = value;
     }
 }

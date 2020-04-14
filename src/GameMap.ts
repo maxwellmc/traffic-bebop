@@ -17,6 +17,7 @@
  */
 
 import Cell, { StructureTypes, TerrainTypes, ZoneTypes } from './Cell';
+import Simulator from './Simulator';
 
 /**
  * Represents the (not necessarily viewable) arrangement of cells in terms of rows and columns.
@@ -57,6 +58,18 @@ export default class GameMap {
         return null;
     }
 
+    getCellByID(id: number): Cell {
+        for (let row = 0; row < GameMap.ROWS; row++) {
+            for (let col = 0; col < GameMap.COLS; col++) {
+                const cell = this.getCellByRowColumn(row, col);
+                if(cell.id === id){
+                    return cell;
+                }
+            }
+        }
+        return null;
+    }
+
     /**
      * Finds all Cells with the provided structure type.
      *
@@ -92,6 +105,11 @@ export default class GameMap {
             }
         }
         return matchingCells;
+    }
+
+    findRandomCellByZoneAndStructure(zoneType: ZoneTypes, structureType: StructureTypes): Cell {
+        const possibleCells = this.findCellsByZoneAndStructure(zoneType, structureType);
+        return possibleCells[Simulator.randomInt(possibleCells.length)];
     }
 
     /* Getters & Setters -------------------------------------------------------------------------------------------- */
