@@ -23,6 +23,6 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "Max McMahon <wmaxmcmahon@gmail.com> (https://MaxwellMcMahon.com)",
   "license": "GPL-3.0-or-later"
 }
