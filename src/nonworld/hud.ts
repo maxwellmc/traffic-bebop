@@ -28,11 +28,11 @@ export default class HUD extends ViewableObject {
         this._startingX = 0;
         this._startingY = appHeight - HUD.HEIGHT;
 
-        this._items = [
-            new HUDItem('Money', String(this._gameState.money)),
-            new HUDItem('Days', String(this._gameState.time)),
-            new HUDItem('Speed', Speeds[this._gameState.speed]),
-        ];
+        this._items = [new HUDItem('Money', ''), new HUDItem('Days', ''), new HUDItem('Speed', '')];
+
+        this.setMoney(this._gameState.money);
+        this.setTime(this._gameState.time);
+        this.setSpeed(this._gameState.speed);
 
         this.generateGraphics();
 
@@ -71,14 +71,28 @@ export default class HUD extends ViewableObject {
     }
 
     onMoneyChanged(amount: number): void {
-        this._items[0].value = String(amount);
+        this.setMoney(amount);
     }
 
     onTimeChanged(milliseconds: number): void {
-        this._items[1].value = String(Math.round(GameState.calculateGameTimeInDays(milliseconds)));
+        this.setTime(milliseconds);
     }
 
     onSpeedChanged(speed): void {
+        this.setSpeed(speed);
+    }
+
+    setMoney(amount: number): void {
+        // Add thousands separators
+        const money = '$' + amount.toLocaleString('en-US');
+        this._items[0].value = money;
+    }
+
+    setTime(milliseconds: number): void {
+        this._items[1].value = String(Math.round(GameState.calculateGameTimeInDays(milliseconds)));
+    }
+
+    setSpeed(speed): void {
         this._items[2].value = Speeds[speed];
     }
 

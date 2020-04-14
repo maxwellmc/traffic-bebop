@@ -2,7 +2,7 @@ import { Text } from 'pixi.js';
 
 export default class HUDItem {
     /* Constants ---------------------------------------------------------------------------------------------------- */
-    public static readonly WIDTH = 100;
+    public static readonly WIDTH = 200;
     public static readonly TEXT_COLOR = 0xf5f5f5;
 
     /* Class Properties --------------------------------------------------------------------------------------------- */
