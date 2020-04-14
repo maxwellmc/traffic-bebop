@@ -20,7 +20,7 @@ import HUDItem from './HUDItem';
 import ViewableObject from '../../ViewableObject';
 import { Graphics } from 'pixi.js';
 import Game from '../../Game';
-import GameState from '../../GameState';
+import GameState, { GameStateEvents } from '../../GameState';
 import { Speeds } from '../../Speed';
 
 /**
@@ -59,13 +59,13 @@ export default class HUD extends ViewableObject {
         this.setGraphicsPositioning();
 
         // Update the money graphic when it changes
-        this._game.eventEmitter.on(GameState.EVENT_MONEY_CHANGED, (args) => this.onMoneyChanged(args));
+        this._game.eventEmitter.on(GameStateEvents.MoneyChanged, (args) => this.onMoneyChanged(args));
 
         // Update the game time graphic when it changes
-        this._game.eventEmitter.on(GameState.EVENT_TIME_CHANGED, (args) => this.onTimeChanged(args));
+        this._game.eventEmitter.on(GameStateEvents.TimeChanged, (args) => this.onTimeChanged(args));
 
         // Update the speed graphic when it changes
-        this._game.eventEmitter.on(GameState.EVENT_SPEED_CHANGED, (args) => this.onSpeedChanged(args));
+        this._game.eventEmitter.on(GameStateEvents.SpeedChanged, (args) => this.onSpeedChanged(args));
     }
 
     generateGraphics(): void {

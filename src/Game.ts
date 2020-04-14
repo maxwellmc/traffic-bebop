@@ -28,6 +28,12 @@ import Tool from './nonworld/tool/Tool';
 import ViewableObject from './ViewableObject';
 import Simulator from './Simulator';
 
+export enum GameEvents {
+    MoneyDeducted = 'money.deducted',
+    TimeIncreased = 'time.increased',
+    SpeedSet = 'speed.set',
+}
+
 /**
  * Manages the Pixi Application, the game loop, and calling the draw-ers.
  */
@@ -36,9 +42,6 @@ export default class Game {
     public static readonly APP_WIDTH = 1200;
     public static readonly APP_HEIGHT = 1000;
     public static readonly SPRITE_SCALE = 2;
-    public static readonly EVENT_MONEY_DEDUCTED = 'money.deducted';
-    public static readonly EVENT_TIME_INCREASED = 'time.increased';
-    public static readonly EVENT_SPEED_SET = 'speed.set';
 
     /* Class Properties --------------------------------------------------------------------------------------------- */
     private _debug: boolean;
@@ -107,7 +110,7 @@ export default class Game {
 
     gameLoop(delta): void {
         // Dispatch an event that the time has increased
-        this._eventEmitter.emit(Game.EVENT_TIME_INCREASED, this._ticker.deltaMS);
+        this._eventEmitter.emit(GameEvents.TimeIncreased, this._ticker.deltaMS);
 
         this.updateGrid();
         this.updateToolbar();

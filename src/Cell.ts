@@ -16,22 +16,30 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/**
- * Represents a location on a GameMap, with a terrain type and optionally the game
- * piece that it is hosting.
- */
 import GameMap from './GameMap';
 
+export enum TerrainTypes {
+    Grass,
+}
+
+export enum ZoneTypes {
+    Unzoned,
+    Residential,
+    Commercial,
+}
+
+export enum StructureTypes {
+    Empty,
+    Road,
+    House,
+    Business,
+}
+
+/**
+ * Represents a location on a GameMap, with a terrain type and optionally the game piece that it is hosting.
+ */
 export default class Cell {
     /* Constants ---------------------------------------------------------------------------------------------------- */
-    public static readonly TERRAIN_TYPE_GRASS = 0;
-    public static readonly ZONE_TYPE_UNZONED = 0;
-    public static readonly ZONE_TYPE_RESIDENTIAL = 1;
-    public static readonly ZONE_TYPE_COMMERCIAL = 2;
-    public static readonly STRUCTURE_TYPE_EMPTY = 0;
-    public static readonly STRUCTURE_TYPE_ROAD = 1;
-    public static readonly STRUCTURE_TYPE_HOUSE = 2;
-    public static readonly STRUCTURE_TYPE_BUSINESS = 3;
 
     /* Class Properties --------------------------------------------------------------------------------------------- */
     private _map: GameMap;
@@ -48,8 +56,8 @@ export default class Cell {
         this._row = row;
         this._col = col;
         this._terrainType = terrainType;
-        this._zoneType = Cell.ZONE_TYPE_UNZONED;
-        this._structureType = Cell.STRUCTURE_TYPE_EMPTY;
+        this._zoneType = ZoneTypes.Unzoned;
+        this._structureType = StructureTypes.Empty;
     }
 
     getLeftNeighbor(): Cell | null {
@@ -68,23 +76,23 @@ export default class Cell {
         return this._map.getCellByRowColumn(this._row + 1, this._col);
     }
 
-    doesLeftNeighborHaveStructure(structureType: number): boolean {
+    doesLeftNeighborHaveStructure(structureType: StructureTypes): boolean {
         return this.getLeftNeighbor().structureType === structureType;
     }
 
-    doesRightNeighborHaveStructure(structureType: number): boolean {
+    doesRightNeighborHaveStructure(structureType: StructureTypes): boolean {
         return this.getRightNeighbor().structureType === structureType;
     }
 
-    doesTopNeighborHaveStructure(structureType: number): boolean {
+    doesTopNeighborHaveStructure(structureType: StructureTypes): boolean {
         return this.getTopNeighbor().structureType === structureType;
     }
 
-    doesBottomNeighborHaveStructure(structureType: number): boolean {
+    doesBottomNeighborHaveStructure(structureType: StructureTypes): boolean {
         return this.getBottomNeighbor().structureType === structureType;
     }
 
-    doesAnyNeighborHaveStructure(structureType: number): boolean {
+    doesAnyNeighborHaveStructure(structureType: StructureTypes): boolean {
         return (
             this.doesLeftNeighborHaveStructure(structureType) ||
             this.doesRightNeighborHaveStructure(structureType) ||

@@ -18,9 +18,9 @@
 
 import ViewableObject from './ViewableObject';
 import Tile from './Tile';
-import Toolbar from './nonworld/tool/Toolbar';
-import Game from './Game';
-import Cell from './Cell';
+import Toolbar, { Tools } from './nonworld/tool/Toolbar';
+import Game, { GameEvents } from './Game';
+import Cell, { StructureTypes, TerrainTypes, ZoneTypes } from './Cell';
 import GameMap from './GameMap';
 import { Container, Point, DisplayObject } from 'pixi.js';
 
@@ -32,9 +32,6 @@ export default class Grid extends ViewableObject {
     public static readonly GRID_MARGIN = 50; // Will be scaled by the zoom level
     public static readonly TILE_WIDTH = 32;
     public static readonly TILE_HEIGHT = 32;
-    public static readonly TILE_LABEL_DICTIONARY = {
-        [Cell.TERRAIN_TYPE_GRASS]: 'Grass',
-    };
 
     /* Class Properties --------------------------------------------------------------------------------------------- */
     private _game: Game;
@@ -64,8 +61,8 @@ export default class Grid extends ViewableObject {
         this._draggingTiles = [];
 
         // Center the grid in the app
-        this._width = GameMap.MAP_COLS * (Grid.TILE_WIDTH * Game.SPRITE_SCALE);
-        this._height = GameMap.MAP_ROWS * (Grid.TILE_HEIGHT * Game.SPRITE_SCALE);
+        this._width = GameMap.COLS * (Grid.TILE_WIDTH * Game.SPRITE_SCALE);
+        this._height = GameMap.ROWS * (Grid.TILE_HEIGHT * Game.SPRITE_SCALE);
         this._grid.x = appWidth / 2 - this._width / 2;
         this._grid.y = appHeight / 2 - this._height / 2;
 
@@ -89,8 +86,8 @@ export default class Grid extends ViewableObject {
         let y = this._startingY;
 
         // Create a Tile for every Cell in the game
-        for (let row = 0; row < GameMap.MAP_ROWS; row++) {
-            for (let col = 0; col < GameMap.MAP_COLS; col++) {
+        for (let row = 0; row < GameMap.ROWS; row++) {
+            for (let col = 0; col < GameMap.COLS; col++) {
                 // Find the Cell for this row/column combination
                 const cell = this._game.map.getCellByRowColumn(row, col);
 
@@ -125,25 +122,25 @@ export default class Grid extends ViewableObject {
      */
     applyToolToTile(tile): boolean {
         switch (this._game.toolInUse.id) {
-            case Toolbar.SELECT_TOOL:
+            case Tools.Select:
                 // Return true to propagate this event up to the grid
                 return true;
-            case Toolbar.ROAD_TOOL:
-                tile.cell.structureType = Cell.STRUCTURE_TYPE_ROAD;
-                this._game.eventEmitter.emit(Game.EVENT_MONEY_DEDUCTED, -10);
+            case Tools.Road:
+                tile.cell.structureType = StructureTypes.Road;
+                this._game.eventEmitter.emit(GameEvents.MoneyDeducted, -10);
                 break;
-            case Toolbar.BULLDOZE_TOOL:
-                tile.cell.structureType = Cell.STRUCTURE_TYPE_EMPTY;
+            case Tools.Bulldoze:
+                tile.cell.structureType = StructureTypes.Empty;
                 break;
-            case Toolbar.RESIDENTIAL_ZONE_TOOL:
-                tile.cell.terrainType = Cell.TERRAIN_TYPE_GRASS;
-                tile.cell.zoneType = Cell.ZONE_TYPE_RESIDENTIAL;
-                this._game.eventEmitter.emit(Game.EVENT_MONEY_DEDUCTED, -100);
+            case Tools.ZoneResidential:
+                tile.cell.terrainType = TerrainTypes.Grass;
+                tile.cell.zoneType = ZoneTypes.Residential;
+                this._game.eventEmitter.emit(GameEvents.MoneyDeducted, -100);
                 break;
-            case Toolbar.COMMERCIAL_ZONE_TOOL:
-                tile.cell.terrainType = Cell.TERRAIN_TYPE_GRASS;
-                tile.cell.zoneType = Cell.ZONE_TYPE_COMMERCIAL;
-                this._game.eventEmitter.emit(Game.EVENT_MONEY_DEDUCTED, -100);
+            case Tools.ZoneCommercial:
+                tile.cell.terrainType = TerrainTypes.Grass;
+                tile.cell.zoneType = ZoneTypes.Commercial;
+                this._game.eventEmitter.emit(GameEvents.MoneyDeducted, -100);
                 break;
         }
     }
@@ -175,7 +172,7 @@ export default class Grid extends ViewableObject {
         // If we're dragging
         if (this._dragging) {
             // If we're dragging with the Select tool
-            if (this._game.toolInUse.id === Toolbar.SELECT_TOOL) {
+            if (this._game.toolInUse.id === Tools.Select) {
                 const movementX = this._dragEvent.originalEvent.movementX,
                     movementY = this._dragEvent.originalEvent.movementY,
                     scaledMargin = Grid.GRID_MARGIN * Game.SPRITE_SCALE,
@@ -189,16 +186,16 @@ export default class Grid extends ViewableObject {
                 if (targetY < scaledMargin && targetY + this._height - this._game.renderer.height + scaledMargin > 0) {
                     this._grid.y += movementY;
                 }
-            } else if (this._game.toolInUse.id === Toolbar.ROAD_TOOL) {
+            } else if (this._game.toolInUse.id === Tools.Road) {
                 // We're dragging with the road tool
                 const draggingTiles = this.findDraggingTilesForLine();
                 if (draggingTiles) {
                     this._draggingTiles = draggingTiles;
                 }
             } else if (
-                this._game.toolInUse.id === Toolbar.RESIDENTIAL_ZONE_TOOL ||
-                this._game.toolInUse.id === Toolbar.COMMERCIAL_ZONE_TOOL ||
-                this._game.toolInUse.id === Toolbar.BULLDOZE_TOOL
+                this._game.toolInUse.id === Tools.ZoneResidential ||
+                this._game.toolInUse.id === Tools.ZoneCommercial ||
+                this._game.toolInUse.id === Tools.Bulldoze
             ) {
                 // We're dragging with a zoning or bulldozing tool
                 const draggingTiles = this.findDraggingTilesForRectangle();

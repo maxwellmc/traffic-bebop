@@ -28,7 +28,6 @@ export default class Menubar {
     public static readonly STARTING_X = 0;
     public static readonly STARTING_Y = 0;
     public static readonly HEIGHT = 40;
-    public static readonly SPEED_MENU = 0;
 
     /* Class Properties --------------------------------------------------------------------------------------------- */
     private _game: Game;

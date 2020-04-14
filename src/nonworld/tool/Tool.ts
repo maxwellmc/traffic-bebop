@@ -16,17 +16,25 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import Toolbar from './Toolbar';
+import Toolbar, { Tools } from './Toolbar';
 import { LoaderResource, Sprite } from 'pixi.js';
 import Game from '../../Game';
+
+enum ToolSpriteFiles {
+    Background = 'tool-bg.png',
+    BackgroundDepressed = 'tool-bg-d.png',
+    Select = 'tool-select.png',
+    Road = 'tool-road.png',
+    Bulldoze = 'tool-bulldoze.png',
+    ZoneResidential = 'tool-residential.png',
+    ZoneCommercial = 'tool-commercial.png',
+}
 
 /**
  * Selected by the user to manipulate individual cells in the world.
  */
 export default class Tool {
     /* Constants ---------------------------------------------------------------------------------------------------- */
-    public static readonly SPRITE_FILE_BACKGROUND = 'tool-bg.png';
-    public static readonly SPRITE_FILE_BACKGROUND_DEPRESSED = 'tool-bg-d.png';
 
     /* Class Properties --------------------------------------------------------------------------------------------- */
     private _toolbar: Toolbar;
@@ -50,10 +58,10 @@ export default class Tool {
     }
 
     generateGraphics(): void {
-        let filename = Tool.SPRITE_FILE_BACKGROUND;
+        let filename = ToolSpriteFiles.Background;
         // Show the tool as depressed if it's the one in use
         if (this._toolbar.game.toolInUse === this) {
-            filename = Tool.SPRITE_FILE_BACKGROUND_DEPRESSED;
+            filename = ToolSpriteFiles.BackgroundDepressed;
         }
 
         const backgroundGraphic = new Sprite(this._spritesheet.textures[filename]);
@@ -68,20 +76,20 @@ export default class Tool {
 
         let spriteFilename;
         switch (this._id) {
-            case Toolbar.SELECT_TOOL:
-                spriteFilename = 'tool-select.png';
+            case Tools.Select:
+                spriteFilename = ToolSpriteFiles.Select;
                 break;
-            case Toolbar.ROAD_TOOL:
-                spriteFilename = 'tool-road.png';
+            case Tools.Road:
+                spriteFilename = ToolSpriteFiles.Road;
                 break;
-            case Toolbar.BULLDOZE_TOOL:
-                spriteFilename = 'tool-bulldoze.png';
+            case Tools.Bulldoze:
+                spriteFilename = ToolSpriteFiles.Bulldoze;
                 break;
-            case Toolbar.RESIDENTIAL_ZONE_TOOL:
-                spriteFilename = 'tool-residential.png';
+            case Tools.ZoneResidential:
+                spriteFilename = ToolSpriteFiles.ZoneResidential;
                 break;
-            case Toolbar.COMMERCIAL_ZONE_TOOL:
-                spriteFilename = 'tool-commercial.png';
+            case Tools.ZoneCommercial:
+                spriteFilename = ToolSpriteFiles.ZoneCommercial;
                 break;
         }
 
@@ -99,9 +107,9 @@ export default class Tool {
     updateGraphics(): void {
         // Show the tool as depressed if it's the one in use
         if (this._toolbar.game.toolInUse === this) {
-            this._background.texture = this._spritesheet.textures[Tool.SPRITE_FILE_BACKGROUND_DEPRESSED];
+            this._background.texture = this._spritesheet.textures[ToolSpriteFiles.BackgroundDepressed];
         } else {
-            this._background.texture = this._spritesheet.textures[Tool.SPRITE_FILE_BACKGROUND];
+            this._background.texture = this._spritesheet.textures[ToolSpriteFiles.Background];
         }
     }
 

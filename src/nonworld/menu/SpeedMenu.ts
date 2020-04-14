@@ -20,7 +20,7 @@ import Menu from './Menu';
 import MenuItem from './MenuItem';
 import Menubar from './Menubar';
 import GameState from '../../GameState';
-import Game from '../../Game';
+import Game, { GameEvents } from '../../Game';
 import { Speeds } from '../../Speed';
 
 export default class SpeedMenu extends Menu {
@@ -43,13 +43,13 @@ export default class SpeedMenu extends Menu {
         console.log('onMenuItemClick');
         switch (menuItem.id) {
             case SpeedMenu.PAUSED_ITEM:
-                this._menubar.game.eventEmitter.emit(Game.EVENT_SPEED_SET, Speeds.Paused);
+                this._menubar.game.eventEmitter.emit(GameEvents.SpeedSet, Speeds.Paused);
                 break;
             case SpeedMenu.NORMAL_ITEM:
-                this._menubar.game.eventEmitter.emit(Game.EVENT_SPEED_SET, Speeds.Normal);
+                this._menubar.game.eventEmitter.emit(GameEvents.SpeedSet, Speeds.Normal);
                 break;
             case SpeedMenu.FAST_ITEM:
-                this._menubar.game.eventEmitter.emit(Game.EVENT_SPEED_SET, Speeds.Fast);
+                this._menubar.game.eventEmitter.emit(GameEvents.SpeedSet, Speeds.Fast);
                 break;
         }
     }

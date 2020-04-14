@@ -19,6 +19,14 @@
 import Tool from './Tool';
 import Game from '../../Game';
 
+export enum Tools {
+    Select,
+    Road,
+    Bulldoze,
+    ZoneResidential,
+    ZoneCommercial,
+}
+
 /**
  * A non-world container for Tools.
  */
@@ -29,30 +37,25 @@ export default class Toolbar {
     public static readonly TOOL_WIDTH = 110;
     public static readonly TOOL_HEIGHT = 32;
 
-    public static readonly SELECT_TOOL = 0;
-    public static readonly ROAD_TOOL = 1;
-    public static readonly BULLDOZE_TOOL = 2;
-    public static readonly RESIDENTIAL_ZONE_TOOL = 3;
-    public static readonly COMMERCIAL_ZONE_TOOL = 4;
     public static readonly TOOLS = [
         {
-            id: Toolbar.SELECT_TOOL,
+            id: Tools.Select,
             label: 'Select',
         },
         {
-            id: Toolbar.ROAD_TOOL,
+            id: Tools.Road,
             label: 'Road',
         },
         {
-            id: Toolbar.BULLDOZE_TOOL,
+            id: Tools.Bulldoze,
             label: 'Bulldoze',
         },
         {
-            id: Toolbar.RESIDENTIAL_ZONE_TOOL,
+            id: Tools.ZoneResidential,
             label: 'Residential',
         },
         {
-            id: Toolbar.COMMERCIAL_ZONE_TOOL,
+            id: Tools.ZoneCommercial,
             label: 'Commercial',
         },
     ];

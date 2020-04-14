@@ -16,8 +16,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import Game from './Game';
+import Game, { GameEvents } from './Game';
 import { Speeds, SpeedUtil } from './Speed';
+
+export enum GameStateEvents {
+    MoneyChanged = 'game-state.money',
+    TimeChanged = 'game-state.time',
+    SpeedChanged = 'game-state.speed',
+}
 
 /**
  * Represents the properties of the game as they exist right now.
@@ -25,9 +31,6 @@ import { Speeds, SpeedUtil } from './Speed';
 export default class GameState {
     /* Constants ---------------------------------------------------------------------------------------------------- */
     public static readonly STARTING_MONEY = 1000000;
-    public static readonly EVENT_MONEY_CHANGED = 'game-state.money';
-    public static readonly EVENT_TIME_CHANGED = 'game-state.time';
-    public static readonly EVENT_SPEED_CHANGED = 'game-state.speed';
     public static readonly GAME_DAYS_IN_MILLISECONDS = 2000;
 
     /* Class Properties --------------------------------------------------------------------------------------------- */
@@ -46,14 +49,14 @@ export default class GameState {
         this._lastSimulationTickTime = 0;
 
         // Listen for events that should update the state
-        this._game.eventEmitter.on(Game.EVENT_MONEY_DEDUCTED, (args) => this.onMoneyUpdated(args));
-        this._game.eventEmitter.on(Game.EVENT_TIME_INCREASED, (args) => this.onTimeIncreased(args));
-        this._game.eventEmitter.on(Game.EVENT_SPEED_SET, (args) => this.onSpeedSet(args));
+        this._game.eventEmitter.on(GameEvents.MoneyDeducted, (args) => this.onMoneyUpdated(args));
+        this._game.eventEmitter.on(GameEvents.TimeIncreased, (args) => this.onTimeIncreased(args));
+        this._game.eventEmitter.on(GameEvents.SpeedSet, (args) => this.onSpeedSet(args));
     }
 
     onMoneyUpdated(amount: number): void {
         this._money += amount;
-        this._game.eventEmitter.emit(GameState.EVENT_MONEY_CHANGED, this._money);
+        this._game.eventEmitter.emit(GameStateEvents.MoneyChanged, this._money);
     }
 
     onTimeIncreased(milliseconds: number): void {
@@ -66,12 +69,12 @@ export default class GameState {
             // Run the simulator
             this._game.simulator.simulate();
         }
-        this._game.eventEmitter.emit(GameState.EVENT_TIME_CHANGED, this._time);
+        this._game.eventEmitter.emit(GameStateEvents.TimeChanged, this._time);
     }
 
     onSpeedSet(speed: number): void {
         this._speed = speed;
-        this._game.eventEmitter.emit(GameState.EVENT_SPEED_CHANGED, this._speed);
+        this._game.eventEmitter.emit(GameStateEvents.SpeedChanged, this._speed);
     }
 
     /**

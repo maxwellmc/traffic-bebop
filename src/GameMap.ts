@@ -16,15 +16,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import Cell from './Cell';
+import Cell, { StructureTypes, TerrainTypes, ZoneTypes } from './Cell';
 
 /**
  * Represents the (not necessarily viewable) arrangement of cells in terms of rows and columns.
  */
 export default class GameMap {
     /* Constants ---------------------------------------------------------------------------------------------------- */
-    public static readonly MAP_ROWS = 20;
-    public static readonly MAP_COLS = 30;
+    public static readonly ROWS = 20;
+    public static readonly COLS = 30;
 
     /* Class Properties --------------------------------------------------------------------------------------------- */
     private _map: Cell[][];
@@ -33,11 +33,11 @@ export default class GameMap {
         this._map = [];
 
         let id = 0;
-        for (let row = 0; row < GameMap.MAP_ROWS; row++) {
+        for (let row = 0; row < GameMap.ROWS; row++) {
             const rowItems = [];
-            for (let col = 0; col < GameMap.MAP_COLS; col++) {
+            for (let col = 0; col < GameMap.COLS; col++) {
                 // Add a cell with a default terrain of grass
-                rowItems.push(new Cell(this, id, row, col, Cell.TERRAIN_TYPE_GRASS));
+                rowItems.push(new Cell(this, id, row, col, TerrainTypes.Grass));
                 id++;
             }
             this._map.push(rowItems);
@@ -62,10 +62,10 @@ export default class GameMap {
      *
      * @param structureType
      */
-    findCellsByStructure(structureType: number): Cell[] {
+    findCellsByStructure(structureType: StructureTypes): Cell[] {
         const matchingCells = [];
-        for (let row = 0; row < GameMap.MAP_ROWS; row++) {
-            for (let col = 0; col < GameMap.MAP_COLS; col++) {
+        for (let row = 0; row < GameMap.ROWS; row++) {
+            for (let col = 0; col < GameMap.COLS; col++) {
                 const cell = this.getCellByRowColumn(row, col);
                 if (cell.structureType === structureType) {
                     matchingCells.push(cell);
@@ -81,10 +81,10 @@ export default class GameMap {
      * @param zoneType
      * @param structureType
      */
-    findCellsByZoneAndStructure(zoneType: number, structureType: number): Cell[] {
+    findCellsByZoneAndStructure(zoneType: ZoneTypes, structureType: StructureTypes): Cell[] {
         const matchingCells = [];
-        for (let row = 0; row < GameMap.MAP_ROWS; row++) {
-            for (let col = 0; col < GameMap.MAP_COLS; col++) {
+        for (let row = 0; row < GameMap.ROWS; row++) {
+            for (let col = 0; col < GameMap.COLS; col++) {
                 const cell = this.getCellByRowColumn(row, col);
                 if (cell.zoneType === zoneType && cell.structureType === structureType) {
                     matchingCells.push(cell);

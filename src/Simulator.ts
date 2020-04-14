@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import Cell from './Cell';
+import Cell, { StructureTypes, ZoneTypes } from './Cell';
 import GameMap from './GameMap';
 import { Pathfinder } from './Pathfinding';
 
@@ -56,15 +56,12 @@ export default class Simulator {
      * @param map
      */
     simulateResidences(map: GameMap): void {
-        const emptyResidentialCells = map.findCellsByZoneAndStructure(
-            Cell.ZONE_TYPE_RESIDENTIAL,
-            Cell.STRUCTURE_TYPE_EMPTY,
-        );
+        const emptyResidentialCells = map.findCellsByZoneAndStructure(ZoneTypes.Residential, StructureTypes.Empty);
         // Loop through each empty residential zone
         for (const emptyResidentialCell of emptyResidentialCells) {
             // Determine if this cell should be "moved into"
             if (this.shouldResidentMoveIn(emptyResidentialCell)) {
-                emptyResidentialCell.structureType = Cell.STRUCTURE_TYPE_HOUSE;
+                emptyResidentialCell.structureType = StructureTypes.House;
             }
         }
     }
@@ -75,15 +72,12 @@ export default class Simulator {
      * @param map
      */
     simulateBusinesses(map: GameMap): void {
-        const emptyCommercialCells = map.findCellsByZoneAndStructure(
-            Cell.ZONE_TYPE_COMMERCIAL,
-            Cell.STRUCTURE_TYPE_EMPTY,
-        );
+        const emptyCommercialCells = map.findCellsByZoneAndStructure(ZoneTypes.Commercial, StructureTypes.Empty);
         // Loop through each empty commercial zone
         for (const emptyCommercialCell of emptyCommercialCells) {
             // Determine if this cell should be "moved into"
             if (this.shouldBusinessMoveIn(emptyCommercialCell)) {
-                emptyCommercialCell.structureType = Cell.STRUCTURE_TYPE_BUSINESS;
+                emptyCommercialCell.structureType = StructureTypes.Business;
             }
         }
     }
@@ -136,7 +130,7 @@ export default class Simulator {
         // Create a Graph of the GameMap
         const graph = Pathfinder.generateGraphFromMap(gameMap);
         // Find all the Cells with roads
-        const cellsWithRoads = gameMap.findCellsByStructure(Cell.STRUCTURE_TYPE_ROAD);
+        const cellsWithRoads = gameMap.findCellsByStructure(StructureTypes.Road);
         const cellsWithRoadsIds = [];
         // Convert the array of Cells to an array of just the Cells' IDs
         cellsWithRoads.forEach((cell) => {
