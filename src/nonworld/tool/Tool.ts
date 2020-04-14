@@ -71,6 +71,7 @@ export default class Tool {
         backgroundGraphic.interactive = true;
 
         backgroundGraphic.on('mousedown', (e) => this._toolbar.onToolClick(e, this));
+        backgroundGraphic.on('touchstart', (e) => this._toolbar.onToolClick(e, this));
 
         this._background = backgroundGraphic;
 
@@ -100,6 +101,7 @@ export default class Tool {
         toolGraphic.interactive = true;
 
         toolGraphic.on('mousedown', (e) => this._toolbar.onToolClick(e, this));
+        toolGraphic.on('touchstart', (e) => this._toolbar.onToolClick(e, this));
 
         this._foreground = toolGraphic;
     }

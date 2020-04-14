@@ -23,6 +23,8 @@ import Game, { GameEvents } from './Game';
 import Cell, { StructureTypes, TerrainTypes, ZoneTypes } from './Cell';
 import GameMap from './GameMap';
 import { Container, Point, DisplayObject } from 'pixi.js';
+import InteractionEvent = PIXI.interaction.InteractionEvent;
+import InteractionData = PIXI.interaction.InteractionData;
 
 /**
  * Visually represents the GameMap, as translated to an arrangement of viewable Tiles.
@@ -32,6 +34,11 @@ export default class Grid extends ViewableObject {
     public static readonly GRID_MARGIN = 50; // Will be scaled by the zoom level
     public static readonly TILE_WIDTH = 32;
     public static readonly TILE_HEIGHT = 32;
+    public static readonly TOOL_COSTS: Record<number, number> = {
+        [Tools.Road]: -10,
+        [Tools.ZoneResidential]: -100,
+        [Tools.ZoneCommercial]: -150,
+    };
 
     /* Class Properties --------------------------------------------------------------------------------------------- */
     private _game: Game;
@@ -43,11 +50,13 @@ export default class Grid extends ViewableObject {
     private _tiles: Tile[];
     // Whether the user is currently dragging their cursor
     private _dragging: boolean;
-    private _dragEvent;
+    private _dragEvent: InteractionData;
     // The Tiles we are considering to be currently in the dragging zone
     private _draggingTiles: Tile[];
     private _dragFirstX: number;
     private _dragFirstY: number;
+    private _dragLastX: number;
+    private _dragLastY: number;
 
     constructor(game: Game, appWidth: number, appHeight: number) {
         super();
@@ -68,17 +77,17 @@ export default class Grid extends ViewableObject {
 
         this._grid.interactive = true;
         this._grid
-            // events for drag start
-            .on('mousedown', (e) => this.onDragStart(e))
-            .on('touchstart', (e) => this.onDragStart(e))
-            // events for drag end
-            .on('mouseup', () => this.onDragEnd())
-            .on('mouseupoutside', () => this.onDragEnd())
-            .on('touchend', () => this.onDragEnd())
-            .on('touchendoutside', () => this.onDragEnd())
-            // events for drag move
-            .on('mousemove', () => this.onDragMove())
-            .on('touchmove', () => this.onDragMove());
+            // Events for cursor start
+            .on('mousedown', (e) => this.onCursorStart(e))
+            .on('touchstart', (e) => this.onCursorStart(e))
+            // Events for cursor end
+            .on('mouseup', () => this.onCursorEnd())
+            .on('mouseupoutside', () => this.onCursorEnd())
+            .on('touchend', () => this.onCursorEnd())
+            .on('touchendoutside', () => this.onCursorEnd())
+            // Events for cursor move
+            .on('mousemove', () => this.onCursorMove())
+            .on('touchmove', () => this.onCursorMove());
     }
 
     generateGraphics(): void {
@@ -127,7 +136,7 @@ export default class Grid extends ViewableObject {
                 return true;
             case Tools.Road:
                 tile.cell.structureType = StructureTypes.Road;
-                this._game.eventEmitter.emit(GameEvents.MoneyDeducted, -10);
+                this._game.eventEmitter.emit(GameEvents.MoneyDeducted, Grid.TOOL_COSTS[Tools.Road]);
                 break;
             case Tools.Bulldoze:
                 tile.cell.structureType = StructureTypes.Empty;
@@ -135,30 +144,41 @@ export default class Grid extends ViewableObject {
             case Tools.ZoneResidential:
                 tile.cell.terrainType = TerrainTypes.Grass;
                 tile.cell.zoneType = ZoneTypes.Residential;
-                this._game.eventEmitter.emit(GameEvents.MoneyDeducted, -100);
+                this._game.eventEmitter.emit(GameEvents.MoneyDeducted, Grid.TOOL_COSTS[Tools.ZoneResidential]);
                 break;
             case Tools.ZoneCommercial:
                 tile.cell.terrainType = TerrainTypes.Grass;
                 tile.cell.zoneType = ZoneTypes.Commercial;
-                this._game.eventEmitter.emit(GameEvents.MoneyDeducted, -100);
+                this._game.eventEmitter.emit(GameEvents.MoneyDeducted, Grid.TOOL_COSTS[Tools.ZoneCommercial]);
                 break;
         }
     }
 
-    onDragStart(event): void {
+    /**
+     * Handles the `mousedown` and `touchstart` cursor events.
+     * These events always start a "drag" event, even if the user doesn't actually drag.
+     *
+     * @param event
+     */
+    onCursorStart(event: InteractionEvent): void {
         // Store a reference to the data (because of multitouch)
         this._dragEvent = event.data;
         this._dragging = true;
-        this._dragFirstX = event.data.originalEvent.x;
-        this._dragFirstY = event.data.originalEvent.y;
+        this._dragFirstX = event.data.global.x;
+        this._dragFirstY = event.data.global.y;
+        this._dragLastX = this._dragFirstX;
+        this._dragLastY = this._dragFirstY;
 
-        // Call `onDragMove` because we're considering a single, non-moving click as a "drag"
-        this.onDragMove();
+        // Call `onCursorMove` in case this is a single, non-moving click, and not a drag motion
+        this.onCursorMove();
     }
 
-    onDragEnd(): void {
+    /**
+     * Handles the `mouseup`, `mouseupoutside`, `touchend`, and `touchendoutside` cursor events.
+     * These events always end a "drag" event.
+     */
+    onCursorEnd(): void {
         this._dragging = false;
-        // set the interaction data to null
         this._dragEvent = null;
 
         // Apply the "tool in use" to these tiles
@@ -168,13 +188,17 @@ export default class Grid extends ViewableObject {
         this._draggingTiles = [];
     }
 
-    onDragMove(): void {
+    /**
+     * Handles the `mousemove` and `touchmove` cursor events.
+     * Depending on the "tool in use", there are different effects of a cursor movement.
+     */
+    onCursorMove(): void {
         // If we're dragging
         if (this._dragging) {
             // If we're dragging with the Select tool
             if (this._game.toolInUse.id === Tools.Select) {
-                const movementX = this._dragEvent.originalEvent.movementX,
-                    movementY = this._dragEvent.originalEvent.movementY,
+                const movementX = this._dragEvent.global.x - this._dragLastX,
+                    movementY = this._dragEvent.global.y - this._dragLastY,
                     scaledMargin = Grid.GRID_MARGIN * Game.SPRITE_SCALE,
                     targetX = this._grid.x + movementX,
                     targetY = this._grid.y + movementY;
@@ -186,6 +210,10 @@ export default class Grid extends ViewableObject {
                 if (targetY < scaledMargin && targetY + this._height - this._game.renderer.height + scaledMargin > 0) {
                     this._grid.y += movementY;
                 }
+
+                // Set the "last" coordinates to these for the next move
+                this._dragLastX = this._dragEvent.global.x;
+                this._dragLastY = this._dragEvent.global.y;
             } else if (this._game.toolInUse.id === Tools.Road) {
                 // We're dragging with the road tool
                 const draggingTiles = this.findDraggingTilesForLine();
@@ -197,14 +225,14 @@ export default class Grid extends ViewableObject {
                 this._game.toolInUse.id === Tools.ZoneCommercial ||
                 this._game.toolInUse.id === Tools.Bulldoze
             ) {
-                // We're dragging with a zoning or bulldozing tool
+                // We're dragging with a zoning or bulldozing tools
                 const draggingTiles = this.findDraggingTilesForRectangle();
                 if (draggingTiles) {
                     this._draggingTiles = draggingTiles;
                 }
             } else {
                 // We're dragging with a tool that affects individual structures/zones on tiles
-                const point = new Point(this._dragEvent.originalEvent.x, this._dragEvent.originalEvent.y),
+                const point = new Point(this._dragEvent.global.x, this._dragEvent.global.y),
                     hit = this._game.renderer.plugins.interaction.hitTest(point),
                     hitXYArray = hit.name.split(',');
                 this.addDraggingTile(this.findTileByXY(Number(hitXYArray[0]), Number(hitXYArray[1])));
@@ -212,10 +240,14 @@ export default class Grid extends ViewableObject {
         }
     }
 
+    /**
+     * Using the current cursor position and the first cursor position when the "drag" event started,
+     * this finds all the Tiles in between those two positions, locking the search into a straight line.
+     */
     findDraggingTilesForLine(): Tile[] {
         // Get the coordinates of the mouse at this moment
-        const currentX = this._dragEvent.originalEvent.x,
-            currentY = this._dragEvent.originalEvent.y,
+        const currentX = this._dragEvent.global.x,
+            currentY = this._dragEvent.global.y,
             absDiffX = Math.abs(this._dragFirstX - currentX),
             absDiffY = Math.abs(this._dragFirstY - currentY);
 
@@ -250,10 +282,14 @@ export default class Grid extends ViewableObject {
         return this.findInsersectingTiles(boundingBoxX, boundingBoxY, boundingBoxWidth, boundingBoxHeight);
     }
 
+    /**
+     * Using the current cursor position and the first cursor position when the "drag" event started,
+     * this finds all the Tiles in between those two positions, locking the search into a rectangle.
+     */
     findDraggingTilesForRectangle(): Tile[] {
         // Get the coordinates of the mouse at this moment
-        const currentX = this._dragEvent.originalEvent.x,
-            currentY = this._dragEvent.originalEvent.y;
+        const currentX = this._dragEvent.global.x,
+            currentY = this._dragEvent.global.y;
 
         // Make a bounding box for intersection-testing
         let boundingBoxX, boundingBoxY, boundingBoxWidth, boundingBoxHeight;
@@ -279,12 +315,20 @@ export default class Grid extends ViewableObject {
         return this.findInsersectingTiles(boundingBoxX, boundingBoxY, boundingBoxWidth, boundingBoxHeight);
     }
 
+    /**
+     * Given the parameters of a "bounding box", this find all the Tiles that intersect with that bounding box.
+     *
+     * @param boundingBoxX
+     * @param boundingBoxY
+     * @param boundingBoxWidth
+     * @param boundingBoxHeight
+     */
     findInsersectingTiles(boundingBoxX, boundingBoxY, boundingBoxWidth, boundingBoxHeight): Tile[] {
         const intersectingTiles = [];
         // Loop through each Tile to find ones that intersect with our bounding box
         for (const tile of this._tiles) {
             if (
-                Grid.areContainersIntersecting(
+                Grid.areRectanglesIntersecting(
                     tile.x + this._grid.x,
                     tile.y + this._grid.y,
                     Grid.TILE_WIDTH * Game.SPRITE_SCALE,
@@ -301,7 +345,20 @@ export default class Grid extends ViewableObject {
         return intersectingTiles;
     }
 
-    static areContainersIntersecting(
+    /**
+     * A generic function for seeing if two rectangles (described by their X position, Y position, width, and height)
+     * intersect with each other at any point.
+     *
+     * @param r1X
+     * @param r1Y
+     * @param r1W
+     * @param r1H
+     * @param r2X
+     * @param r2Y
+     * @param r2W
+     * @param r2H
+     */
+    static areRectanglesIntersecting(
         r1X: number,
         r1Y: number,
         r1W: number,
@@ -314,6 +371,13 @@ export default class Grid extends ViewableObject {
         return !(r2X > r1X + r1W || r2X + r2W < r1X || r2Y > r1Y + r1H || r2Y + r2H < r1Y);
     }
 
+    /**
+     * Finds the one Tile with the matching X and Y position.
+     * Note that this does not check if the Tile *contains* that point; it only matches the Tile's "starting" point.
+     *
+     * @param x
+     * @param y
+     */
     findTileByXY(x: number, y: number): Tile | null {
         for (const tile of this._tiles) {
             if (tile.x === x && tile.y === y) {
@@ -323,10 +387,17 @@ export default class Grid extends ViewableObject {
         return null;
     }
 
+    /**
+     * Adds the provided Tile to the `draggingTiles` list.
+     *
+     * @param tile
+     */
     addDraggingTile(tile: Tile): void {
+        // Return if null
         if (tile === null) {
             return;
         }
+        // Return if the list already contains this Tile
         for (const existingTile of this._draggingTiles) {
             if (existingTile === tile) {
                 return;
@@ -335,6 +406,11 @@ export default class Grid extends ViewableObject {
         this._draggingTiles.push(tile);
     }
 
+    /**
+     * Determines if the provided Tile is currently in the `draggingTiles` list.
+     *
+     * @param tile
+     */
     isTileInDrag(tile: Tile): boolean {
         for (const existingTile of this._draggingTiles) {
             if (existingTile === tile) {

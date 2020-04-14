@@ -60,6 +60,7 @@ export default class MenuItem extends ViewableObject {
         );
 
         rectangle.on('mousedown', () => this._menu.onMenuItemClick(this));
+        rectangle.on('touchstart', () => this._menu.onMenuItemClick(this));
 
         this._graphics = [rectangle];
 

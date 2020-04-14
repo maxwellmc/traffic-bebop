@@ -70,6 +70,7 @@ export default abstract class Menu extends ViewableObject {
         );
 
         rectangle.on('mousedown', () => this.onMenuClick());
+        rectangle.on('touchstart', () => this.onMenuClick());
 
         this._background = rectangle;
 
