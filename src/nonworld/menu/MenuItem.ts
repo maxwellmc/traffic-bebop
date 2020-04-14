@@ -1,6 +1,9 @@
 import ViewableObject from '../../ViewableObject';
 import Menu from './Menu';
 
+/**
+ * An individual choice in a Menu, only shown when the Menu is in the open state.
+ */
 export default class MenuItem extends ViewableObject {
     /* Constants ---------------------------------------------------------------------------------------------------- */
     public static readonly FILL_COLOR = 0xeeeeee;

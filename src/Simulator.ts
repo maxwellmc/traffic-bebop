@@ -3,7 +3,7 @@ import GameMap from './GameMap';
 import { Pathfinder } from './Pathfinding';
 
 /**
- * Handles the changes to the map each tick, based on set logic and varying amounts of randomness.
+ * Handles the changes to the Map each tick, based on set logic and varying amounts of randomness.
  * The goal is to simulate real-world traffic and economic fluctuations.
  */
 export default class Simulator {
@@ -19,6 +19,11 @@ export default class Simulator {
         this._game = game;
     }
 
+    /* Simulators --------------------------------------------------------------------------------------------------- */
+
+    /**
+     * Runs the individual simulating functions for each domain (e.g. real estate, traffic).
+     */
     simulate(): void {
         console.log('simulate');
         const map = this._game.map;
@@ -27,7 +32,12 @@ export default class Simulator {
         this.simulateBusinesses(map);
     }
 
-    simulateResidences(map: GameMap): void{
+    /**
+     * Simulates people moving in and out of residences.
+     *
+     * @param map
+     */
+    simulateResidences(map: GameMap): void {
         const emptyResidentialCells = map.findCellsByZoneAndStructure(
             Cell.ZONE_TYPE_RESIDENTIAL,
             Cell.STRUCTURE_TYPE_EMPTY,
@@ -41,7 +51,12 @@ export default class Simulator {
         }
     }
 
-    simulateBusinesses(map: GameMap): void{
+    /**
+     * Simulates businesses moving in and out of commercial buildings.
+     *
+     * @param map
+     */
+    simulateBusinesses(map: GameMap): void {
         const emptyCommercialCells = map.findCellsByZoneAndStructure(
             Cell.ZONE_TYPE_COMMERCIAL,
             Cell.STRUCTURE_TYPE_EMPTY,
@@ -55,6 +70,13 @@ export default class Simulator {
         }
     }
 
+    /* Chance Determiners ------------------------------------------------------------------------------------------- */
+
+    /**
+     * Determines whether an individual residential Cell should be "moved into" during this simulation tick.
+     *
+     * @param cell
+     */
     shouldResidentMoveIn(cell: Cell): boolean {
         // Only even consider moving in if we're within so many tiles of a road
         const nearestRoadDistance = this.calculateNearestRoadDistance(cell, this._game.map);
@@ -67,6 +89,11 @@ export default class Simulator {
         return false;
     }
 
+    /**
+     * Determines whether an individual commercial Cell should be "moved into" during this simulation tick.
+     *
+     * @param cell
+     */
     shouldBusinessMoveIn(cell: Cell): boolean {
         // Only even consider moving in if we're within so many tiles of a road
         const nearestRoadDistance = this.calculateNearestRoadDistance(cell, this._game.map);
@@ -79,11 +106,19 @@ export default class Simulator {
         return false;
     }
 
-    calculateNearestRoadDistance(cell: Cell, map: GameMap): number {
+    /* -------------------------------------------------------------------------------------------------------------- */
+
+    /**
+     * Given a starting Cell and a GameMap, this finds the travel time to the nearest road Cell.
+     *
+     * @param cell
+     * @param gameMap
+     */
+    calculateNearestRoadDistance(cell: Cell, gameMap: GameMap): number {
         // Create a Graph of the GameMap
-        const graph = Pathfinder.generateGraphFromMap(map);
+        const graph = Pathfinder.generateGraphFromMap(gameMap);
         // Find all the Cells with roads
-        const cellsWithRoads = map.findCellsByStructure(Cell.STRUCTURE_TYPE_ROAD);
+        const cellsWithRoads = gameMap.findCellsByStructure(Cell.STRUCTURE_TYPE_ROAD);
         const cellsWithRoadsIds = [];
         // Convert the array of Cells to an array of just the Cells' IDs
         cellsWithRoads.forEach((cell) => {
@@ -104,7 +139,7 @@ export default class Simulator {
     /**
      * Mirrors the functionality of Java's Random's `nextInt(int bound)` function.
      * Returns a random integer, with a minimum of 0 and a maximum as provided.
-     * The maximum is exclusive and the minimum is inclusive.
+     * The minimum is inclusive and the maximum is exclusive.
      *
      * @param max
      */

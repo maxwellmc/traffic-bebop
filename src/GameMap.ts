@@ -1,8 +1,7 @@
 import Cell from './Cell';
 
 /**
- * Represents the (not necessarily viewable) arrangement of cells
- * in terms of rows and columns.
+ * Represents the (not necessarily viewable) arrangement of cells in terms of rows and columns.
  */
 export default class GameMap {
     /* Constants ---------------------------------------------------------------------------------------------------- */
@@ -27,6 +26,12 @@ export default class GameMap {
         }
     }
 
+    /**
+     * Finds a Cell at the provided row and column.
+     *
+     * @param row
+     * @param col
+     */
     getCellByRowColumn(row: number, col: number): Cell | null {
         if (this._map[row] && this._map[row][col]) {
             return this._map[row][col];
@@ -34,6 +39,11 @@ export default class GameMap {
         return null;
     }
 
+    /**
+     * Finds all Cells with the provided structure type.
+     *
+     * @param structureType
+     */
     findCellsByStructure(structureType: number): Cell[] {
         const matchingCells = [];
         for (let row = 0; row < GameMap.MAP_ROWS; row++) {
@@ -47,6 +57,12 @@ export default class GameMap {
         return matchingCells;
     }
 
+    /**
+     * Finds all Cells with the provided zone and structure type.
+     *
+     * @param zoneType
+     * @param structureType
+     */
     findCellsByZoneAndStructure(zoneType: number, structureType: number): Cell[] {
         const matchingCells = [];
         for (let row = 0; row < GameMap.MAP_ROWS; row++) {

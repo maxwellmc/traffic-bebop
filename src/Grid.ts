@@ -7,8 +7,7 @@ import GameMap from './GameMap';
 import { Container, Point, DisplayObject } from 'pixi.js';
 
 /**
- * Visually represents the GameMap, as translated to an arrangement of
- * viewable Tiles.
+ * Visually represents the GameMap, as translated to an arrangement of viewable Tiles.
  */
 export default class Grid extends ViewableObject {
     /* Constants ---------------------------------------------------------------------------------------------------- */
@@ -27,8 +26,10 @@ export default class Grid extends ViewableObject {
     private _width: number;
     private _height: number;
     private _tiles: Tile[];
+    // Whether the user is currently dragging their cursor
     private _dragging: boolean;
     private _dragEvent;
+    // The Tiles we are considering to be currently in the dragging zone
     private _draggingTiles: Tile[];
     private _dragFirstX: number;
     private _dragFirstY: number;
@@ -69,6 +70,7 @@ export default class Grid extends ViewableObject {
         let x = this._startingX;
         let y = this._startingY;
 
+        // Create a Tile for every Cell in the game
         for (let row = 0; row < GameMap.MAP_ROWS; row++) {
             for (let col = 0; col < GameMap.MAP_COLS; col++) {
                 // Find the Cell for this row/column combination
@@ -87,18 +89,22 @@ export default class Grid extends ViewableObject {
         }
     }
 
-    updateGraphics(): void {
-        for (const tile of this._tiles) {
-            tile.generateGraphics();
-        }
-    }
-
+    /**
+     * Takes an array of Tiles and applies the current tool to all of them.
+     *
+     * @param tiles
+     */
     applyToolToTiles(tiles: Tile[]): void {
         for (const tile of tiles) {
             this.applyToolToTile(tile);
         }
     }
 
+    /**
+     * Alters a Tile's underlying Cell based on the current "tool in use".
+     *
+     * @param tile
+     */
     applyToolToTile(tile): boolean {
         switch (this._game.toolInUse.id) {
             case Toolbar.SELECT_TOOL:

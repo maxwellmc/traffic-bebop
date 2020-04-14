@@ -35,10 +35,6 @@ export default class Menubar {
         }
     }
 
-    addMenu(menu) {
-        this._menus.push(menu);
-    }
-
     /* Getters & Setters -------------------------------------------------------------------------------------------- */
 
     get game(): Game {

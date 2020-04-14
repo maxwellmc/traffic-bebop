@@ -1,5 +1,8 @@
 import { Text } from 'pixi.js';
 
+/**
+ * An item within the HUD, displaying both the label and the value.
+ */
 export default class HUDItem {
     /* Constants ---------------------------------------------------------------------------------------------------- */
     public static readonly WIDTH = 200;
@@ -11,7 +14,6 @@ export default class HUDItem {
     private _graphic: Text;
 
     constructor(label: string, value: string) {
-
         this._label = label;
         this._value = value;
 

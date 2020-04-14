@@ -1,5 +1,11 @@
 import { DisplayObject, Graphics, Text } from 'pixi.js';
 
+/**
+ * An abstract class for objects which could be viewable to the user.
+ * @deprecated This assumes that the DisplayObjects will be destroyed and recreated at every tick. It was useful when
+ * we weren't using Sprites. For performance, we should instead let the updater functions in the Game object handle
+ * graphical updates.
+ */
 export default abstract class ViewableObject {
     protected _graphics: DisplayObject[];
 

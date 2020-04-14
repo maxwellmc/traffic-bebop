@@ -42,7 +42,7 @@ export default class GameState {
         // We scale the real-life milliseconds based on the current game speed, then set that as the game time
         this._time += milliseconds * SpeedUtil.getMultiplier(this._speed);
         // If the game day has now increased since the last increase
-        if(this._time - this._lastSimulationTickTime > GameState.GAME_DAYS_IN_MILLISECONDS){
+        if (this._time - this._lastSimulationTickTime > GameState.GAME_DAYS_IN_MILLISECONDS) {
             // Set the "last simulation tick time" to now
             this._lastSimulationTickTime = this._time;
             // Run the simulator
@@ -56,6 +56,11 @@ export default class GameState {
         this._game.eventEmitter.emit(GameState.EVENT_SPEED_CHANGED, this._speed);
     }
 
+    /**
+     * Converts the game time from milliseconds to days.
+     *
+     * @param gameTimeInMilliseconds
+     */
     static calculateGameTimeInDays(gameTimeInMilliseconds): number {
         return gameTimeInMilliseconds / GameState.GAME_DAYS_IN_MILLISECONDS;
     }

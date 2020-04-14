@@ -28,8 +28,10 @@ export default class HUD extends ViewableObject {
         this._startingX = 0;
         this._startingY = appHeight - HUD.HEIGHT;
 
+        // Initialize the list of HUDItems
         this._items = [new HUDItem('Money', ''), new HUDItem('Days', ''), new HUDItem('Speed', '')];
 
+        // Initialize the HUDItem values
         this.setMoney(this._gameState.money);
         this.setTime(this._gameState.time);
         this.setSpeed(this._gameState.speed);
@@ -82,16 +84,31 @@ export default class HUD extends ViewableObject {
         this.setSpeed(speed);
     }
 
+    /**
+     * Formats money from a number to a currency-formatted string, and sets it in the HUDItem.
+     *
+     * @param amount
+     */
     setMoney(amount: number): void {
         // Add thousands separators
         const money = '$' + amount.toLocaleString('en-US');
         this._items[0].value = money;
     }
 
+    /**
+     * Converts the milliseconds to game days, rounds them, converts it to a string, and sets it in the HUDItem.
+     *
+     * @param milliseconds
+     */
     setTime(milliseconds: number): void {
         this._items[1].value = String(Math.round(GameState.calculateGameTimeInDays(milliseconds)));
     }
 
+    /**
+     * Looks up the label for the speed in the enum, and sets it in the HUDItem.
+     *
+     * @param speed
+     */
     setSpeed(speed): void {
         this._items[2].value = Speeds[speed];
     }

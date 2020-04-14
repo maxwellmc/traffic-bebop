@@ -61,11 +61,13 @@ export default class Tile extends ViewableObject {
     generateGraphics(): void {
         const name = `${this._x},${this._y}`;
 
+        // Initialize the layers of Sprites in the Container to graphically represent the Tile
         this._container.addChild(new Sprite());
         this._container.addChild(new Sprite());
         this._container.addChild(new Sprite());
         this._container.addChild(new Sprite());
         this._container.addChild(new Sprite());
+        // Initialize the layers, which keep track of which Sprite is currently present in each layer
         this._layers
             .set(TileGraphicLayer.Terrain, Tile.SPRITE_BLANK)
             .set(TileGraphicLayer.Zone, Tile.SPRITE_BLANK)
@@ -73,6 +75,7 @@ export default class Tile extends ViewableObject {
             .set(TileGraphicLayer.Grid, Tile.SPRITE_BLANK)
             .set(TileGraphicLayer.Highlight, Tile.SPRITE_BLANK);
 
+        // Initialize the Container
         this._container.x = this._x;
         this._container.y = this._y;
         this._container.scale.set(Game.SPRITE_SCALE);
@@ -93,27 +96,27 @@ export default class Tile extends ViewableObject {
     }
 
     updateGraphics(): void {
-        // Set the terrain
+        // Set the "Terrain" layer
         if (this._cell.terrainType === Cell.TERRAIN_TYPE_GRASS) {
             if (this._layers.get(TileGraphicLayer.Terrain) !== Tile.SPRITE_FILE_GRASS) {
                 this.setLayerSprite(TileGraphicLayer.Terrain, Tile.SPRITE_FILE_GRASS);
             }
         }
 
-        // Set the zone
+        // Set the "Zone" layer
         if (this._cell.structureType === Cell.STRUCTURE_TYPE_EMPTY) {
             if (this._cell.zoneType === Cell.ZONE_TYPE_RESIDENTIAL) {
                 if (this._layers.get(TileGraphicLayer.Zone) !== Tile.SPRITE_FILE_ZONE_RESIDENTIAL) {
                     this.setLayerSprite(TileGraphicLayer.Zone, Tile.SPRITE_FILE_ZONE_RESIDENTIAL);
                 }
-            } else if (this._cell.zoneType === Cell.ZONE_TYPE_COMMERCIAL){
+            } else if (this._cell.zoneType === Cell.ZONE_TYPE_COMMERCIAL) {
                 if (this._layers.get(TileGraphicLayer.Zone) !== Tile.SPRITE_FILE_ZONE_COMMERCIAL) {
                     this.setLayerSprite(TileGraphicLayer.Zone, Tile.SPRITE_FILE_ZONE_COMMERCIAL);
                 }
             }
         }
 
-        // Set the structure
+        // Set the "Structure" layer
         if (this._cell.structureType === Cell.STRUCTURE_TYPE_ROAD) {
             const roadFilename = this.determineRoadOrientation();
             if (this._layers.get(TileGraphicLayer.Structure) !== roadFilename) {
@@ -127,18 +130,19 @@ export default class Tile extends ViewableObject {
             if (this._layers.get(TileGraphicLayer.Structure) !== Tile.SPRITE_FILE_STRUCTURE_BUSINESS_1) {
                 this.setLayerSprite(TileGraphicLayer.Structure, Tile.SPRITE_FILE_STRUCTURE_BUSINESS_1);
             }
-        }else{
+        } else {
             if (this._layers.get(TileGraphicLayer.Structure) !== Tile.SPRITE_BLANK) {
                 this.setLayerSprite(TileGraphicLayer.Structure, Tile.SPRITE_BLANK);
             }
         }
 
-        // Set the grid
+        // Set the "Grid" layer
         if (this._layers.get(TileGraphicLayer.Grid) !== Tile.SPRITE_FILE_GRID) {
             this.setLayerSprite(TileGraphicLayer.Grid, Tile.SPRITE_FILE_GRID);
         }
 
-        // If this tile is part of a mouse-drag event, then add an overlay
+        // Set the "Highlight" layer
+        // If this tile is currently part of a cursor-drag event, then add an overlay to the "Highlight" layer
         if (this._grid.isTileInDrag(this)) {
             if (this._layers.get(TileGraphicLayer.Highlight) !== Tile.SPRITE_FILE_DRAG) {
                 this.setLayerSprite(TileGraphicLayer.Highlight, Tile.SPRITE_FILE_DRAG);
@@ -150,6 +154,7 @@ export default class Tile extends ViewableObject {
         }
 
         const debugText = this._debugContainer.getChildAt(0) as Text;
+        // If the debug flag is set, then show the Cell's ID
         if (this._grid.game.debug) {
             debugText.text = String(this._cell.id);
         } else {
@@ -157,12 +162,21 @@ export default class Tile extends ViewableObject {
         }
     }
 
+    /**
+     * Convenience function for changing both the texture of the Sprite in a layer, and the actual layer Map for future reference.
+     *
+     * @param layer
+     * @param spriteFile
+     */
     setLayerSprite(layer, spriteFile): void {
         const sprite = this._container.getChildAt(layer) as Sprite;
         sprite.texture = this._spritesheet.textures[spriteFile];
         this._layers.set(layer, spriteFile);
     }
 
+    /**
+     * Determines which road Sprite should be used, based on how many of the underlying Cell's neighbors are also roads.
+     */
     determineRoadOrientation(): string {
         const bottomIsRoad = this._cell.doesBottomNeighborHaveStructure(Cell.STRUCTURE_TYPE_ROAD),
             topIsRoad = this._cell.doesTopNeighborHaveStructure(Cell.STRUCTURE_TYPE_ROAD),

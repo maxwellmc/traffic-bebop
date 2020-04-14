@@ -1,5 +1,12 @@
 import GameMap from './GameMap';
 
+/**
+ * The file houses multiple classes used for the pathfinding algorithms.
+ */
+
+/**
+ * A node within a Graph, carrying a set weight.
+ */
 class WeightedNode {
     public node;
     public weight;
@@ -10,6 +17,9 @@ class WeightedNode {
     }
 }
 
+/**
+ * An implementation of a Graph, for the purpose of Dijkstra's algorithm.
+ */
 export class Graph {
     public nodes: number[];
     public adjacencyList: Set<WeightedNode>[];
@@ -30,6 +40,9 @@ export class Graph {
     }
 }
 
+/**
+ * An item within a PriorityQueue.
+ */
 class PriorityQueueItem {
     public element;
     public weight;
@@ -40,6 +53,9 @@ class PriorityQueueItem {
     }
 }
 
+/**
+ * An implementation of a PriorityQueue, for the purpose of Dijkstra's algorithm.
+ */
 export class PriorityQueue {
     private collection: PriorityQueueItem[];
 
@@ -74,9 +90,12 @@ export class PriorityQueue {
     }
 }
 
+/**
+ * Houses static functions for pathfinding.
+ */
 export class Pathfinder {
     /**
-     * An implementation of the Dijkstra algorithm, with modifications for the fact that there are multiple
+     * An implementation of Dijkstra's algorithm, with modifications for the fact that there are multiple
      * destinations, and we just want the time to the closest destination.
      *
      * @param graph
@@ -116,7 +135,9 @@ export class Pathfinder {
         }
 
         let shortestTime = Infinity;
+        // Loop through each node that's considered a destination
         for (const endNode of endNodes) {
+            // If this node's travel time is shorter than the one we had, then set its time as the new shortest one
             if (times.get(endNode) < shortestTime) {
                 shortestTime = times.get(endNode);
             }
@@ -125,6 +146,14 @@ export class Pathfinder {
         return shortestTime;
     }
 
+    /**
+     * Given a start node, an individual destination, and a previously determined backtrace Map, this recreates the
+     * best route and returns it as an ordered array of nodes.
+     *
+     * @param startNode
+     * @param endNode
+     * @param backtrace
+     */
     static getPathOfEndNode(startNode: number, endNode: number, backtrace: Map<number, number>): number[] {
         const path = [endNode];
         let lastStep = endNode;
@@ -135,20 +164,28 @@ export class Pathfinder {
         return path;
     }
 
-    static generateGraphFromMap(map: GameMap): Graph {
+    /**
+     * Given a GameMap full of Cells, this converts it to a Graph full of nodes and edges.
+     *
+     * @param gameMap
+     */
+    static generateGraphFromMap(gameMap: GameMap): Graph {
         const graph = new Graph();
 
         // Add all the nodes
-        for (const row of map.map) {
+        for (const row of gameMap.map) {
             for (const cell of row) {
+                // A node is simply the ID of the Cell
                 graph.addNode(cell.id);
             }
         }
 
         // Add all the edges to the nodes
-        for (const row of map.map) {
+        for (const row of gameMap.map) {
             for (const cell of row) {
+                // Add an edge for each neighboring Cell (to the left, to the right, above, and below)
                 if (cell.getLeftNeighbor()) {
+                    // Each edge has the same weight of 1 because this is a grid
                     graph.addEdge(cell.id, cell.getLeftNeighbor().id, 1);
                 }
                 if (cell.getRightNeighbor()) {
