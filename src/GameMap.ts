@@ -1,4 +1,4 @@
-import Cell from './cell';
+import Cell from './Cell';
 
 /**
  * Represents the (not necessarily viewable) arrangement of cells

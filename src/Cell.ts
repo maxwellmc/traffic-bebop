@@ -2,7 +2,7 @@
  * Represents a location on a GameMap, with a terrain type and optionally the game
  * piece that it is hosting.
  */
-import GameMap from './gameMap';
+import GameMap from './GameMap';
 
 export default class Cell {
     /* Constants ---------------------------------------------------------------------------------------------------- */

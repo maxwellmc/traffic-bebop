@@ -1,9 +1,9 @@
-import ViewableObject from './viewable-object';
-import Tile from './tile';
-import Toolbar from './nonworld/toolbar';
-import Game from './game';
-import Cell from './cell';
-import GameMap from './gameMap';
+import ViewableObject from './ViewableObject';
+import Tile from './Tile';
+import Toolbar from './nonworld/Toolbar';
+import Game from './Game';
+import Cell from './Cell';
+import GameMap from './GameMap';
 import { Container, Point, DisplayObject } from 'pixi.js';
 
 /**

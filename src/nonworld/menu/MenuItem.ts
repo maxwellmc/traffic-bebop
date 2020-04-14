@@ -1,5 +1,5 @@
-import ViewableObject from '../../viewable-object';
-import Menu from './menu';
+import ViewableObject from '../../ViewableObject';
+import Menu from './Menu';
 
 export default class MenuItem extends ViewableObject {
     /* Constants ---------------------------------------------------------------------------------------------------- */

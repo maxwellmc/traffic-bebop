@@ -1,6 +1,6 @@
-import Menu from './menu';
-import SpeedMenu from './speed-menu';
-import Game from '../../game';
+import Menu from './Menu';
+import SpeedMenu from './SpeedMenu';
+import Game from '../../Game';
 
 /**
  * A non-world container for Menus.

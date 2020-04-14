@@ -1,9 +1,9 @@
-import ViewableObject from './viewable-object';
-import Grid from './grid';
-import Cell from './cell';
+import ViewableObject from './ViewableObject';
+import Grid from './Grid';
+import Cell from './Cell';
 import { Container, LoaderResource, Sprite, Text } from 'pixi.js';
-import Game from './game';
-import { TileGraphicLayer } from './tile-graphic';
+import Game from './Game';
+import { TileGraphicLayer } from './TileGraphic';
 
 /**
  * A cell within the world.

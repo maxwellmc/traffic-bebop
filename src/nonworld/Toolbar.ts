@@ -1,5 +1,5 @@
-import Tool from './tool';
-import Game from '../game';
+import Tool from './Tool';
+import Game from '../Game';
 
 /**
  * A non-world container for Tools.

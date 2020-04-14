@@ -1,4 +1,4 @@
-import GameMap from '../gameMap';
+import GameMap from '../GameMap';
 
 class WeightedNode {
     public node;

@@ -4,7 +4,7 @@ const CopyPlugin = require('copy-webpack-plugin');
 module.exports = {
     mode: 'development',
     watch: true,
-    entry: './src/game.ts',
+    entry: './src/Game.ts',
     output: {
         filename: 'bundle.js',
         path: path.resolve(__dirname, 'dist'),

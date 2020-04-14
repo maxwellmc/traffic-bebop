@@ -1,14 +1,14 @@
 import * as PIXI from 'pixi.js';
-import Toolbar from './nonworld/toolbar';
-import Grid from './grid';
-import HUD from './nonworld/hud';
-import GameState from './game-state';
-import GameMap from './gameMap';
-import Menubar from './nonworld/menu/menubar';
+import Toolbar from './nonworld/Toolbar';
+import Grid from './Grid';
+import HUD from './nonworld/HUD';
+import GameState from './GameState';
+import GameMap from './GameMap';
+import Menubar from './nonworld/menu/Menubar';
 import * as EventEmitter from 'eventemitter3';
-import Tool from './nonworld/tool';
-import ViewableObject from './viewable-object';
-import Simulator from './simulator';
+import Tool from './nonworld/Tool';
+import ViewableObject from './ViewableObject';
+import Simulator from './Simulator';
 
 /**
  * Manages the Pixi Application, the game loop, and calling the draw-ers.

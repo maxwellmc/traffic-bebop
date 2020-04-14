@@ -1,5 +1,5 @@
-import Game from './game';
-import { Speeds, SpeedUtil } from './nonworld/speed';
+import Game from './Game';
+import { Speeds, SpeedUtil } from './nonworld/Speed';
 
 /**
  * Represents the properties of the game as they exist right now.

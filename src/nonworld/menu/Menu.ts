@@ -1,6 +1,6 @@
-import ViewableObject from '../../viewable-object';
-import Menubar from './menubar';
-import MenuItem from './menu-item';
+import ViewableObject from '../../ViewableObject';
+import Menubar from './Menubar';
+import MenuItem from './MenuItem';
 import { Text, Graphics } from 'pixi.js';
 
 /**
