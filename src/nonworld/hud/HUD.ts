@@ -1,9 +1,9 @@
 import HUDItem from './HUDItem';
-import ViewableObject from '../ViewableObject';
+import ViewableObject from '../../ViewableObject';
 import { Graphics } from 'pixi.js';
-import Game from '../Game';
-import GameState from '../GameState';
-import { Speeds } from './Speed';
+import Game from '../../Game';
+import GameState from '../../GameState';
+import { Speeds } from '../../Speed';
 
 /**
  * The heads-up display to show the game state to the user.

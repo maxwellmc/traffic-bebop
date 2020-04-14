@@ -1,6 +1,6 @@
 import Toolbar from './Toolbar';
 import { LoaderResource, Sprite } from 'pixi.js';
-import Game from '../Game';
+import Game from '../../Game';
 
 /**
  * Selected by the user to manipulate individual cells in the world.

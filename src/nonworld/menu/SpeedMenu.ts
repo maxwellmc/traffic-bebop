@@ -3,7 +3,7 @@ import MenuItem from './MenuItem';
 import Menubar from './Menubar';
 import GameState from '../../GameState';
 import Game from '../../Game';
-import { Speeds } from '../Speed';
+import { Speeds } from '../../Speed';
 
 export default class SpeedMenu extends Menu {
     /* Constants ---------------------------------------------------------------------------------------------------- */

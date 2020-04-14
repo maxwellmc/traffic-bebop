@@ -1,12 +1,12 @@
 import * as PIXI from 'pixi.js';
-import Toolbar from './nonworld/Toolbar';
+import Toolbar from './nonworld/tool/Toolbar';
 import Grid from './Grid';
-import HUD from './nonworld/HUD';
+import HUD from './nonworld/hud/HUD';
 import GameState from './GameState';
 import GameMap from './GameMap';
 import Menubar from './nonworld/menu/Menubar';
 import * as EventEmitter from 'eventemitter3';
-import Tool from './nonworld/Tool';
+import Tool from './nonworld/tool/Tool';
 import ViewableObject from './ViewableObject';
 import Simulator from './Simulator';
 

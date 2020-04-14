@@ -1,6 +1,6 @@
 import Cell from './Cell';
 import GameMap from './GameMap';
-import { Pathfinder } from './nonworld/Pathfinding';
+import { Pathfinder } from './Pathfinding';
 
 /**
  * Handles the changes to the map each tick, based on set logic and varying amounts of randomness.
