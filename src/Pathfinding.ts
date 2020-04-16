@@ -55,7 +55,6 @@ export class Graph {
 
     addEdge(node1, node2, weight): void {
         this.adjacencyList[node1].add(new WeightedNode(node2, weight));
-        this.adjacencyList[node2].add(new WeightedNode(node1, weight));
     }
 }
 
