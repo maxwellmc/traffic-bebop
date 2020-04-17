@@ -28,8 +28,8 @@ import TravelTrip from './TravelTrip';
  */
 export default class Simulator {
     /* Constants ---------------------------------------------------------------------------------------------------- */
-    public static readonly MOVE_IN_CHANCE = 100;
-    public static readonly MOVE_IN_ROAD_CUTOFF = 4;
+    public static readonly MOVE_IN_CHANCE = 50;
+    public static readonly MOVE_IN_ROAD_CUTOFF = 2;
     public static readonly MOVE_IN_ROAD_EXPONENTIATION_OPERAND = 4;
 
     /* Class Properties --------------------------------------------------------------------------------------------- */
@@ -116,7 +116,7 @@ export default class Simulator {
             startingCell.id,
             destinationCell.id,
         );
-        const travelTrip = new TravelTrip(this._game.map, startingCell.id, destinationCell.id, path, startingCell.id);
+        const travelTrip = new TravelTrip(this._game, startingCell.id, destinationCell.id, path);
         this._game.gameState.travelTrips.add(travelTrip);
         console.log('path', path);
     }

@@ -17,7 +17,7 @@
  */
 
 import GameMap from './GameMap';
-import { StructureTypes } from './Cell';
+import Cell, { StructureTypes } from './Cell';
 
 /**
  * The file houses multiple classes used for the pathfinding algorithms.
@@ -112,6 +112,8 @@ export class PriorityQueue {
  * Houses static functions for pathfinding.
  */
 export class Pathfinder {
+    public static readonly PREFER_ROADS_NONROAD_WEIGHT = 1000;
+
     /**
      * An implementation of Dijkstra's algorithm. This simply processes the Graph per the algorithm.
      * What is done with the processed queue, backtrace, etc. should be handled by another function.
@@ -122,7 +124,13 @@ export class Pathfinder {
      * @param backtrace
      * @param priorityQueue
      */
-    static processDijkstra(graph: Graph, startNode: number, times, backtrace, priorityQueue): void {
+    static processDijkstra(
+        graph: Graph,
+        startNode: number,
+        times: Map<number, number>,
+        backtrace: Map<number, number>,
+        priorityQueue: PriorityQueue,
+    ): void {
         times.set(startNode, 0);
 
         graph.nodes.forEach((node) => {
@@ -210,7 +218,7 @@ export class Pathfinder {
      * Given a GameMap full of Cells, this converts it to a Graph full of nodes and edges.
      *
      * @param gameMap
-     * @param preferRoads
+     * @param preferRoads If true, then routes will try to use roads as much as possible
      */
     static generateGraphFromMap(gameMap: GameMap, preferRoads = false): Graph {
         const graph = new Graph();
@@ -231,27 +239,49 @@ export class Pathfinder {
                     topNeighbor = cell.getTopNeighbor(),
                     bottomNeighbor = cell.getBottomNeighbor();
 
-                let weight;
                 // Add an edge for each neighboring Cell (to the left, to the right, above, and below)
                 if (leftNeighbor) {
-                    weight = preferRoads ? (leftNeighbor.structureType === StructureTypes.Road ? 1 : 500) : 1;
-                    graph.addEdge(cell.id, leftNeighbor.id, weight);
+                    graph.addEdge(
+                        cell.id,
+                        leftNeighbor.id,
+                        Pathfinder.determineEdgeWeightOfNeighborCell(leftNeighbor, preferRoads),
+                    );
                 }
                 if (rightNeighbor) {
-                    weight = preferRoads ? (rightNeighbor.structureType === StructureTypes.Road ? 1 : 500) : 1;
-                    graph.addEdge(cell.id, rightNeighbor.id, weight);
+                    graph.addEdge(
+                        cell.id,
+                        rightNeighbor.id,
+                        Pathfinder.determineEdgeWeightOfNeighborCell(rightNeighbor, preferRoads),
+                    );
                 }
                 if (topNeighbor) {
-                    weight = preferRoads ? (topNeighbor.structureType === StructureTypes.Road ? 1 : 500) : 1;
-                    graph.addEdge(cell.id, topNeighbor.id, weight);
+                    graph.addEdge(
+                        cell.id,
+                        topNeighbor.id,
+                        Pathfinder.determineEdgeWeightOfNeighborCell(topNeighbor, preferRoads),
+                    );
                 }
                 if (bottomNeighbor) {
-                    weight = preferRoads ? (bottomNeighbor.structureType === StructureTypes.Road ? 1 : 500) : 1;
-                    graph.addEdge(cell.id, bottomNeighbor.id, weight);
+                    graph.addEdge(
+                        cell.id,
+                        bottomNeighbor.id,
+                        Pathfinder.determineEdgeWeightOfNeighborCell(bottomNeighbor, preferRoads),
+                    );
                 }
             }
         }
 
         return graph;
+    }
+
+    static determineEdgeWeightOfNeighborCell(neighborCell: Cell, preferRoads: boolean): number {
+        // If we're preferring roads and the neighbor is a road, then give this edge a weight of 1
+        // If we're preferring roads and the neighbor isn't a road, then give a large weight (to avoid)
+        // If we don't care about preferring roads, then just give a 1
+        return preferRoads
+            ? neighborCell.structureType === StructureTypes.Road
+                ? 1
+                : this.PREFER_ROADS_NONROAD_WEIGHT
+            : 1;
     }
 }

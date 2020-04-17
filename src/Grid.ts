@@ -103,6 +103,9 @@ export default class Grid extends ViewableObject {
                 // Create a new Tile for it
                 const tile = new Tile(this, x, y, cell, this._game.spritesheet);
 
+                // Let the Cell have a reference to the Tile
+                cell.tile = tile;
+
                 // Add the Tile to our list
                 this._tiles = this._tiles.concat(tile);
 

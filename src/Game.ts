@@ -27,6 +27,7 @@ import * as EventEmitter from 'eventemitter3';
 import Tool from './nonworld/tool/Tool';
 import ViewableObject from './ViewableObject';
 import Simulator from './Simulator';
+import {Speeds} from './Speed';
 
 export enum GameEvents {
     MoneyDeducted = 'money.deducted',
@@ -113,6 +114,7 @@ export default class Game {
         this._eventEmitter.emit(GameEvents.TimeIncreased, this._ticker.deltaMS);
 
         this.updateGrid();
+        this.updateTraffic(this._ticker.deltaMS);
         this.updateToolbar();
         this.updateHUD();
         this.updateMenubar();
@@ -131,6 +133,19 @@ export default class Game {
     updateGrid(): void {
         for (const tile of this._grid.tiles) {
             tile.updateGraphics();
+        }
+    }
+
+    updateTraffic(deltaMS: number): void {
+        // Only update if we're not paused
+        if(this._gameState.speed !== Speeds.Paused) {
+            for (const trip of this._gameState.travelTrips) {
+                if (!trip.vehicle.isOnStage) {
+                    this._grid.grid.addChild(trip.vehicle.graphic);
+                    trip.vehicle.isOnStage = true;
+                }
+                trip.vehicle.updateGraphics(deltaMS, this._gameState.speed);
+            }
         }
     }
 
