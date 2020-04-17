@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import Vehicle, { Direction } from './Vehicle';
+import Vehicle, { Direction, TurningStates } from './Vehicle';
 import Game from './Game';
 import Grid from './Grid';
 import Cell from './Cell';
@@ -43,8 +43,6 @@ export default class TravelTrip {
     }
 
     advance(): boolean {
-        console.log('advance');
-
         // Find the next Cell to which to advance
         let currentPathIndex = this._path.indexOf(this._currentCellID);
         const nextCellID = this._path[currentPathIndex + 1];
@@ -74,31 +72,126 @@ export default class TravelTrip {
         // Determine the direction from here to the future Cell
         const direction = this.determineDirection(pastCell, currentCell, futureCell);
         this._vehicle.direction = direction;
+        const turningState = this.determineTurningState(pastCell, currentCell, futureCell);
+        this._vehicle.turningState = turningState;
 
-        // Update the Vehicle
         this._vehicle.tileX = currentCell.tile.x;
         this._vehicle.tileY = currentCell.tile.y;
+
         const scaledTileHeight = Grid.TILE_HEIGHT * Game.SPRITE_SCALE,
-            scaledTileWidth = Grid.TILE_WIDTH * Game.SPRITE_SCALE,
-            scaledTileCenterWidth = scaledTileWidth / 2,
-            scaledTileCenterHeight = scaledTileHeight / 2;
+            scaledTileWidth = Grid.TILE_WIDTH * Game.SPRITE_SCALE;
+        const laneOffset1 = 11 * Game.SPRITE_SCALE - 4,
+            laneOffset2 = 25 * Game.SPRITE_SCALE - 4;
+
         if (direction === Direction.South) {
-            this._vehicle.graphic.x = currentCell.tile.x + scaledTileCenterWidth;
-            this._vehicle.graphic.y = currentCell.tile.y + scaledTileCenterHeight;
+            this._vehicle.graphic.x = currentCell.tile.x + laneOffset1;
+            this._vehicle.graphic.y = currentCell.tile.y;
+        } else if (direction === Direction.SouthWest) {
+            if (turningState === TurningStates.ToSouthFromWest) {
+                this._vehicle.graphic.x = currentCell.tile.x + scaledTileWidth;
+                this._vehicle.graphic.y = currentCell.tile.y + laneOffset1;
+            } else if (turningState === TurningStates.ToWestFromSouth) {
+                this._vehicle.graphic.x = currentCell.tile.x + laneOffset1;
+                this._vehicle.graphic.y = currentCell.tile.y;
+            }
+        } else if (direction === Direction.SouthEast) {
+            if (turningState === TurningStates.ToSouthFromEast) {
+                this._vehicle.graphic.x = currentCell.tile.x;
+                this._vehicle.graphic.y = currentCell.tile.y + laneOffset2;
+            } else if (turningState === TurningStates.ToEastFromSouth) {
+                this._vehicle.graphic.x = currentCell.tile.x + laneOffset1;
+                this._vehicle.graphic.y = currentCell.tile.y;
+            }
         } else if (direction === Direction.North) {
-            this._vehicle.graphic.x = currentCell.tile.x + scaledTileCenterWidth;
+            this._vehicle.graphic.x = currentCell.tile.x + laneOffset2;
             this._vehicle.graphic.y = currentCell.tile.y + scaledTileHeight;
+        }else if(direction === Direction.NorthWest) {
+            if (turningState === TurningStates.ToNorthFromWest) {
+                this._vehicle.graphic.x = currentCell.tile.x + scaledTileWidth;
+                this._vehicle.graphic.y = currentCell.tile.y + laneOffset1;
+            } else if (turningState === TurningStates.ToWestFromNorth) {
+                this._vehicle.graphic.x = currentCell.tile.x + laneOffset2;
+                this._vehicle.graphic.y = currentCell.tile.y + scaledTileHeight;
+            }
+        }else if(direction === Direction.NorthEast) {
+            if (turningState === TurningStates.ToNorthFromEast) {
+                this._vehicle.graphic.x = currentCell.tile.x;
+                this._vehicle.graphic.y = currentCell.tile.y + laneOffset2;
+            } else if (turningState === TurningStates.ToEastFromNorth) {
+                this._vehicle.graphic.x = currentCell.tile.x + laneOffset2;
+                this._vehicle.graphic.y = currentCell.tile.y + scaledTileHeight;
+            }
         } else if (direction === Direction.West) {
-            this._vehicle.graphic.x = currentCell.tile.x + scaledTileWidth - this.vehicle.graphic.width;
-            this._vehicle.graphic.y = currentCell.tile.y + scaledTileCenterHeight;
-        } else if (direction === Direction.East) {
             this._vehicle.graphic.x = currentCell.tile.x + scaledTileWidth;
-            this._vehicle.graphic.y = currentCell.tile.y + scaledTileCenterHeight;
+            this._vehicle.graphic.y = currentCell.tile.y + laneOffset1;
+        } else if (direction === Direction.East) {
+            this._vehicle.graphic.x = currentCell.tile.x;
+            this._vehicle.graphic.y = currentCell.tile.y + laneOffset2;
         }
     }
 
     determineDirection(pastCell: Cell, currentCell: Cell, futureCell: Cell): Direction {
-        return currentCell.determineDirectionOfNeighbor(futureCell);
+        const directionPastToCurrent = pastCell.determineDirectionOfNeighbor(currentCell);
+        const directionCurrentToFuture = currentCell.determineDirectionOfNeighbor(futureCell);
+
+        if (
+            (directionPastToCurrent === Direction.South && directionCurrentToFuture === Direction.West) ||
+            (directionPastToCurrent === Direction.West && directionCurrentToFuture === Direction.South)
+        ) {
+            return Direction.SouthWest;
+        }
+        if (
+            (directionPastToCurrent === Direction.South && directionCurrentToFuture === Direction.East) ||
+            (directionPastToCurrent === Direction.East && directionCurrentToFuture === Direction.South)
+        ) {
+            return Direction.SouthEast;
+        }
+        if (
+            (directionPastToCurrent === Direction.North && directionCurrentToFuture === Direction.West) ||
+            (directionPastToCurrent === Direction.West && directionCurrentToFuture === Direction.North)
+        ) {
+            return Direction.NorthWest;
+        }
+        if (
+            (directionPastToCurrent === Direction.North && directionCurrentToFuture === Direction.East) ||
+            (directionPastToCurrent === Direction.East && directionCurrentToFuture === Direction.North)
+        ) {
+            return Direction.NorthEast;
+        }
+
+        return directionCurrentToFuture;
+    }
+
+    determineTurningState(pastCell: Cell, currentCell: Cell, futureCell: Cell): TurningStates {
+        const directionPastToCurrent = pastCell.determineDirectionOfNeighbor(currentCell);
+        const directionCurrentToFuture = currentCell.determineDirectionOfNeighbor(futureCell);
+
+        if (directionPastToCurrent === Direction.South && directionCurrentToFuture === Direction.West) {
+            return TurningStates.ToWestFromSouth;
+        }
+        if (directionPastToCurrent === Direction.West && directionCurrentToFuture === Direction.South) {
+            return TurningStates.ToSouthFromWest;
+        }
+        if (directionPastToCurrent === Direction.South && directionCurrentToFuture === Direction.East) {
+            return TurningStates.ToEastFromSouth;
+        }
+        if (directionPastToCurrent === Direction.East && directionCurrentToFuture === Direction.South) {
+            return TurningStates.ToSouthFromEast;
+        }
+        if (directionPastToCurrent === Direction.North && directionCurrentToFuture === Direction.West) {
+            return TurningStates.ToWestFromNorth;
+        }
+        if (directionPastToCurrent === Direction.West && directionCurrentToFuture === Direction.North) {
+            return TurningStates.ToNorthFromWest;
+        }
+        if (directionPastToCurrent === Direction.North && directionCurrentToFuture === Direction.East) {
+            return TurningStates.ToEastFromNorth;
+        }
+        if (directionPastToCurrent === Direction.East && directionCurrentToFuture === Direction.North) {
+            return TurningStates.ToNorthFromEast;
+        }
+
+        return TurningStates.NotTurning;
     }
 
     end(): void {

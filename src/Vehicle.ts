@@ -36,6 +36,18 @@ export enum Direction {
     SouthWest,
 }
 
+export enum TurningStates {
+    NotTurning,
+    ToNorthFromEast,
+    ToNorthFromWest,
+    ToSouthFromEast,
+    ToSouthFromWest,
+    ToEastFromNorth,
+    ToEastFromSouth,
+    ToWestFromNorth,
+    ToWestFromSouth,
+}
+
 enum VehicleSpriteFiles {
     VehicleRightLane = 'car1-rl.png',
     VehicleLeftLane = 'car1-ll.png',
@@ -49,11 +61,13 @@ export default class Vehicle {
     private _graphic: Sprite;
     private _isOnStage: boolean;
     private _direction: Direction;
+    private _turningState: TurningStates;
 
     constructor(travelTrip: TravelTrip, spritesheet: LoaderResource) {
         this._travelTrip = travelTrip;
         this._spritesheet = spritesheet;
         this._isOnStage = false;
+        this._turningState = TurningStates.NotTurning;
 
         this._graphic = new Sprite(this._spritesheet.textures[VehicleSpriteFiles.VehicleRightLane]);
         this._direction = Direction.South;
@@ -66,41 +80,68 @@ export default class Vehicle {
         const gameDayTimePassed = deltaMS / GameState.GAME_DAYS_IN_MILLISECONDS,
             scaledGameDayTimePassed = gameDayTimePassed * SpeedUtil.getMultiplier(speed),
             scaledTileHeight = Grid.TILE_HEIGHT * Game.SPRITE_SCALE,
-            scaledTileWidth = Grid.TILE_WIDTH * Game.SPRITE_SCALE;
+            scaledTileWidth = Grid.TILE_WIDTH * Game.SPRITE_SCALE,
+            wideTurnDivisor = 1.5,
+            sharpTurnDivisor = 4;
+
         switch (this._direction) {
             case Direction.South:
-                this.setSpriteToSouth();
+                this._graphic.angle = -180;
                 this._graphic.y = this._graphic.y + scaledTileHeight * scaledGameDayTimePassed;
                 break;
+            case Direction.SouthWest:
+                this._graphic.angle = -135;
+                if (this._turningState === TurningStates.ToSouthFromWest) {
+                    this._graphic.x = this._graphic.x - (scaledTileWidth / wideTurnDivisor) * scaledGameDayTimePassed;
+                    this._graphic.y = this._graphic.y + (scaledTileHeight / wideTurnDivisor) * scaledGameDayTimePassed;
+                } else if (this._turningState === TurningStates.ToWestFromSouth) {
+                    this._graphic.x = this._graphic.x - (scaledTileWidth / sharpTurnDivisor) * scaledGameDayTimePassed;
+                    this._graphic.y = this._graphic.y + (scaledTileHeight / sharpTurnDivisor) * scaledGameDayTimePassed;
+                }
+                break;
+            case Direction.SouthEast:
+                this._graphic.angle = 135;
+                if (this._turningState === TurningStates.ToSouthFromEast) {
+                    this._graphic.x = this._graphic.x + (scaledTileWidth / sharpTurnDivisor) * scaledGameDayTimePassed;
+                    this._graphic.y = this._graphic.y + (scaledTileHeight / sharpTurnDivisor) * scaledGameDayTimePassed;
+                } else if (this._turningState === TurningStates.ToEastFromSouth) {
+                    this._graphic.x = this._graphic.x + (scaledTileWidth / wideTurnDivisor) * scaledGameDayTimePassed;
+                    this._graphic.y = this._graphic.y + (scaledTileHeight / wideTurnDivisor) * scaledGameDayTimePassed;
+                }
+                break;
             case Direction.East:
-                this.setSpriteToEast();
+                this._graphic.angle = 90;
                 this._graphic.x = this._graphic.x + scaledTileWidth * scaledGameDayTimePassed;
                 break;
             case Direction.North:
+                this._graphic.angle = 0;
                 this._graphic.y = this._graphic.y - scaledTileHeight * scaledGameDayTimePassed;
-                this.setSpriteToNorth();
+                break;
+            case Direction.NorthWest:
+                this._graphic.angle = -45;
+                if (this._turningState === TurningStates.ToNorthFromWest) {
+                    this._graphic.x = this._graphic.x - (scaledTileWidth / sharpTurnDivisor) * scaledGameDayTimePassed;
+                    this._graphic.y = this._graphic.y - (scaledTileHeight / sharpTurnDivisor) * scaledGameDayTimePassed;
+                } else if (this._turningState === TurningStates.ToWestFromNorth) {
+                    this._graphic.x = this._graphic.x - (scaledTileWidth / wideTurnDivisor) * scaledGameDayTimePassed;
+                    this._graphic.y = this._graphic.y - (scaledTileHeight / wideTurnDivisor) * scaledGameDayTimePassed;
+                }
+                break;
+            case Direction.NorthEast:
+                this._graphic.angle = 45;
+                if (this._turningState === TurningStates.ToNorthFromEast) {
+                    this._graphic.x = this._graphic.x + (scaledTileWidth / wideTurnDivisor) * scaledGameDayTimePassed;
+                    this._graphic.y = this._graphic.y - (scaledTileHeight / wideTurnDivisor) * scaledGameDayTimePassed;
+                } else if (this._turningState === TurningStates.ToEastFromNorth) {
+                    this._graphic.x = this._graphic.x + (scaledTileWidth / sharpTurnDivisor) * scaledGameDayTimePassed;
+                    this._graphic.y = this._graphic.y - (scaledTileHeight / sharpTurnDivisor) * scaledGameDayTimePassed;
+                }
                 break;
             case Direction.West:
-                this.setSpriteToWest();
+                this._graphic.angle = -90;
                 this._graphic.x = this._graphic.x - scaledTileWidth * scaledGameDayTimePassed;
                 break;
         }
-    }
-
-    setSpriteToEast(): void {
-        this._graphic.angle = 90;
-    }
-
-    setSpriteToWest(): void {
-        this._graphic.angle = -90;
-    }
-
-    setSpriteToNorth(): void {
-        this._graphic.angle = 0;
-    }
-
-    setSpriteToSouth(): void {
-        this._graphic.angle = 180;
     }
 
     /* Getters & Setters -------------------------------------------------------------------------------------------- */
@@ -143,5 +184,13 @@ export default class Vehicle {
 
     set direction(value: Direction) {
         this._direction = value;
+    }
+
+    get turningState(): TurningStates {
+        return this._turningState;
+    }
+
+    set turningState(value: TurningStates) {
+        this._turningState = value;
     }
 }

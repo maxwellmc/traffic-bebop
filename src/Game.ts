@@ -61,7 +61,7 @@ export default class Game {
     private _hud: HUD;
 
     constructor() {
-        this._debug = true;
+        this._debug = false;
 
         // Set Pixi settings
         PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;

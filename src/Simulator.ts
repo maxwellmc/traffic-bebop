@@ -18,7 +18,7 @@
 
 import Cell, { StructureTypes, ZoneTypes } from './Cell';
 import GameMap from './GameMap';
-import { Pathfinder } from './Pathfinding';
+import {Graph, Pathfinder} from './Pathfinding';
 import Game from './Game';
 import TravelTrip from './TravelTrip';
 
@@ -34,6 +34,9 @@ export default class Simulator {
 
     /* Class Properties --------------------------------------------------------------------------------------------- */
     private _game: Game;
+    private _gameMap: GameMap;
+    private _graph: Graph;
+    private _roadGraph: Graph;
 
     constructor(game) {
         this._game = game;
@@ -46,24 +49,28 @@ export default class Simulator {
      */
     simulate(): void {
         console.log('simulate');
-        const map = this._game.map;
+        this._gameMap = this._game.map;
+
+        // Create a Graph of the GameMap
+        this._graph = Pathfinder.generateGraphFromMap(this._gameMap);
+
+        // Create a Graph of the GameMap, preferring roads
+        this._roadGraph = Pathfinder.generateGraphFromMap(this._game.map, true);
 
         // Simulate real estate
-        this.simulateResidentialRealEstate(map);
-        this.simulateCommercialRealEstate(map);
+        this.simulateResidentialRealEstate();
+        this.simulateCommercialRealEstate();
 
         // Simulate traffic
-        this.simulateResidentialTraffic(map);
+        this.simulateResidentialTraffic();
         this.advanceTravelTrips();
     }
 
     /**
      * Simulates people moving in and out of residences.
-     *
-     * @param map
      */
-    simulateResidentialRealEstate(map: GameMap): void {
-        const emptyResidentialCells = map.findCellsByZoneAndStructure(ZoneTypes.Residential, StructureTypes.Empty);
+    simulateResidentialRealEstate(): void {
+        const emptyResidentialCells = this._gameMap.findCellsByZoneAndStructure(ZoneTypes.Residential, StructureTypes.Empty);
         // Loop through each empty residential zone
         for (const emptyResidentialCell of emptyResidentialCells) {
             // Determine if this cell should be "moved into"
@@ -75,11 +82,9 @@ export default class Simulator {
 
     /**
      * Simulates businesses moving in and out of commercial buildings.
-     *
-     * @param map
      */
-    simulateCommercialRealEstate(map: GameMap): void {
-        const emptyCommercialCells = map.findCellsByZoneAndStructure(ZoneTypes.Commercial, StructureTypes.Empty);
+    simulateCommercialRealEstate(): void {
+        const emptyCommercialCells = this._gameMap.findCellsByZoneAndStructure(ZoneTypes.Commercial, StructureTypes.Empty);
         // Loop through each empty commercial zone
         for (const emptyCommercialCell of emptyCommercialCells) {
             // Determine if this cell should be "moved into"
@@ -89,13 +94,12 @@ export default class Simulator {
         }
     }
 
-    simulateResidentialTraffic(map: GameMap): void {
-        const houseCells = map.findCellsByStructure(StructureTypes.House);
+    simulateResidentialTraffic(): void {
+        const houseCells = this._gameMap.findCellsByStructure(StructureTypes.House);
         // Loop through each occupied residential Cell
         for (const houseCell of houseCells) {
             // Determine if this resident should travel to another lot
             if (this.shouldResidentTravel(houseCell)) {
-                console.log('shouldtravel');
                 // Find a random commercial destination
                 const destinationCell = this._game.map.findRandomCellByZoneAndStructure(
                     ZoneTypes.Commercial,
@@ -109,16 +113,13 @@ export default class Simulator {
     }
 
     startTravelTrip(startingCell: Cell, destinationCell: Cell): void {
-        console.log('startTravelTrip');
-        const graph = Pathfinder.generateGraphFromMap(this._game.map, true);
         const path = Pathfinder.findShortestPathWithOneDestinationWithDijkstra(
-            graph,
+            this._roadGraph,
             startingCell.id,
             destinationCell.id,
         );
         const travelTrip = new TravelTrip(this._game, startingCell.id, destinationCell.id, path);
         this._game.gameState.travelTrips.add(travelTrip);
-        console.log('path', path);
     }
 
     advanceTravelTrips(): void {
@@ -126,7 +127,6 @@ export default class Simulator {
             return;
         }
 
-        console.log('advanceTravelTrips');
         for (const trip of this._game.gameState.travelTrips) {
             if (!trip.advance()) {
                 // If advancing returned false, then that was the end of this trip
@@ -185,8 +185,7 @@ export default class Simulator {
      * @param gameMap
      */
     calculateNearestRoadDistance(cell: Cell, gameMap: GameMap): number {
-        // Create a Graph of the GameMap
-        const graph = Pathfinder.generateGraphFromMap(gameMap);
+
         // Find all the Cells with roads
         const cellsWithRoads = gameMap.findCellsByStructure(StructureTypes.Road);
         const cellsWithRoadsIds = [];
@@ -197,8 +196,8 @@ export default class Simulator {
 
         // Find the shortest time to any road
         const shortestTime = Pathfinder.findShortestTimeWithMultipleDestinationsWithDijkstra(
-            graph,
-            graph.nodes[cell.id],
+            this._graph,
+            this._graph.nodes[cell.id],
             cellsWithRoadsIds,
         );
 
