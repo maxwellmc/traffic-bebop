@@ -59,14 +59,14 @@ export default class ViewMenu extends Menu {
     onMenuItemClick(menuItem: MenuItem): void {
         switch (menuItem.id) {
             case 0:
-                this._menubar.game.eventEmitter.emit(GridEvents.GridLayerToggled, '');
+                this._menubar.game.eventEmitter.emit(GridEvents.GridLayerToggled);
                 break;
-            // case 1:
-            //     this._menubar.game.eventEmitter.emit(GameEvents.SpeedSet, Speeds.Normal);
-            //     break;
-            // case 2:
-            //     this._menubar.game.eventEmitter.emit(GameEvents.SpeedSet, Speeds.Fast);
-            //     break;
+            case 1:
+                this._menubar.game.eventEmitter.emit(GridEvents.ZoomedIn);
+                break;
+            case 2:
+                this._menubar.game.eventEmitter.emit(GridEvents.ZoomedOut);
+                break;
         }
     }
 }

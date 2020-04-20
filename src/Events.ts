@@ -20,6 +20,7 @@ export enum GameEvents {
     MoneyDeducted = 'money.deducted',
     TimeIncreased = 'time.increased',
     SpeedSet = 'speed.set',
+    ScaleChanged = 'scale.changed',
 }
 
 export enum GameStateEvents {
@@ -30,4 +31,6 @@ export enum GameStateEvents {
 
 export enum GridEvents {
     GridLayerToggled = 'grid.grid-layer-toggled',
+    ZoomedIn = 'grid.zoomed-in',
+    ZoomedOut = 'grid.zoomed-out',
 }

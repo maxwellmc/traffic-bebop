@@ -22,9 +22,9 @@ import Game from './Game';
 import { StructureTypes, TerrainTypes, ZoneTypes } from './Cell';
 import GameMap from './GameMap';
 import { Container, Point } from 'pixi.js';
+import { GameEvents, GridEvents } from './Events';
 import InteractionEvent = PIXI.interaction.InteractionEvent;
 import InteractionData = PIXI.interaction.InteractionData;
-import {GameEvents, GridEvents} from './Events';
 
 /**
  * Visually represents the GameMap, as translated to an arrangement of viewable Tiles.
@@ -34,6 +34,9 @@ export default class Grid {
     public static readonly GRID_MARGIN = 50; // Will be scaled by the zoom level
     public static readonly TILE_WIDTH = 32;
     public static readonly TILE_HEIGHT = 32;
+    public static readonly STARTING_SCALE = 2;
+    public static readonly SCALE_MAX = 4;
+    public static readonly SCALE_MIN = 0;
     public static readonly TOOL_COSTS: Record<number, number> = {
         [Tools.Road]: -10,
         [Tools.ZoneResidential]: -100,
@@ -58,6 +61,7 @@ export default class Grid {
     private _dragLastX: number;
     private _dragLastY: number;
     private _showGridLayer: boolean;
+    private _scale: number;
 
     constructor(game: Game) {
         this._game = game;
@@ -68,12 +72,23 @@ export default class Grid {
         this._dragging = false;
         this._draggingTiles = [];
         this._showGridLayer = true;
+        this._scale = Grid.STARTING_SCALE;
 
         // Center the grid in the app
-        this._width = GameMap.COLS * (Grid.TILE_WIDTH * Game.SPRITE_SCALE);
-        this._height = GameMap.ROWS * (Grid.TILE_HEIGHT * Game.SPRITE_SCALE);
+        this._width = GameMap.COLS * (Grid.TILE_WIDTH * this._scale);
+        this._height = GameMap.ROWS * (Grid.TILE_HEIGHT * this._scale);
 
         // Set up the listeners for cursor interactions with the Grid
+        this.setupGridListeners();
+
+        // Listen for when the Grid layer is toggled
+        this._game.eventEmitter.on(GridEvents.GridLayerToggled, () => this.onGridLayerToggled());
+        // Listen for zooms
+        this._game.eventEmitter.on(GridEvents.ZoomedIn, () => this.onZoomedIn());
+        this._game.eventEmitter.on(GridEvents.ZoomedOut, () => this.onZoomedOut());
+    }
+
+    setupGridListeners(): void {
         this._grid.interactive = true;
         this._grid
             // Events for cursor start
@@ -87,12 +102,12 @@ export default class Grid {
             // Events for cursor move
             .on('mousemove', () => this.onCursorMove())
             .on('touchmove', () => this.onCursorMove());
-
-        // Listen for when the Grid layer is toggled
-        this._game.eventEmitter.on(GridEvents.GridLayerToggled, () => this.onGridLayerToggled());
     }
 
     generateGraphics(): void {
+        this._grid = new Container();
+        this._tiles = [];
+
         let x = this._startingX;
         let y = this._startingY;
 
@@ -111,9 +126,13 @@ export default class Grid {
                 // Add the Tile to our list
                 this._tiles = this._tiles.concat(tile);
 
-                x += Grid.TILE_WIDTH * Game.SPRITE_SCALE;
+                // Add the Tile to our stage
+                this._grid.addChild(tile.container);
+                this._grid.addChild(tile.debugContainer);
+
+                x += Grid.TILE_WIDTH * this._scale;
             }
-            y += Grid.TILE_HEIGHT * Game.SPRITE_SCALE;
+            y += Grid.TILE_HEIGHT * this._scale;
             x = this._startingX;
         }
     }
@@ -217,7 +236,7 @@ export default class Grid {
             if (this._game.toolInUse.id === Tools.Select) {
                 const movementX = this._dragEvent.global.x - this._dragLastX,
                     movementY = this._dragEvent.global.y - this._dragLastY,
-                    scaledMargin = Grid.GRID_MARGIN * Game.SPRITE_SCALE,
+                    scaledMargin = Grid.GRID_MARGIN * this._scale,
                     targetX = this._grid.x + movementX,
                     targetY = this._grid.y + movementY;
 
@@ -349,8 +368,8 @@ export default class Grid {
                 Grid.areRectanglesIntersecting(
                     tile.x + this._grid.x,
                     tile.y + this._grid.y,
-                    Grid.TILE_WIDTH * Game.SPRITE_SCALE,
-                    Grid.TILE_HEIGHT * Game.SPRITE_SCALE,
+                    Grid.TILE_WIDTH * this._scale,
+                    Grid.TILE_HEIGHT * this._scale,
                     boundingBoxX,
                     boundingBoxY,
                     boundingBoxWidth,
@@ -442,6 +461,20 @@ export default class Grid {
         this._showGridLayer = !this._showGridLayer;
     }
 
+    onZoomedIn(): void {
+        if (this._scale + 1 < Grid.SCALE_MAX) {
+            this._scale += 1;
+            this._game.eventEmitter.emit(GameEvents.ScaleChanged, this._scale);
+        }
+    }
+
+    onZoomedOut(): void {
+        if (this._scale - 1 > Grid.SCALE_MIN) {
+            this._scale -= 1;
+            this._game.eventEmitter.emit(GameEvents.ScaleChanged, this._scale);
+        }
+    }
+
     /* Getters & Setters -------------------------------------------------------------------------------------------- */
 
     get game(): Game {
@@ -490,5 +523,13 @@ export default class Grid {
 
     set showGridLayer(value: boolean) {
         this._showGridLayer = value;
+    }
+
+    get scale(): number {
+        return this._scale;
+    }
+
+    set scale(value: number) {
+        this._scale = value;
     }
 }

@@ -20,7 +20,6 @@ import { LoaderResource, Sprite } from 'pixi.js';
 import TravelTrip from './TravelTrip';
 import GameState from './GameState';
 import Grid from './Grid';
-import Game from './Game';
 import { Speeds, SpeedUtil } from './Speed';
 
 export enum Directions {
@@ -70,15 +69,15 @@ export default class Vehicle {
         this._graphic = new Sprite(this._spritesheet.textures[VehicleSpriteFiles.Car1]);
         this._direction = Directions.South;
 
-        this._graphic.scale.set(Game.SPRITE_SCALE);
+        this._graphic.scale.set(this._travelTrip.game.grid.scale);
         this._graphic.anchor.set(0.5);
     }
 
     updateGraphics(deltaMS: number, speed: Speeds): void {
         const gameDayTimePassed = deltaMS / GameState.GAME_DAYS_IN_MILLISECONDS,
             scaledGameDayTimePassed = gameDayTimePassed * SpeedUtil.getMultiplier(speed),
-            scaledTileHeight = Grid.TILE_HEIGHT * Game.SPRITE_SCALE,
-            scaledTileWidth = Grid.TILE_WIDTH * Game.SPRITE_SCALE,
+            scaledTileHeight = Grid.TILE_HEIGHT * this._travelTrip.game.grid.scale,
+            scaledTileWidth = Grid.TILE_WIDTH * this._travelTrip.game.grid.scale,
             wideTurnDivisor = 1.5,
             sharpTurnDivisor = 4;
 

@@ -16,9 +16,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import Toolbar, { Tools } from './Toolbar';
-import { LoaderResource, Sprite } from 'pixi.js';
-import Game from '../../Game';
+import Toolbar, {Tools} from './Toolbar';
+import {LoaderResource, Sprite} from 'pixi.js';
+import AbstractTwoGraphicObject from '../../AbstractTwoGraphicObject';
 
 enum ToolSpriteFiles {
     Background = 'tool-bg.png',
@@ -33,7 +33,7 @@ enum ToolSpriteFiles {
 /**
  * Selected by the user to manipulate individual cells in the world.
  */
-export default class Tool {
+export default class Tool extends AbstractTwoGraphicObject {
     /* Constants ---------------------------------------------------------------------------------------------------- */
 
     /* Class Properties --------------------------------------------------------------------------------------------- */
@@ -43,18 +43,13 @@ export default class Tool {
     private _x: number;
     private _y: number;
     private _spritesheet: LoaderResource;
-    private _background: Sprite;
-    private _foreground: Sprite;
 
-    constructor(toolbar: Toolbar, id: number, label: string, x: number, y: number, spritesheet: LoaderResource) {
+    constructor(toolbar: Toolbar, id: number, label: string, spritesheet: LoaderResource) {
+        super();
         this._toolbar = toolbar;
         this._id = id;
         this._label = label;
-        this._x = x;
-        this._y = y;
         this._spritesheet = spritesheet;
-
-        this.generateGraphics();
     }
 
     generateGraphics(): void {
@@ -67,7 +62,7 @@ export default class Tool {
         const backgroundGraphic = new Sprite(this._spritesheet.textures[filename]);
         backgroundGraphic.x = this._x;
         backgroundGraphic.y = this._y;
-        backgroundGraphic.scale.set(Game.SPRITE_SCALE);
+        backgroundGraphic.scale.set(Toolbar.SPRITE_SCALE);
         backgroundGraphic.interactive = true;
 
         backgroundGraphic.on('mousedown', (e) => this._toolbar.onToolClick(e, this));
@@ -97,7 +92,7 @@ export default class Tool {
         const toolGraphic = new Sprite(this._spritesheet.textures[spriteFilename]);
         toolGraphic.x = this._x;
         toolGraphic.y = this._y;
-        toolGraphic.scale.set(Game.SPRITE_SCALE);
+        toolGraphic.scale.set(Toolbar.SPRITE_SCALE);
         toolGraphic.interactive = true;
 
         toolGraphic.on('mousedown', (e) => this._toolbar.onToolClick(e, this));
@@ -108,10 +103,11 @@ export default class Tool {
 
     updateGraphics(): void {
         // Show the tool as depressed if it's the one in use
+        const background = this._background as Sprite;
         if (this._toolbar.game.toolInUse === this) {
-            this._background.texture = this._spritesheet.textures[ToolSpriteFiles.BackgroundDepressed];
+            background.texture = this._spritesheet.textures[ToolSpriteFiles.BackgroundDepressed];
         } else {
-            this._background.texture = this._spritesheet.textures[ToolSpriteFiles.Background];
+            background.texture = this._spritesheet.textures[ToolSpriteFiles.Background];
         }
     }
 
@@ -133,11 +129,19 @@ export default class Tool {
         this._label = value;
     }
 
-    get background(): PIXI.Sprite {
-        return this._background;
+    get x(): number {
+        return this._x;
     }
 
-    get foreground(): PIXI.Sprite {
-        return this._foreground;
+    set x(value: number) {
+        this._x = value;
+    }
+
+    get y(): number {
+        return this._y;
+    }
+
+    set y(value: number) {
+        this._y = value;
     }
 }

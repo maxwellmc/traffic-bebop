@@ -18,7 +18,6 @@
 
 import Menubar from './Menubar';
 import MenuItem from './MenuItem';
-import { Text, Graphics } from 'pixi.js';
 import AbstractTwoGraphicObject from '../../AbstractTwoGraphicObject';
 import GraphicUtil from '../../GraphicUtil';
 

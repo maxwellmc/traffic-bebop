@@ -106,7 +106,7 @@ export default class Tile {
         // Initialize the Container
         this._container.x = this._x;
         this._container.y = this._y;
-        this._container.scale.set(Game.SPRITE_SCALE);
+        this._container.scale.set(this._grid.scale);
         this._container.interactive = true;
         this._container.name = name;
 

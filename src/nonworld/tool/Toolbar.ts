@@ -37,6 +37,7 @@ export default class Toolbar {
     public static readonly TOOLBAR_STARTING_Y = Menubar.HEIGHT + 24;
     public static readonly TOOL_WIDTH = 110;
     public static readonly TOOL_HEIGHT = 32;
+    public static readonly SPRITE_SCALE = 2;
 
     public static readonly TOOLS = [
         {
@@ -68,16 +69,26 @@ export default class Toolbar {
     constructor(game: Game) {
         this._game = game;
         this._tools = [];
+
+        // Add the Tools
+        for (let i = 0; i < Toolbar.TOOLS.length; i++) {
+            const tool = Toolbar.TOOLS[i];
+            this.addTool(new Tool(this, tool.id, tool.label, this._game.spritesheet));
+        }
     }
 
     generateGraphics(): void {
-        const x = Toolbar.TOOLBAR_STARTING_X;
-        let y = Toolbar.TOOLBAR_STARTING_Y;
+        // FIXME
+    }
 
-        for (let i = 0; i < Toolbar.TOOLS.length; i++) {
-            const tool = Toolbar.TOOLS[i];
-            this.addTool(new Tool(this, tool.id, tool.label, x, y, this._game.spritesheet));
-            y += Toolbar.TOOL_HEIGHT * Game.SPRITE_SCALE;
+    setGraphicsPositioning(): void {
+        let x = Toolbar.TOOLBAR_STARTING_X,
+            y = Toolbar.TOOLBAR_STARTING_Y;
+
+        for (const tool of this._tools) {
+            tool.x = x;
+            tool.y = y;
+            y += Toolbar.TOOL_HEIGHT * Toolbar.SPRITE_SCALE;
         }
     }
 

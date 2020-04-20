@@ -19,7 +19,7 @@
 import Menu from './Menu';
 import MenuItem from './MenuItem';
 import Menubar from './Menubar';
-import { Speeds } from '../../Speed';
+import {Speeds} from '../../Speed';
 import {GameEvents} from '../../Events';
 
 export default class SpeedMenu extends Menu {

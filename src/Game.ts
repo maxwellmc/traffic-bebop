@@ -28,14 +28,13 @@ import Tool from './nonworld/tool/Tool';
 import Simulator from './Simulator';
 import { Speeds } from './Speed';
 import MenuItem from './nonworld/menu/MenuItem';
-import {GameEvents} from './Events';
+import { GameEvents } from './Events';
 
 /**
  * Manages the Pixi Application, the game loop, and calling the draw-ers.
  */
 export default class Game {
     /* Constants ---------------------------------------------------------------------------------------------------- */
-    public static readonly SPRITE_SCALE = 2;
     public static readonly FONT_FAMILY = 'VT323';
 
     /* Class Properties --------------------------------------------------------------------------------------------- */
@@ -71,10 +70,6 @@ export default class Game {
         this._gameState = new GameState(this);
         this._gameMap = new GameMap();
         this._simulator = new Simulator(this);
-        this._grid = new Grid(this);
-        this._menubar = new Menubar(this);
-        this._toolbar = new Toolbar(this);
-        this._hud = new HUD(this, this._gameState);
     }
 
     init(): void {
@@ -86,25 +81,39 @@ export default class Game {
     }
 
     load(): void {
+        // Keep a reference to the spritesheet
+        this._spritesheet = PIXI.Loader.shared.resources['dist/assets/sprites.json'];
+
+        // Initialize the things that needed the spritesheet
+        this._grid = new Grid(this);
+        this._menubar = new Menubar(this);
+        this._toolbar = new Toolbar(this);
+        this._hud = new HUD(this, this._gameState);
+
         // Size out the viewport for the first time
         this.sizeViewport();
+
+        // Draw the initial graphics
+        this.drawInitialGraphics();
 
         // Listen for window resize events
         window.addEventListener('resize', () => this.resize());
 
-        // Keep a reference to the spritesheet
-        this._spritesheet = PIXI.Loader.shared.resources['dist/assets/sprites.json'];
+        // Start the game loop
+        this._ticker.add(() => this.gameLoop());
+        this._ticker.start();
 
-        // Draw the initial graphics
+        // Listen for changes to the scale
+        this._grid.game.eventEmitter.on(GameEvents.ScaleChanged, () => this.onScaleChanged());
+    }
+
+    drawInitialGraphics(): void {
         this._grid.generateGraphics();
+        this._grid.setupGridListeners();
         this.drawGrid();
         this.drawToolbar();
         this.drawHUD();
         this.drawMenubar();
-
-        // Start the game loop
-        this._ticker.add((delta) => this.gameLoop(delta));
-        this._ticker.start();
     }
 
     sizeViewport(): void {
@@ -120,19 +129,23 @@ export default class Game {
         this._renderer.resize(parent.clientWidth, parent.clientHeight);
 
         // Resize the HUD
-        this._hud.graphic.destroy();
-        this._hud.generateGraphics();
-        this._hud.setGraphicsPositioning();
-        this.drawHUD();
+        if (this._hud) {
+            this._hud.graphic.destroy();
+            this._hud.generateGraphics();
+            this._hud.setGraphicsPositioning();
+            this.drawHUD();
+        }
 
         // Resize the Menubar
-        this._menubar.graphic.destroy();
-        this._menubar.generateGraphics();
-        this._menubar.setGraphicsPositioning();
-        this.drawMenubar();
+        if (this._menubar) {
+            this._menubar.graphic.destroy();
+            this._menubar.generateGraphics();
+            this._menubar.setGraphicsPositioning();
+            this.drawMenubar();
+        }
     }
 
-    gameLoop(delta): void {
+    gameLoop(): void {
         // Dispatch an event that the time has increased
         this._eventEmitter.emit(GameEvents.TimeIncreased, this._ticker.deltaMS);
 
@@ -148,8 +161,6 @@ export default class Game {
         this._stage.addChild(this._grid.grid);
         for (const tile of this._grid.tiles) {
             tile.generateGraphics();
-            this._grid.grid.addChild(tile.container);
-            this._grid.grid.addChild(tile.debugContainer);
         }
     }
 
@@ -174,6 +185,7 @@ export default class Game {
 
     drawToolbar(): void {
         this._toolbar.generateGraphics();
+        this._toolbar.setGraphicsPositioning();
         // Set the default "tool in use"
         this._toolInUse = this._toolbar.tools[0];
         for (const tool of this._toolbar.tools) {
@@ -208,6 +220,8 @@ export default class Game {
 
     drawMenubar(): void {
         // Draw the Menubar
+        this._menubar.generateGraphics();
+        this._menubar.setGraphicsPositioning();
         this._stage.addChild(this._menubar.graphic);
 
         // Draw the Menus in the Menubar
@@ -250,6 +264,21 @@ export default class Game {
         }
     }
 
+    onScaleChanged(): void {
+        // Stop the ticker so that we don't try to update while resetting the stage
+        this._ticker.stop();
+
+        // Reset the stage
+        this._stage.destroy();
+        this._stage = new PIXI.Container();
+
+        // Draw the initial graphics all over again
+        this.drawInitialGraphics();
+
+        // Resume the ticker
+        this._ticker.start();
+    }
+
     /* Getters & Setters -------------------------------------------------------------------------------------------- */
 
     get debug(): boolean {
@@ -286,6 +315,10 @@ export default class Game {
 
     get spritesheet(): PIXI.LoaderResource {
         return this._spritesheet;
+    }
+
+    get grid(): Grid {
+        return this._grid;
     }
 
     get toolInUse(): Tool {

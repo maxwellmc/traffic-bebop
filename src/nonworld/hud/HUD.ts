@@ -22,7 +22,7 @@ import Game from '../../Game';
 import GameState from '../../GameState';
 import { Speeds } from '../../Speed';
 import AbstractSingleGraphicObject from '../../AbstractSingleGraphicObject';
-import {GameStateEvents} from '../../Events';
+import { GameStateEvents } from '../../Events';
 
 /**
  * The heads-up display to show the game state to the user.
@@ -71,7 +71,6 @@ export default class HUD extends AbstractSingleGraphicObject {
     }
 
     generateGraphics(): void {
-
         this._startingY = this._game.renderer.screen.height - HUD.HEIGHT + HUD.Y_OFFSET;
 
         // Rectangle

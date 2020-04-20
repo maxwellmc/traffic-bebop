@@ -91,10 +91,10 @@ export default class TravelTrip {
         this._vehicle.tileX = currentCell.tile.x;
         this._vehicle.tileY = currentCell.tile.y;
 
-        const scaledTileHeight = Grid.TILE_HEIGHT * Game.SPRITE_SCALE,
-            scaledTileWidth = Grid.TILE_WIDTH * Game.SPRITE_SCALE,
-            laneOffset1 = 11 * Game.SPRITE_SCALE - 4,
-            laneOffset2 = 25 * Game.SPRITE_SCALE - 4;
+        const scaledTileHeight = Grid.TILE_HEIGHT * this._game.grid.scale,
+            scaledTileWidth = Grid.TILE_WIDTH * this._game.grid.scale,
+            laneOffset1 = 11 * this._game.grid.scale - 4,
+            laneOffset2 = 25 * this._game.grid.scale - 4;
 
         // Determine the graphical placement of the Vehicle sprite based on its current direction and turning state
         if (direction === Directions.South) {

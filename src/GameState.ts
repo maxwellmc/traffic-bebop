@@ -19,7 +19,7 @@
 import Game from './Game';
 import { Speeds, SpeedUtil } from './Speed';
 import TravelTrip from './TravelTrip';
-import {GameEvents, GameStateEvents} from './Events';
+import { GameEvents, GameStateEvents } from './Events';
 
 /**
  * Represents the properties of the game as they exist right now.

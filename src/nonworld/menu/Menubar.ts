@@ -19,7 +19,7 @@
 import Menu from './Menu';
 import SpeedMenu from './SpeedMenu';
 import Game from '../../Game';
-import { Graphics } from 'pixi.js';
+import {Graphics} from 'pixi.js';
 import AbstractSingleGraphicObject from '../../AbstractSingleGraphicObject';
 import ViewMenu from './ViewMenu';
 
@@ -42,10 +42,6 @@ export default class Menubar extends AbstractSingleGraphicObject {
 
         this._game = game;
         this._menus = [new SpeedMenu(this), new ViewMenu(this)];
-
-        this.generateGraphics();
-
-        this.setGraphicsPositioning();
     }
 
     generateGraphics(): void {
