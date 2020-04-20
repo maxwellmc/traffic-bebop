@@ -22,11 +22,12 @@ import { Graphics } from 'pixi.js';
 import Game from '../../Game';
 import GameState, { GameStateEvents } from '../../GameState';
 import { Speeds } from '../../Speed';
+import AbstractSingleGraphicObject from '../../AbstractSingleGraphicObject';
 
 /**
  * The heads-up display to show the game state to the user.
  */
-export default class HUD extends ViewableObject {
+export default class HUD extends AbstractSingleGraphicObject {
     /* Constants ---------------------------------------------------------------------------------------------------- */
     public static readonly HEIGHT = 48;
     public static readonly FILL_COLOR = 0x2f89fc;
@@ -39,13 +40,13 @@ export default class HUD extends ViewableObject {
     private _startingX: number;
     private _startingY: number;
 
-    constructor(game: Game, gameState: GameState, appWidth: number, appHeight: number) {
+    constructor(game: Game, gameState: GameState) {
         super();
 
         this._game = game;
         this._gameState = gameState;
         this._startingX = 0;
-        this._startingY = appHeight - HUD.HEIGHT + HUD.Y_OFFSET;
+        this._startingY = 0;
 
         // Initialize the list of HUDItems
         this._items = [new HUDItem('Money', ''), new HUDItem('Days', ''), new HUDItem('Speed', '')];
@@ -70,13 +71,16 @@ export default class HUD extends ViewableObject {
     }
 
     generateGraphics(): void {
+
+        this._startingY = this._game.renderer.screen.height - HUD.HEIGHT + HUD.Y_OFFSET;
+
         // Rectangle
         const rectangle = new Graphics();
         rectangle.beginFill(HUD.FILL_COLOR);
-        rectangle.drawRect(this._startingX, this._startingY, Game.APP_WIDTH, HUD.HEIGHT);
+        rectangle.drawRect(this._startingX, this._startingY, this._game.renderer.screen.width, HUD.HEIGHT);
         rectangle.endFill();
 
-        this.graphics = [rectangle];
+        this.graphic = rectangle;
     }
 
     setGraphicsPositioning(): void {

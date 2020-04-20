@@ -21,11 +21,12 @@ import SpeedMenu from './SpeedMenu';
 import Game from '../../Game';
 import {Graphics} from "pixi.js";
 import ViewableObject from '../../ViewableObject';
+import AbstractSingleGraphicObject from '../../AbstractSingleGraphicObject';
 
 /**
  * A non-world container for Menus.
  */
-export default class Menubar extends ViewableObject {
+export default class Menubar extends AbstractSingleGraphicObject {
     /* Constants ---------------------------------------------------------------------------------------------------- */
     public static readonly STARTING_X = 0;
     public static readonly STARTING_Y = 0;
@@ -51,10 +52,10 @@ export default class Menubar extends ViewableObject {
 
         const rectangle = new Graphics();
         rectangle.beginFill(Menubar.FILL_COLOR);
-        rectangle.drawRect(Menubar.STARTING_X, Menubar.STARTING_Y, Game.APP_WIDTH, Menubar.HEIGHT);
+        rectangle.drawRect(Menubar.STARTING_X, Menubar.STARTING_Y, this._game.renderer.screen.width, Menubar.HEIGHT);
         rectangle.endFill();
 
-        this.graphics = [rectangle];
+        this.graphic = rectangle;
     }
 
     setGraphicsPositioning(): void{

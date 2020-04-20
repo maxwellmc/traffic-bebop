@@ -62,7 +62,7 @@ export default class GameMap {
         for (let row = 0; row < GameMap.ROWS; row++) {
             for (let col = 0; col < GameMap.COLS; col++) {
                 const cell = this.getCellByRowColumn(row, col);
-                if(cell.id === id){
+                if (cell.id === id) {
                     return cell;
                 }
             }

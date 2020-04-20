@@ -18,10 +18,10 @@
 
 import ViewableObject from './ViewableObject';
 import Grid from './Grid';
-import Cell, {StructureTypes, TerrainTypes, ZoneTypes} from './Cell';
-import {Container, LoaderResource, Sprite, Text} from 'pixi.js';
+import Cell, { StructureTypes, TerrainTypes, ZoneTypes } from './Cell';
+import { Container, LoaderResource, Sprite, Text } from 'pixi.js';
 import Game from './Game';
-import {TileGraphicLayer} from './TileGraphic';
+import { TileGraphicLayer } from './TileGraphic';
 
 export enum TerrainSpriteFiles {
     Grass = 'grass.png',
@@ -182,7 +182,7 @@ export default class Tile extends ViewableObject {
             if (this._layers.get(TileGraphicLayer.Highlight) !== MiscSpriteFiles.Drag) {
                 this.setLayerSprite(TileGraphicLayer.Highlight, MiscSpriteFiles.Drag);
             }
-        } else if(this._cell.hasRoadConnectionIssue()){
+        } else if (this._cell.hasRoadConnectionIssue()) {
             if (this._layers.get(TileGraphicLayer.Highlight) !== MiscSpriteFiles.IssueRoad) {
                 this.setLayerSprite(TileGraphicLayer.Highlight, MiscSpriteFiles.IssueRoad);
             }

@@ -58,7 +58,7 @@ export default class Grid extends ViewableObject {
     private _dragLastX: number;
     private _dragLastY: number;
 
-    constructor(game: Game, appWidth: number, appHeight: number) {
+    constructor(game: Game) {
         super();
 
         this._game = game;
@@ -72,8 +72,6 @@ export default class Grid extends ViewableObject {
         // Center the grid in the app
         this._width = GameMap.COLS * (Grid.TILE_WIDTH * Game.SPRITE_SCALE);
         this._height = GameMap.ROWS * (Grid.TILE_HEIGHT * Game.SPRITE_SCALE);
-        this._grid.x = appWidth / 2 - this._width / 2;
-        this._grid.y = appHeight / 2 - this._height / 2;
 
         this._grid.interactive = true;
         this._grid
@@ -452,6 +450,22 @@ export default class Grid extends ViewableObject {
 
     set grid(value: PIXI.Container) {
         this._grid = value;
+    }
+
+    get width(): number {
+        return this._width;
+    }
+
+    set width(value: number) {
+        this._width = value;
+    }
+
+    get height(): number {
+        return this._height;
+    }
+
+    set height(value: number) {
+        this._height = value;
     }
 
     get tiles(): Tile[] {

@@ -40,8 +40,6 @@ export enum GameEvents {
  */
 export default class Game {
     /* Constants ---------------------------------------------------------------------------------------------------- */
-    public static readonly APP_WIDTH = 1200;
-    public static readonly APP_HEIGHT = 1000;
     public static readonly SPRITE_SCALE = 2;
     public static readonly FONT_FAMILY = 'VT323';
 
@@ -69,9 +67,7 @@ export default class Game {
 
         this._ticker = new PIXI.Ticker();
         this._renderer = new PIXI.Renderer({
-            width: Game.APP_WIDTH,
-            height: Game.APP_HEIGHT,
-            antialias: true,
+            antialias: false,
             transparent: false,
             resolution: 1,
         });
@@ -80,21 +76,27 @@ export default class Game {
         this._gameState = new GameState(this);
         this._gameMap = new GameMap();
         this._simulator = new Simulator(this);
-        this._grid = new Grid(this, Game.APP_WIDTH, Game.APP_HEIGHT);
+        this._grid = new Grid(this);
         this._menubar = new Menubar(this);
         this._toolbar = new Toolbar(this);
-        this._hud = new HUD(this, this._gameState, Game.APP_WIDTH, Game.APP_HEIGHT);
+        this._hud = new HUD(this, this._gameState);
     }
 
     init(): void {
-        console.log('init');
-        // Add the canvas that Pixi automatically created to the HTML document
-        document.body.appendChild(this._renderer.view);
+        // Add the PixiJS renderer view
+        document.querySelector('#resize-frame').appendChild(this._renderer.view);
+        this.resize();
 
         PIXI.Loader.shared.add('dist/assets/sprites.json').load(() => this.load());
     }
 
     load(): void {
+        // Size out the viewport for the first time
+        this.sizeViewport();
+
+        // Listen for window resize events
+        window.addEventListener('resize', () => this.resize());
+
         // Keep a reference to the spritesheet
         this._spritesheet = PIXI.Loader.shared.resources['dist/assets/sprites.json'];
 
@@ -108,6 +110,31 @@ export default class Game {
         // Start the game loop
         this._ticker.add((delta) => this.gameLoop(delta));
         this._ticker.start();
+    }
+
+    sizeViewport(): void {
+        this._grid.grid.x = this._renderer.screen.width / 2 - this._grid.width / 2;
+        this._grid.grid.y = this._renderer.screen.height / 2 - this._grid.height / 2;
+    }
+
+    resize(): void {
+        // Get the parent
+        const parent = this._renderer.view.parentElement;
+
+        // Resize the renderer
+        this._renderer.resize(parent.clientWidth, parent.clientHeight);
+
+        // Resize the HUD
+        this._hud.graphic.destroy();
+        this._hud.generateGraphics();
+        this._hud.setGraphicsPositioning();
+        this.drawHUD();
+
+        // Resize the Menubar
+        this._menubar.graphic.destroy();
+        this._menubar.generateGraphics();
+        this._menubar.setGraphicsPositioning();
+        this.drawMenubar();
     }
 
     gameLoop(delta): void {
@@ -169,9 +196,7 @@ export default class Game {
 
     drawHUD(): void {
         // Draw the Hud
-        for (const graphic of this._hud.graphics) {
-            this._stage.addChild(graphic);
-        }
+        this._stage.addChild(this._hud.graphic);
 
         // Draw the Hud items
         for (const hudItem of this._hud.items) {
@@ -188,9 +213,7 @@ export default class Game {
 
     drawMenubar(): void {
         // Draw the Menubar
-        for (const graphic of this._menubar.graphics) {
-            this._stage.addChild(graphic);
-        }
+        this._stage.addChild(this._menubar.graphic);
 
         // Draw the Menus in the Menubar
         for (const menu of this._menubar.menus) {

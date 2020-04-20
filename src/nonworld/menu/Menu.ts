@@ -20,11 +20,12 @@ import ViewableObject from '../../ViewableObject';
 import Menubar from './Menubar';
 import MenuItem from './MenuItem';
 import { Text, Graphics } from 'pixi.js';
+import AbstractTwoGraphicObject from '../../AbstractTwoGraphicObject';
 
 /**
  * Selected by the user to manipulate the game state.
  */
-export default abstract class Menu extends ViewableObject {
+export default abstract class Menu extends AbstractTwoGraphicObject {
     /* Constants ---------------------------------------------------------------------------------------------------- */
     public static readonly HEIGHT = 40;
     public static readonly WIDTH = 100;
@@ -42,8 +43,6 @@ export default abstract class Menu extends ViewableObject {
     protected _open: boolean;
     protected _label: string;
     protected _items: MenuItem[];
-    private _background: Graphics;
-    private _foreground: Text;
 
     /**
      *
@@ -139,13 +138,5 @@ export default abstract class Menu extends ViewableObject {
 
     set items(value) {
         this._items = value;
-    }
-
-    get background(): PIXI.Graphics {
-        return this._background;
-    }
-
-    get foreground(): PIXI.Text {
-        return this._foreground;
     }
 }
