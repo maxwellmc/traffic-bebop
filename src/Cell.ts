@@ -80,19 +80,19 @@ export default class Cell {
     }
 
     doesLeftNeighborHaveStructure(structureType: StructureTypes): boolean {
-        return this.getLeftNeighbor().structureType === structureType;
+        return this.getLeftNeighbor() && this.getLeftNeighbor().structureType === structureType;
     }
 
     doesRightNeighborHaveStructure(structureType: StructureTypes): boolean {
-        return this.getRightNeighbor().structureType === structureType;
+        return this.getRightNeighbor() && this.getRightNeighbor().structureType === structureType;
     }
 
     doesTopNeighborHaveStructure(structureType: StructureTypes): boolean {
-        return this.getTopNeighbor().structureType === structureType;
+        return this.getTopNeighbor() && this.getTopNeighbor().structureType === structureType;
     }
 
     doesBottomNeighborHaveStructure(structureType: StructureTypes): boolean {
-        return this.getBottomNeighbor().structureType === structureType;
+        return this.getBottomNeighbor() && this.getBottomNeighbor().structureType === structureType;
     }
 
     doesAnyNeighborHaveStructure(structureType: StructureTypes): boolean {
