@@ -18,6 +18,7 @@
 
 import Tool from './Tool';
 import Game from '../../Game';
+import Menubar from '../menu/Menubar';
 
 export enum Tools {
     Select,
@@ -32,8 +33,8 @@ export enum Tools {
  */
 export default class Toolbar {
     /* Constants ---------------------------------------------------------------------------------------------------- */
-    public static readonly TOOLBAR_STARTING_X = 20;
-    public static readonly TOOLBAR_STARTING_Y = 80;
+    public static readonly TOOLBAR_STARTING_X = 24;
+    public static readonly TOOLBAR_STARTING_Y = Menubar.HEIGHT + 24;
     public static readonly TOOL_WIDTH = 110;
     public static readonly TOOL_HEIGHT = 32;
 

@@ -30,6 +30,7 @@ export default class HUD extends ViewableObject {
     /* Constants ---------------------------------------------------------------------------------------------------- */
     public static readonly HEIGHT = 48;
     public static readonly FILL_COLOR = 0x2f89fc;
+    public static readonly Y_OFFSET = 8;
 
     /* Class Properties --------------------------------------------------------------------------------------------- */
     private _game: Game;
@@ -44,7 +45,7 @@ export default class HUD extends ViewableObject {
         this._game = game;
         this._gameState = gameState;
         this._startingX = 0;
-        this._startingY = appHeight - HUD.HEIGHT;
+        this._startingY = appHeight - HUD.HEIGHT + HUD.Y_OFFSET;
 
         // Initialize the list of HUDItems
         this._items = [new HUDItem('Money', ''), new HUDItem('Days', ''), new HUDItem('Speed', '')];

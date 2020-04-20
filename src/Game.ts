@@ -43,6 +43,7 @@ export default class Game {
     public static readonly APP_WIDTH = 1200;
     public static readonly APP_HEIGHT = 1000;
     public static readonly SPRITE_SCALE = 2;
+    public static readonly FONT_FAMILY = 'VT323';
 
     /* Class Properties --------------------------------------------------------------------------------------------- */
     private _debug: boolean;
@@ -186,6 +187,12 @@ export default class Game {
     }
 
     drawMenubar(): void {
+        // Draw the Menubar
+        for (const graphic of this._menubar.graphics) {
+            this._stage.addChild(graphic);
+        }
+
+        // Draw the Menus in the Menubar
         for (const menu of this._menubar.menus) {
             menu.generateGraphics();
             this._stage.addChild(menu.background);

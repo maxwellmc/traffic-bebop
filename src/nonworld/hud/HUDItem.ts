@@ -17,6 +17,7 @@
  */
 
 import { Text } from 'pixi.js';
+import Game from '../../Game';
 
 /**
  * An item within the HUD, displaying both the label and the value.
@@ -41,8 +42,8 @@ export default class HUDItem {
     generateGraphics(): void {
         // Text
         this._graphic = new Text(this.generateFullText(), {
-            fontFamily: 'Arial',
-            fontSize: 20,
+            fontFamily: Game.FONT_FAMILY,
+            fontSize: 28,
             fill: HUDItem.TEXT_COLOR,
             align: 'center',
         });

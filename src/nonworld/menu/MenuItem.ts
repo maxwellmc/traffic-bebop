@@ -27,6 +27,9 @@ export default class MenuItem extends ViewableObject {
     public static readonly FILL_COLOR = 0xeeeeee;
     public static readonly LINE_COLOR = 0xdedede;
     public static readonly TEXT_COLOR = 0xc10000;
+    public static readonly TEXT_SIZE = 18;
+    public static readonly TEXT_X_OFFSET = 8;
+    public static readonly TEXT_Y_OFFSET = 8;
     public static readonly WIDTH = 70;
     public static readonly HEIGHT = 30;
 
@@ -49,7 +52,7 @@ export default class MenuItem extends ViewableObject {
     generateGraphics(): void {
         // Rectangle
         const rectangle = ViewableObject.generateRectangle(
-            4,
+            2,
             MenuItem.LINE_COLOR,
             1,
             MenuItem.FILL_COLOR,
@@ -65,7 +68,13 @@ export default class MenuItem extends ViewableObject {
         this._graphics = [rectangle];
 
         // Text
-        const text = ViewableObject.generateText(this._label, 12, MenuItem.TEXT_COLOR, this._x + 5, this._y + 5);
+        const text = ViewableObject.generateText(
+            this._label,
+            MenuItem.TEXT_SIZE,
+            MenuItem.TEXT_COLOR,
+            this._x + MenuItem.TEXT_X_OFFSET,
+            this._y + MenuItem.TEXT_Y_OFFSET,
+        );
 
         this._graphics = this.graphics.concat(text);
     }

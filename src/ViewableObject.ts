@@ -17,6 +17,7 @@
  */
 
 import { DisplayObject, Graphics, Text } from 'pixi.js';
+import Game from './Game';
 
 /**
  * An abstract class for objects which could be viewable to the user.
@@ -71,7 +72,7 @@ export default abstract class ViewableObject {
 
     static generateText(actualText, fontSize, fillColor, x, y): Text {
         const text = new Text(actualText, {
-            fontFamily: 'Arial',
+            fontFamily: Game.FONT_FAMILY,
             fontSize: fontSize,
             fill: fillColor,
             align: 'center',

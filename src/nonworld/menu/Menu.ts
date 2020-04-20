@@ -28,9 +28,12 @@ export default abstract class Menu extends ViewableObject {
     /* Constants ---------------------------------------------------------------------------------------------------- */
     public static readonly HEIGHT = 40;
     public static readonly WIDTH = 100;
-    public static readonly FILL_COLOR = 0xbcbabb;
+    public static readonly FILL_COLOR = 0xcccacb;
     public static readonly LINE_COLOR = 0xdedede;
-    public static readonly TEXT_COLOR = 0x010000;
+    public static readonly TEXT_COLOR = 0x1f1f1f;
+    public static readonly TEXT_SIZE = 26;
+    public static readonly TEXT_X_OFFSET = 24;
+    public static readonly TEXT_Y_OFFSET = 11;
 
     /* Class Properties --------------------------------------------------------------------------------------------- */
     protected _menubar: Menubar;
@@ -75,7 +78,13 @@ export default abstract class Menu extends ViewableObject {
         this._background = rectangle;
 
         // Text
-        const text = ViewableObject.generateText(this._label, 24, Menu.TEXT_COLOR, this._x + 5, this._y + 5);
+        const text = ViewableObject.generateText(
+            this._label,
+            Menu.TEXT_SIZE,
+            Menu.TEXT_COLOR,
+            this._x + Menu.TEXT_X_OFFSET,
+            this._y + Menu.TEXT_Y_OFFSET,
+        );
 
         this._foreground = text;
     }

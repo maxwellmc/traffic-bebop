@@ -19,28 +19,45 @@
 import Menu from './Menu';
 import SpeedMenu from './SpeedMenu';
 import Game from '../../Game';
+import {Graphics} from "pixi.js";
+import ViewableObject from '../../ViewableObject';
 
 /**
  * A non-world container for Menus.
  */
-export default class Menubar {
+export default class Menubar extends ViewableObject {
     /* Constants ---------------------------------------------------------------------------------------------------- */
     public static readonly STARTING_X = 0;
     public static readonly STARTING_Y = 0;
     public static readonly HEIGHT = 40;
+    public static readonly FILL_COLOR = 0xcccacb;
 
     /* Class Properties --------------------------------------------------------------------------------------------- */
     private _game: Game;
     private _menus: Menu[];
 
     constructor(game: Game) {
+        super();
+
         this._game = game;
         this._menus = [new SpeedMenu(this)];
 
         this.generateGraphics();
+
+        this.setGraphicsPositioning();
     }
 
     generateGraphics(): void {
+
+        const rectangle = new Graphics();
+        rectangle.beginFill(Menubar.FILL_COLOR);
+        rectangle.drawRect(Menubar.STARTING_X, Menubar.STARTING_Y, Game.APP_WIDTH, Menubar.HEIGHT);
+        rectangle.endFill();
+
+        this.graphics = [rectangle];
+    }
+
+    setGraphicsPositioning(): void{
         const x = Menubar.STARTING_X;
         let y = Menubar.STARTING_Y;
 

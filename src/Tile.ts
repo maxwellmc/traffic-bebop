@@ -116,7 +116,7 @@ export default class Tile extends ViewableObject {
         // Create the debug graphic
         this._debugContainer.addChild(
             new Text('', {
-                fontFamily: 'Arial',
+                fontFamily: Game.FONT_FAMILY,
                 fontSize: 12,
                 fill: 0xff0000,
                 align: 'center',

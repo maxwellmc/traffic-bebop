@@ -35,12 +35,11 @@ export default class SpeedMenu extends Menu {
 
         for (let i = 0; i < Object.keys(Speeds).length / 2; i++) {
             const y = Menu.HEIGHT + i * MenuItem.HEIGHT;
-            this._items.push(new MenuItem(this, i, Speeds[i], 0, y));
+            this._items.push(new MenuItem(this, i, Speeds[i], this._x + Menu.TEXT_X_OFFSET, y));
         }
     }
 
     onMenuItemClick(menuItem: MenuItem): void {
-        console.log('onMenuItemClick');
         switch (menuItem.id) {
             case SpeedMenu.PAUSED_ITEM:
                 this._menubar.game.eventEmitter.emit(GameEvents.SpeedSet, Speeds.Paused);
