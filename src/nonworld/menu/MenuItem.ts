@@ -41,13 +41,13 @@ export default class MenuItem extends AbstractTwoGraphicObject {
     private _x: number;
     private _y: number;
 
-    constructor(menu: Menu, id: number, label: string, x: number, y: number) {
+    constructor(menu: Menu, id: number, label: string) {
         super();
         this._menu = menu;
         this._id = id;
         this._label = label;
-        this._x = x;
-        this._y = y;
+        this._x = 0;
+        this._y = 0;
     }
 
     generateGraphics(): void {
@@ -96,5 +96,21 @@ export default class MenuItem extends AbstractTwoGraphicObject {
 
     set label(value) {
         this._label = value;
+    }
+
+    get x(): number {
+        return this._x;
+    }
+
+    set x(value: number) {
+        this._x = value;
+    }
+
+    get y(): number {
+        return this._y;
+    }
+
+    set y(value: number) {
+        this._y = value;
     }
 }

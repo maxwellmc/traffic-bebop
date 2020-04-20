@@ -67,8 +67,8 @@ export default abstract class Menu extends AbstractTwoGraphicObject {
             Menu.FILL_COLOR,
             Menu.WIDTH,
             Menu.HEIGHT,
-            0,
-            0,
+            this._x,
+            this._y,
         );
 
         rectangle.on('mousedown', () => this.onMenuClick());
@@ -97,6 +97,8 @@ export default abstract class Menu extends AbstractTwoGraphicObject {
     }
 
     abstract onMenuItemClick(menuItem: MenuItem): void;
+
+    abstract setGraphicsPositioning(): void;
 
     /* Getters & Setters -------------------------------------------------------------------------------------------- */
 

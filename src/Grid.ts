@@ -17,13 +17,14 @@
  */
 
 import Tile from './Tile';
-import Toolbar, { Tools } from './nonworld/tool/Toolbar';
-import Game, { GameEvents } from './Game';
-import Cell, { StructureTypes, TerrainTypes, ZoneTypes } from './Cell';
+import { Tools } from './nonworld/tool/Toolbar';
+import Game from './Game';
+import { StructureTypes, TerrainTypes, ZoneTypes } from './Cell';
 import GameMap from './GameMap';
-import { Container, Point, DisplayObject } from 'pixi.js';
+import { Container, Point } from 'pixi.js';
 import InteractionEvent = PIXI.interaction.InteractionEvent;
 import InteractionData = PIXI.interaction.InteractionData;
+import {GameEvents, GridEvents} from './Events';
 
 /**
  * Visually represents the GameMap, as translated to an arrangement of viewable Tiles.
@@ -56,6 +57,7 @@ export default class Grid {
     private _dragFirstY: number;
     private _dragLastX: number;
     private _dragLastY: number;
+    private _showGridLayer: boolean;
 
     constructor(game: Game) {
         this._game = game;
@@ -65,11 +67,13 @@ export default class Grid {
         this._tiles = [];
         this._dragging = false;
         this._draggingTiles = [];
+        this._showGridLayer = true;
 
         // Center the grid in the app
         this._width = GameMap.COLS * (Grid.TILE_WIDTH * Game.SPRITE_SCALE);
         this._height = GameMap.ROWS * (Grid.TILE_HEIGHT * Game.SPRITE_SCALE);
 
+        // Set up the listeners for cursor interactions with the Grid
         this._grid.interactive = true;
         this._grid
             // Events for cursor start
@@ -83,6 +87,9 @@ export default class Grid {
             // Events for cursor move
             .on('mousemove', () => this.onCursorMove())
             .on('touchmove', () => this.onCursorMove());
+
+        // Listen for when the Grid layer is toggled
+        this._game.eventEmitter.on(GridEvents.GridLayerToggled, () => this.onGridLayerToggled());
     }
 
     generateGraphics(): void {
@@ -431,6 +438,10 @@ export default class Grid {
         return false;
     }
 
+    onGridLayerToggled(): void {
+        this._showGridLayer = !this._showGridLayer;
+    }
+
     /* Getters & Setters -------------------------------------------------------------------------------------------- */
 
     get game(): Game {
@@ -471,5 +482,13 @@ export default class Grid {
 
     set tiles(value) {
         this._tiles = value;
+    }
+
+    get showGridLayer(): boolean {
+        return this._showGridLayer;
+    }
+
+    set showGridLayer(value: boolean) {
+        this._showGridLayer = value;
     }
 }

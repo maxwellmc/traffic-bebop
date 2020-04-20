@@ -169,8 +169,14 @@ export default class Tile {
         }
 
         // Set the "Grid" layer
-        if (this._layers.get(TileGraphicLayer.Grid) !== MiscSpriteFiles.Grid) {
-            this.setLayerSprite(TileGraphicLayer.Grid, MiscSpriteFiles.Grid);
+        if (this._grid.showGridLayer) {
+            if (this._layers.get(TileGraphicLayer.Grid) !== MiscSpriteFiles.Grid) {
+                this.setLayerSprite(TileGraphicLayer.Grid, MiscSpriteFiles.Grid);
+            }
+        } else {
+            if (this._layers.get(TileGraphicLayer.Grid) !== MiscSpriteFiles.Blank) {
+                this.setLayerSprite(TileGraphicLayer.Grid, MiscSpriteFiles.Blank);
+            }
         }
 
         // Set the "Highlight" layer

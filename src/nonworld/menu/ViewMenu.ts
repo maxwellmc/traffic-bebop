@@ -19,17 +19,32 @@
 import Menu from './Menu';
 import MenuItem from './MenuItem';
 import Menubar from './Menubar';
-import { Speeds } from '../../Speed';
-import {GameEvents} from '../../Events';
+import {GridEvents} from '../../Events';
 
-export default class SpeedMenu extends Menu {
+export default class ViewMenu extends Menu {
+    /* Constants ---------------------------------------------------------------------------------------------------- */
+    public static readonly ITEMS = [
+        {
+            id: 0,
+            label: 'Grid',
+        },
+        {
+            id: 1,
+            label: 'Zoom In',
+        },
+        {
+            id: 2,
+            label: 'Zoom Out',
+        },
+    ];
+
     constructor(menubar: Menubar) {
         super(menubar);
-        this._label = 'Speed';
+        this._label = 'View';
 
         // Create the MenuItems
-        for (let i = 0; i < Object.keys(Speeds).length / 2; i++) {
-            this._items.push(new MenuItem(this, i, Speeds[i]));
+        for (const item of ViewMenu.ITEMS) {
+            this._items.push(new MenuItem(this, item.id, item.label));
         }
     }
 
@@ -43,15 +58,15 @@ export default class SpeedMenu extends Menu {
 
     onMenuItemClick(menuItem: MenuItem): void {
         switch (menuItem.id) {
-            case Speeds.Paused:
-                this._menubar.game.eventEmitter.emit(GameEvents.SpeedSet, Speeds.Paused);
+            case 0:
+                this._menubar.game.eventEmitter.emit(GridEvents.GridLayerToggled, '');
                 break;
-            case Speeds.Normal:
-                this._menubar.game.eventEmitter.emit(GameEvents.SpeedSet, Speeds.Normal);
-                break;
-            case Speeds.Fast:
-                this._menubar.game.eventEmitter.emit(GameEvents.SpeedSet, Speeds.Fast);
-                break;
+            // case 1:
+            //     this._menubar.game.eventEmitter.emit(GameEvents.SpeedSet, Speeds.Normal);
+            //     break;
+            // case 2:
+            //     this._menubar.game.eventEmitter.emit(GameEvents.SpeedSet, Speeds.Fast);
+            //     break;
         }
     }
 }

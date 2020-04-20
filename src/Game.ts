@@ -28,12 +28,7 @@ import Tool from './nonworld/tool/Tool';
 import Simulator from './Simulator';
 import { Speeds } from './Speed';
 import MenuItem from './nonworld/menu/MenuItem';
-
-export enum GameEvents {
-    MoneyDeducted = 'money.deducted',
-    TimeIncreased = 'time.increased',
-    SpeedSet = 'speed.set',
-}
+import {GameEvents} from './Events';
 
 /**
  * Manages the Pixi Application, the game loop, and calling the draw-ers.

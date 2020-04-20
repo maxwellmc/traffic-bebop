@@ -16,15 +16,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import Game, { GameEvents } from './Game';
+import Game from './Game';
 import { Speeds, SpeedUtil } from './Speed';
 import TravelTrip from './TravelTrip';
-
-export enum GameStateEvents {
-    MoneyChanged = 'game-state.money',
-    TimeChanged = 'game-state.time',
-    SpeedChanged = 'game-state.speed',
-}
+import {GameEvents, GameStateEvents} from './Events';
 
 /**
  * Represents the properties of the game as they exist right now.

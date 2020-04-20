@@ -21,6 +21,7 @@ import SpeedMenu from './SpeedMenu';
 import Game from '../../Game';
 import { Graphics } from 'pixi.js';
 import AbstractSingleGraphicObject from '../../AbstractSingleGraphicObject';
+import ViewMenu from './ViewMenu';
 
 /**
  * A non-world container for Menus.
@@ -40,7 +41,7 @@ export default class Menubar extends AbstractSingleGraphicObject {
         super();
 
         this._game = game;
-        this._menus = [new SpeedMenu(this)];
+        this._menus = [new SpeedMenu(this), new ViewMenu(this)];
 
         this.generateGraphics();
 
@@ -58,13 +59,12 @@ export default class Menubar extends AbstractSingleGraphicObject {
 
     setGraphicsPositioning(): void {
         const x = Menubar.STARTING_X;
-        let y = Menubar.STARTING_Y;
 
         for (let i = 0; i < this._menus.length; i++) {
             const menu = this._menus[i];
-            menu.x = x;
-            menu.y = y;
-            y += Menubar.HEIGHT;
+            menu.x = x + Menu.WIDTH * i;
+            menu.y = Menubar.STARTING_Y;
+            menu.setGraphicsPositioning();
         }
     }
 
