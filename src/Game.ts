@@ -25,9 +25,9 @@ import GameMap from './GameMap';
 import Menubar from './nonworld/menu/Menubar';
 import * as EventEmitter from 'eventemitter3';
 import Tool from './nonworld/tool/Tool';
-import ViewableObject from './ViewableObject';
 import Simulator from './Simulator';
 import { Speeds } from './Speed';
+import MenuItem from './nonworld/menu/MenuItem';
 
 export enum GameEvents {
     MoneyDeducted = 'money.deducted',
@@ -228,29 +228,30 @@ export default class Game {
             // If this menu is open
             if (menu.open) {
                 for (const item of menu.items) {
-                    Game.replaceGraphics(this._stage, item);
+                    this.removeMenuItem(item);
+                    item.generateGraphics();
+                    this._stage.addChild(item.background);
+                    this._stage.addChild(item.foreground);
                 }
             } else if (menu.items.length > 0) {
                 for (const item of menu.items) {
-                    if (item.graphics.length > 0) {
+                    if (item.background || item.foreground) {
                         // The menu isn't open, but there's a menu item with graphics, so remove them
-                        item.removeAllGraphics();
+                        this.removeMenuItem(item);
                     }
                 }
             }
         }
     }
 
-    static replaceGraphics(stage: PIXI.Container, viewableObject: ViewableObject): void {
-        // Remove the existing graphics
-        viewableObject.removeAllGraphics();
-
-        // Generate the new graphics
-        viewableObject.generateGraphics();
-
-        // Individually add each new graphic to the stage
-        for (const graphic of viewableObject.graphics) {
-            stage.addChild(graphic);
+    removeMenuItem(item: MenuItem): void {
+        if (item.background) {
+            item.background.destroy();
+            item.background = null;
+        }
+        if (item.foreground) {
+            item.foreground.destroy();
+            item.foreground = null;
         }
     }
 

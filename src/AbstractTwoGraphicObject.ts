@@ -18,7 +18,7 @@
 
 import DisplayObject = PIXI.DisplayObject;
 
-export default abstract class AbstractSingleGraphicObject {
+export default abstract class AbstractTwoGraphicObject {
     protected _background: DisplayObject;
     protected _foreground: DisplayObject;
 

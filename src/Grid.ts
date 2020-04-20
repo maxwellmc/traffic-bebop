@@ -16,7 +16,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import ViewableObject from './ViewableObject';
 import Tile from './Tile';
 import Toolbar, { Tools } from './nonworld/tool/Toolbar';
 import Game, { GameEvents } from './Game';
@@ -29,7 +28,7 @@ import InteractionData = PIXI.interaction.InteractionData;
 /**
  * Visually represents the GameMap, as translated to an arrangement of viewable Tiles.
  */
-export default class Grid extends ViewableObject {
+export default class Grid {
     /* Constants ---------------------------------------------------------------------------------------------------- */
     public static readonly GRID_MARGIN = 50; // Will be scaled by the zoom level
     public static readonly TILE_WIDTH = 32;
@@ -59,8 +58,6 @@ export default class Grid extends ViewableObject {
     private _dragLastY: number;
 
     constructor(game: Game) {
-        super();
-
         this._game = game;
         this._grid = new Container();
         this._startingX = 0;

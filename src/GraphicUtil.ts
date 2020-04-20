@@ -16,48 +16,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { DisplayObject, Graphics, Text } from 'pixi.js';
+import { Graphics, Text } from 'pixi.js';
 import Game from './Game';
 
-/**
- * An abstract class for objects which could be viewable to the user.
- * @deprecated This assumes that the DisplayObjects will be destroyed and recreated at every tick. It was useful when
- * we weren't using Sprites. For performance, we should instead let the updater functions in the Game object handle
- * graphical updates.
- */
-export default abstract class ViewableObject {
-    protected _graphics: DisplayObject[];
-
-    protected constructor() {
-        this._graphics = [];
-    }
-
-    abstract generateGraphics(): void;
-
-    removeGraphic(graphic: DisplayObject): void {
-        // Actually remove the item from the array
-        const index = this._graphics.indexOf(graphic);
-        if (index > -1) {
-            this._graphics = this._graphics.splice(index, 1);
-        }
-
-        // Destroy the DisplayObject in Pixi
-        graphic.destroy();
-    }
-
-    removeAllGraphics(): void {
-        // Get a reference to the graphics
-        const graphics = this._graphics;
-
-        // Clear the array
-        this._graphics = [];
-
-        // Destroy the DisplayObjects in Pixi
-        for (const graphic of graphics) {
-            graphic.destroy();
-        }
-    }
-
+export default class GraphicUtil {
     static generateRectangle(lineWidth, lineColor, lineAlpha, fillColor, width, height, x, y): Graphics {
         const rectangle = new Graphics();
         rectangle.lineStyle(lineWidth, lineColor, lineAlpha);
@@ -80,15 +42,5 @@ export default abstract class ViewableObject {
         text.x = x;
         text.y = y;
         return text;
-    }
-
-    /* Getters & Setters -------------------------------------------------------------------------------------------- */
-
-    get graphics(): DisplayObject[] {
-        return this._graphics;
-    }
-
-    set graphics(value) {
-        this._graphics = value;
     }
 }

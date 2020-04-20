@@ -18,11 +18,12 @@
 
 import { Text } from 'pixi.js';
 import Game from '../../Game';
+import AbstractSingleGraphicObject from '../../AbstractSingleGraphicObject';
 
 /**
  * An item within the HUD, displaying both the label and the value.
  */
-export default class HUDItem {
+export default class HUDItem extends AbstractSingleGraphicObject {
     /* Constants ---------------------------------------------------------------------------------------------------- */
     public static readonly WIDTH = 200;
     public static readonly TEXT_COLOR = 0xf5f5f5;
@@ -30,9 +31,9 @@ export default class HUDItem {
     /* Class Properties --------------------------------------------------------------------------------------------- */
     private _label: string;
     private _value: string;
-    private _graphic: Text;
 
     constructor(label: string, value: string) {
+        super();
         this._label = label;
         this._value = value;
 
@@ -50,7 +51,8 @@ export default class HUDItem {
     }
 
     updateGraphics(): void {
-        this._graphic.text = this.generateFullText();
+        const graphic = this._graphic as Text;
+        graphic.text = this.generateFullText();
     }
 
     generateFullText(): string {
@@ -77,9 +79,5 @@ export default class HUDItem {
 
     set value(value: string) {
         this._value = value;
-    }
-
-    get graphic(): PIXI.Text {
-        return this._graphic;
     }
 }

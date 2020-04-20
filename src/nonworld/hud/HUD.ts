@@ -17,7 +17,6 @@
  */
 
 import HUDItem from './HUDItem';
-import ViewableObject from '../../ViewableObject';
 import { Graphics } from 'pixi.js';
 import Game from '../../Game';
 import GameState, { GameStateEvents } from '../../GameState';

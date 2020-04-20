@@ -16,13 +16,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import ViewableObject from '../../ViewableObject';
 import Menu from './Menu';
+import GraphicUtil from '../../GraphicUtil';
+import AbstractTwoGraphicObject from '../../AbstractTwoGraphicObject';
 
 /**
  * An individual choice in a Menu, only shown when the Menu is in the open state.
  */
-export default class MenuItem extends ViewableObject {
+export default class MenuItem extends AbstractTwoGraphicObject {
     /* Constants ---------------------------------------------------------------------------------------------------- */
     public static readonly FILL_COLOR = 0xeeeeee;
     public static readonly LINE_COLOR = 0xdedede;
@@ -51,7 +52,7 @@ export default class MenuItem extends ViewableObject {
 
     generateGraphics(): void {
         // Rectangle
-        const rectangle = ViewableObject.generateRectangle(
+        const rectangle = GraphicUtil.generateRectangle(
             2,
             MenuItem.LINE_COLOR,
             1,
@@ -65,10 +66,10 @@ export default class MenuItem extends ViewableObject {
         rectangle.on('mousedown', () => this._menu.onMenuItemClick(this));
         rectangle.on('touchstart', () => this._menu.onMenuItemClick(this));
 
-        this._graphics = [rectangle];
+        this._background = rectangle;
 
         // Text
-        const text = ViewableObject.generateText(
+        const text = GraphicUtil.generateText(
             this._label,
             MenuItem.TEXT_SIZE,
             MenuItem.TEXT_COLOR,
@@ -76,7 +77,7 @@ export default class MenuItem extends ViewableObject {
             this._y + MenuItem.TEXT_Y_OFFSET,
         );
 
-        this._graphics = this.graphics.concat(text);
+        this._foreground = text;
     }
 
     /* Getters & Setters -------------------------------------------------------------------------------------------- */

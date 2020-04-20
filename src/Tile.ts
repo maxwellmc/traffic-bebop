@@ -16,7 +16,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import ViewableObject from './ViewableObject';
 import Grid from './Grid';
 import Cell, { StructureTypes, TerrainTypes, ZoneTypes } from './Cell';
 import { Container, LoaderResource, Sprite, Text } from 'pixi.js';
@@ -63,7 +62,7 @@ export enum MiscSpriteFiles {
 /**
  * A cell within the world.
  */
-export default class Tile extends ViewableObject {
+export default class Tile {
     /* Constants ---------------------------------------------------------------------------------------------------- */
 
     /* Class Properties --------------------------------------------------------------------------------------------- */
@@ -77,8 +76,6 @@ export default class Tile extends ViewableObject {
     private _debugContainer: Container;
 
     constructor(grid: Grid, x: number, y: number, cell: Cell, spritesheet: LoaderResource) {
-        super();
-
         this._grid = grid;
         this._x = x;
         this._y = y;

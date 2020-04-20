@@ -16,11 +16,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import ViewableObject from '../../ViewableObject';
 import Menubar from './Menubar';
 import MenuItem from './MenuItem';
 import { Text, Graphics } from 'pixi.js';
 import AbstractTwoGraphicObject from '../../AbstractTwoGraphicObject';
+import GraphicUtil from '../../GraphicUtil';
 
 /**
  * Selected by the user to manipulate the game state.
@@ -60,7 +60,7 @@ export default abstract class Menu extends AbstractTwoGraphicObject {
 
     generateGraphics(): void {
         // Rectangle
-        const rectangle = ViewableObject.generateRectangle(
+        const rectangle = GraphicUtil.generateRectangle(
             0,
             Menu.LINE_COLOR,
             1,
@@ -77,7 +77,7 @@ export default abstract class Menu extends AbstractTwoGraphicObject {
         this._background = rectangle;
 
         // Text
-        const text = ViewableObject.generateText(
+        const text = GraphicUtil.generateText(
             this._label,
             Menu.TEXT_SIZE,
             Menu.TEXT_COLOR,

@@ -19,8 +19,7 @@
 import Menu from './Menu';
 import SpeedMenu from './SpeedMenu';
 import Game from '../../Game';
-import {Graphics} from "pixi.js";
-import ViewableObject from '../../ViewableObject';
+import { Graphics } from 'pixi.js';
 import AbstractSingleGraphicObject from '../../AbstractSingleGraphicObject';
 
 /**
@@ -49,7 +48,6 @@ export default class Menubar extends AbstractSingleGraphicObject {
     }
 
     generateGraphics(): void {
-
         const rectangle = new Graphics();
         rectangle.beginFill(Menubar.FILL_COLOR);
         rectangle.drawRect(Menubar.STARTING_X, Menubar.STARTING_Y, this._game.renderer.screen.width, Menubar.HEIGHT);
@@ -58,7 +56,7 @@ export default class Menubar extends AbstractSingleGraphicObject {
         this.graphic = rectangle;
     }
 
-    setGraphicsPositioning(): void{
+    setGraphicsPositioning(): void {
         const x = Menubar.STARTING_X;
         let y = Menubar.STARTING_Y;
 
