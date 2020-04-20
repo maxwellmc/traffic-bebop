@@ -62,7 +62,7 @@ export default class TravelTrip {
         const futureCellID = this._path[currentPathIndex + 1];
 
         // If there's no future Cell (i.e. we're approaching our destination)
-        if (!futureCellID) {
+        if (futureCellID === undefined) {
             this.end();
             return false;
         }
