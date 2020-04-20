@@ -16,16 +16,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { Container, LoaderResource, Sprite } from 'pixi.js';
+import { LoaderResource, Sprite } from 'pixi.js';
 import TravelTrip from './TravelTrip';
-import Cell from './Cell';
 import GameState from './GameState';
-import Tile from './Tile';
 import Grid from './Grid';
 import Game from './Game';
 import { Speeds, SpeedUtil } from './Speed';
 
-export enum Direction {
+export enum Directions {
     North,
     South,
     East,
@@ -38,6 +36,7 @@ export enum Direction {
 
 export enum TurningStates {
     NotTurning,
+    // The vehicle is turning to start heading north when previously it was heading east
     ToNorthFromEast,
     ToNorthFromWest,
     ToSouthFromEast,
@@ -49,8 +48,7 @@ export enum TurningStates {
 }
 
 enum VehicleSpriteFiles {
-    VehicleRightLane = 'car1-rl.png',
-    VehicleLeftLane = 'car1-ll.png',
+    Car1 = 'car1.png',
 }
 
 export default class Vehicle {
@@ -60,7 +58,7 @@ export default class Vehicle {
     private _spritesheet: LoaderResource;
     private _graphic: Sprite;
     private _isOnStage: boolean;
-    private _direction: Direction;
+    private _direction: Directions;
     private _turningState: TurningStates;
 
     constructor(travelTrip: TravelTrip, spritesheet: LoaderResource) {
@@ -69,8 +67,8 @@ export default class Vehicle {
         this._isOnStage = false;
         this._turningState = TurningStates.NotTurning;
 
-        this._graphic = new Sprite(this._spritesheet.textures[VehicleSpriteFiles.VehicleRightLane]);
-        this._direction = Direction.South;
+        this._graphic = new Sprite(this._spritesheet.textures[VehicleSpriteFiles.Car1]);
+        this._direction = Directions.South;
 
         this._graphic.scale.set(Game.SPRITE_SCALE);
         this._graphic.anchor.set(0.5);
@@ -85,11 +83,11 @@ export default class Vehicle {
             sharpTurnDivisor = 4;
 
         switch (this._direction) {
-            case Direction.South:
+            case Directions.South:
                 this._graphic.angle = -180;
                 this._graphic.y = this._graphic.y + scaledTileHeight * scaledGameDayTimePassed;
                 break;
-            case Direction.SouthWest:
+            case Directions.SouthWest:
                 this._graphic.angle = -135;
                 if (this._turningState === TurningStates.ToSouthFromWest) {
                     this._graphic.x = this._graphic.x - (scaledTileWidth / wideTurnDivisor) * scaledGameDayTimePassed;
@@ -99,7 +97,7 @@ export default class Vehicle {
                     this._graphic.y = this._graphic.y + (scaledTileHeight / sharpTurnDivisor) * scaledGameDayTimePassed;
                 }
                 break;
-            case Direction.SouthEast:
+            case Directions.SouthEast:
                 this._graphic.angle = 135;
                 if (this._turningState === TurningStates.ToSouthFromEast) {
                     this._graphic.x = this._graphic.x + (scaledTileWidth / sharpTurnDivisor) * scaledGameDayTimePassed;
@@ -109,15 +107,15 @@ export default class Vehicle {
                     this._graphic.y = this._graphic.y + (scaledTileHeight / wideTurnDivisor) * scaledGameDayTimePassed;
                 }
                 break;
-            case Direction.East:
+            case Directions.East:
                 this._graphic.angle = 90;
                 this._graphic.x = this._graphic.x + scaledTileWidth * scaledGameDayTimePassed;
                 break;
-            case Direction.North:
+            case Directions.North:
                 this._graphic.angle = 0;
                 this._graphic.y = this._graphic.y - scaledTileHeight * scaledGameDayTimePassed;
                 break;
-            case Direction.NorthWest:
+            case Directions.NorthWest:
                 this._graphic.angle = -45;
                 if (this._turningState === TurningStates.ToNorthFromWest) {
                     this._graphic.x = this._graphic.x - (scaledTileWidth / sharpTurnDivisor) * scaledGameDayTimePassed;
@@ -127,7 +125,7 @@ export default class Vehicle {
                     this._graphic.y = this._graphic.y - (scaledTileHeight / wideTurnDivisor) * scaledGameDayTimePassed;
                 }
                 break;
-            case Direction.NorthEast:
+            case Directions.NorthEast:
                 this._graphic.angle = 45;
                 if (this._turningState === TurningStates.ToNorthFromEast) {
                     this._graphic.x = this._graphic.x + (scaledTileWidth / wideTurnDivisor) * scaledGameDayTimePassed;
@@ -137,7 +135,7 @@ export default class Vehicle {
                     this._graphic.y = this._graphic.y - (scaledTileHeight / sharpTurnDivisor) * scaledGameDayTimePassed;
                 }
                 break;
-            case Direction.West:
+            case Directions.West:
                 this._graphic.angle = -90;
                 this._graphic.x = this._graphic.x - scaledTileWidth * scaledGameDayTimePassed;
                 break;
@@ -178,11 +176,11 @@ export default class Vehicle {
         this._isOnStage = value;
     }
 
-    get direction(): Direction {
+    get direction(): Directions {
         return this._direction;
     }
 
-    set direction(value: Direction) {
+    set direction(value: Directions) {
         this._direction = value;
     }
 

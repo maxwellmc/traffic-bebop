@@ -18,7 +18,7 @@
 
 import Cell, { StructureTypes, ZoneTypes } from './Cell';
 import GameMap from './GameMap';
-import {Graph, Pathfinder} from './Pathfinding';
+import { Graph, Pathfinder } from './Pathfinding';
 import Game from './Game';
 import TravelTrip from './TravelTrip';
 
@@ -49,13 +49,13 @@ export default class Simulator {
      */
     simulate(): void {
         console.log('simulate');
-        this._gameMap = this._game.map;
+        this._gameMap = this._game.gameMap;
 
-        // Create a Graph of the GameMap
+        // Rereate a Graph of the GameMap
         this._graph = Pathfinder.generateGraphFromMap(this._gameMap);
 
-        // Create a Graph of the GameMap, preferring roads
-        this._roadGraph = Pathfinder.generateGraphFromMap(this._game.map, true);
+        // Rereate a Graph of the GameMap, preferring roads
+        this._roadGraph = Pathfinder.generateGraphFromMap(this._game.gameMap, true);
 
         // Simulate real estate
         this.simulateResidentialRealEstate();
@@ -70,7 +70,10 @@ export default class Simulator {
      * Simulates people moving in and out of residences.
      */
     simulateResidentialRealEstate(): void {
-        const emptyResidentialCells = this._gameMap.findCellsByZoneAndStructure(ZoneTypes.Residential, StructureTypes.Empty);
+        const emptyResidentialCells = this._gameMap.findCellsByZoneAndStructure(
+            ZoneTypes.Residential,
+            StructureTypes.Empty,
+        );
         // Loop through each empty residential zone
         for (const emptyResidentialCell of emptyResidentialCells) {
             // Determine if this cell should be "moved into"
@@ -84,7 +87,10 @@ export default class Simulator {
      * Simulates businesses moving in and out of commercial buildings.
      */
     simulateCommercialRealEstate(): void {
-        const emptyCommercialCells = this._gameMap.findCellsByZoneAndStructure(ZoneTypes.Commercial, StructureTypes.Empty);
+        const emptyCommercialCells = this._gameMap.findCellsByZoneAndStructure(
+            ZoneTypes.Commercial,
+            StructureTypes.Empty,
+        );
         // Loop through each empty commercial zone
         for (const emptyCommercialCell of emptyCommercialCells) {
             // Determine if this cell should be "moved into"
@@ -101,7 +107,7 @@ export default class Simulator {
             // Determine if this resident should travel to another lot
             if (this.shouldResidentTravel(houseCell)) {
                 // Find a random commercial destination
-                const destinationCell = this._game.map.findRandomCellByZoneAndStructure(
+                const destinationCell = this._game.gameMap.findRandomCellByZoneAndStructure(
                     ZoneTypes.Commercial,
                     StructureTypes.Business,
                 );
@@ -144,7 +150,7 @@ export default class Simulator {
      */
     shouldResidentMoveIn(cell: Cell): boolean {
         // Only even consider moving in if we're within so many tiles of a road
-        const nearestRoadDistance = this.calculateNearestRoadDistance(cell, this._game.map);
+        const nearestRoadDistance = this.calculateNearestRoadDistance(cell, this._game.gameMap);
         if (nearestRoadDistance < Simulator.MOVE_IN_ROAD_CUTOFF) {
             let chance = Simulator.MOVE_IN_CHANCE;
             // Decrease our chances by how far we are from a road (i.e. the further, the worse)
@@ -161,7 +167,7 @@ export default class Simulator {
      */
     shouldBusinessMoveIn(cell: Cell): boolean {
         // Only even consider moving in if we're within so many tiles of a road
-        const nearestRoadDistance = this.calculateNearestRoadDistance(cell, this._game.map);
+        const nearestRoadDistance = this.calculateNearestRoadDistance(cell, this._game.gameMap);
         if (nearestRoadDistance < Simulator.MOVE_IN_ROAD_CUTOFF) {
             let chance = Simulator.MOVE_IN_CHANCE;
             // Decrease our chances by how far we are from a road (i.e. the further, the worse)
@@ -185,7 +191,6 @@ export default class Simulator {
      * @param gameMap
      */
     calculateNearestRoadDistance(cell: Cell, gameMap: GameMap): number {
-
         // Find all the Cells with roads
         const cellsWithRoads = gameMap.findCellsByStructure(StructureTypes.Road);
         const cellsWithRoadsIds = [];

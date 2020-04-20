@@ -18,7 +18,7 @@
 
 import GameMap from './GameMap';
 import Tile from './Tile';
-import {Direction} from './Vehicle';
+import {Directions} from './Vehicle';
 
 export enum TerrainTypes {
     Grass,
@@ -104,16 +104,16 @@ export default class Cell {
         );
     }
 
-    determineDirectionOfNeighbor(cell: Cell): Direction{
+    determineDirectionOfNeighbor(cell: Cell): Directions{
         switch(cell){
             case this.getLeftNeighbor():
-                return Direction.West;
+                return Directions.West;
             case this.getRightNeighbor():
-                return Direction.East;
+                return Directions.East;
             case this.getTopNeighbor():
-                return Direction.North;
+                return Directions.North;
             case this.getBottomNeighbor():
-                return Direction.South;
+                return Directions.South;
         }
     }
 

@@ -27,7 +27,7 @@ import * as EventEmitter from 'eventemitter3';
 import Tool from './nonworld/tool/Tool';
 import ViewableObject from './ViewableObject';
 import Simulator from './Simulator';
-import {Speeds} from './Speed';
+import { Speeds } from './Speed';
 
 export enum GameEvents {
     MoneyDeducted = 'money.deducted',
@@ -51,7 +51,7 @@ export default class Game {
     private _stage: PIXI.Container;
     private _gameState: GameState;
     private _eventEmitter: EventEmitter;
-    private _map: GameMap;
+    private _gameMap: GameMap;
     private _simulator: Simulator;
     private _spritesheet: PIXI.LoaderResource;
     private _grid: Grid;
@@ -77,7 +77,7 @@ export default class Game {
         this._stage = new PIXI.Container();
         this._eventEmitter = new EventEmitter();
         this._gameState = new GameState(this);
-        this._map = new GameMap();
+        this._gameMap = new GameMap();
         this._simulator = new Simulator(this);
         this._grid = new Grid(this, Game.APP_WIDTH, Game.APP_HEIGHT);
         this._menubar = new Menubar(this);
@@ -138,7 +138,7 @@ export default class Game {
 
     updateTraffic(deltaMS: number): void {
         // Only update if we're not paused
-        if(this._gameState.speed !== Speeds.Paused) {
+        if (this._gameState.speed !== Speeds.Paused) {
             for (const trip of this._gameState.travelTrips) {
                 if (!trip.vehicle.isOnStage) {
                     this._grid.grid.addChild(trip.vehicle.graphic);
@@ -250,8 +250,8 @@ export default class Game {
         return this._eventEmitter;
     }
 
-    get map(): GameMap {
-        return this._map;
+    get gameMap(): GameMap {
+        return this._gameMap;
     }
 
     get simulator(): Simulator {

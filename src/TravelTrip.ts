@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import Vehicle, { Direction, TurningStates } from './Vehicle';
+import Vehicle, { Directions, TurningStates } from './Vehicle';
 import Game from './Game';
 import Grid from './Grid';
 import Cell from './Cell';
@@ -42,15 +42,20 @@ export default class TravelTrip {
         this._vehicle = new Vehicle(this, this._game.spritesheet);
     }
 
+    /**
+     * Moves the trip forward in time, which involves changing its current cell to the next one
+     * in the predetermined path.
+     * Returns false if the trip should be considered over/ended.
+     */
     advance(): boolean {
         // Find the next Cell to which to advance
         let currentPathIndex = this._path.indexOf(this._currentCellID);
         const nextCellID = this._path[currentPathIndex + 1];
 
         // Set the next Cell as the current Cell now (and save the current as past)
-        const pastCell = this._game.map.getCellByID(this._currentCellID);
+        const pastCell = this._game.gameMap.getCellByID(this._currentCellID);
         this._currentCellID = nextCellID;
-        const currentCell = this._game.map.getCellByID(this._currentCellID);
+        const currentCell = this._game.gameMap.getCellByID(this._currentCellID);
 
         // Get the "future" Cell (one step ahead of the now-current Cell)
         currentPathIndex = this._path.indexOf(this._currentCellID);
@@ -62,16 +67,24 @@ export default class TravelTrip {
             return false;
         }
 
-        const futureCell = this._game.map.getCellByID(futureCellID);
+        const futureCell = this._game.gameMap.getCellByID(futureCellID);
         this.updateVehicle(pastCell, currentCell, futureCell);
 
         return true;
     }
 
+    /**
+     * Updates the Vehicle's state, including its current direction, turning state, and the X and Y it should use.
+     *
+     * @param pastCell The Cell the Vehicle was just on
+     * @param currentCell The Cell the Vehicle is currently on
+     * @param futureCell The Cell the Vehicle is expected to be on in the next advancement of the trip
+     */
     updateVehicle(pastCell: Cell, currentCell: Cell, futureCell: Cell): void {
         // Determine the direction from here to the future Cell
         const direction = this.determineDirection(pastCell, currentCell, futureCell);
         this._vehicle.direction = direction;
+        // Determine the turning state if we're in the middle of a turn
         const turningState = this.determineTurningState(pastCell, currentCell, futureCell);
         this._vehicle.turningState = turningState;
 
@@ -79,14 +92,15 @@ export default class TravelTrip {
         this._vehicle.tileY = currentCell.tile.y;
 
         const scaledTileHeight = Grid.TILE_HEIGHT * Game.SPRITE_SCALE,
-            scaledTileWidth = Grid.TILE_WIDTH * Game.SPRITE_SCALE;
-        const laneOffset1 = 11 * Game.SPRITE_SCALE - 4,
+            scaledTileWidth = Grid.TILE_WIDTH * Game.SPRITE_SCALE,
+            laneOffset1 = 11 * Game.SPRITE_SCALE - 4,
             laneOffset2 = 25 * Game.SPRITE_SCALE - 4;
 
-        if (direction === Direction.South) {
+        // Determine the graphical placement of the Vehicle sprite based on its current direction and turning state
+        if (direction === Directions.South) {
             this._vehicle.graphic.x = currentCell.tile.x + laneOffset1;
             this._vehicle.graphic.y = currentCell.tile.y;
-        } else if (direction === Direction.SouthWest) {
+        } else if (direction === Directions.SouthWest) {
             if (turningState === TurningStates.ToSouthFromWest) {
                 this._vehicle.graphic.x = currentCell.tile.x + scaledTileWidth;
                 this._vehicle.graphic.y = currentCell.tile.y + laneOffset1;
@@ -94,7 +108,7 @@ export default class TravelTrip {
                 this._vehicle.graphic.x = currentCell.tile.x + laneOffset1;
                 this._vehicle.graphic.y = currentCell.tile.y;
             }
-        } else if (direction === Direction.SouthEast) {
+        } else if (direction === Directions.SouthEast) {
             if (turningState === TurningStates.ToSouthFromEast) {
                 this._vehicle.graphic.x = currentCell.tile.x;
                 this._vehicle.graphic.y = currentCell.tile.y + laneOffset2;
@@ -102,10 +116,10 @@ export default class TravelTrip {
                 this._vehicle.graphic.x = currentCell.tile.x + laneOffset1;
                 this._vehicle.graphic.y = currentCell.tile.y;
             }
-        } else if (direction === Direction.North) {
+        } else if (direction === Directions.North) {
             this._vehicle.graphic.x = currentCell.tile.x + laneOffset2;
             this._vehicle.graphic.y = currentCell.tile.y + scaledTileHeight;
-        }else if(direction === Direction.NorthWest) {
+        } else if (direction === Directions.NorthWest) {
             if (turningState === TurningStates.ToNorthFromWest) {
                 this._vehicle.graphic.x = currentCell.tile.x + scaledTileWidth;
                 this._vehicle.graphic.y = currentCell.tile.y + laneOffset1;
@@ -113,7 +127,7 @@ export default class TravelTrip {
                 this._vehicle.graphic.x = currentCell.tile.x + laneOffset2;
                 this._vehicle.graphic.y = currentCell.tile.y + scaledTileHeight;
             }
-        }else if(direction === Direction.NorthEast) {
+        } else if (direction === Directions.NorthEast) {
             if (turningState === TurningStates.ToNorthFromEast) {
                 this._vehicle.graphic.x = currentCell.tile.x;
                 this._vehicle.graphic.y = currentCell.tile.y + laneOffset2;
@@ -121,79 +135,96 @@ export default class TravelTrip {
                 this._vehicle.graphic.x = currentCell.tile.x + laneOffset2;
                 this._vehicle.graphic.y = currentCell.tile.y + scaledTileHeight;
             }
-        } else if (direction === Direction.West) {
+        } else if (direction === Directions.West) {
             this._vehicle.graphic.x = currentCell.tile.x + scaledTileWidth;
             this._vehicle.graphic.y = currentCell.tile.y + laneOffset1;
-        } else if (direction === Direction.East) {
+        } else if (direction === Directions.East) {
             this._vehicle.graphic.x = currentCell.tile.x;
             this._vehicle.graphic.y = currentCell.tile.y + laneOffset2;
         }
     }
 
-    determineDirection(pastCell: Cell, currentCell: Cell, futureCell: Cell): Direction {
+    /**
+     * Determines the direction for the Vehicle based on its past, current, and future Cells.
+     *
+     * @param pastCell
+     * @param currentCell
+     * @param futureCell
+     */
+    determineDirection(pastCell: Cell, currentCell: Cell, futureCell: Cell): Directions {
         const directionPastToCurrent = pastCell.determineDirectionOfNeighbor(currentCell);
         const directionCurrentToFuture = currentCell.determineDirectionOfNeighbor(futureCell);
 
         if (
-            (directionPastToCurrent === Direction.South && directionCurrentToFuture === Direction.West) ||
-            (directionPastToCurrent === Direction.West && directionCurrentToFuture === Direction.South)
+            (directionPastToCurrent === Directions.South && directionCurrentToFuture === Directions.West) ||
+            (directionPastToCurrent === Directions.West && directionCurrentToFuture === Directions.South)
         ) {
-            return Direction.SouthWest;
+            return Directions.SouthWest;
         }
         if (
-            (directionPastToCurrent === Direction.South && directionCurrentToFuture === Direction.East) ||
-            (directionPastToCurrent === Direction.East && directionCurrentToFuture === Direction.South)
+            (directionPastToCurrent === Directions.South && directionCurrentToFuture === Directions.East) ||
+            (directionPastToCurrent === Directions.East && directionCurrentToFuture === Directions.South)
         ) {
-            return Direction.SouthEast;
+            return Directions.SouthEast;
         }
         if (
-            (directionPastToCurrent === Direction.North && directionCurrentToFuture === Direction.West) ||
-            (directionPastToCurrent === Direction.West && directionCurrentToFuture === Direction.North)
+            (directionPastToCurrent === Directions.North && directionCurrentToFuture === Directions.West) ||
+            (directionPastToCurrent === Directions.West && directionCurrentToFuture === Directions.North)
         ) {
-            return Direction.NorthWest;
+            return Directions.NorthWest;
         }
         if (
-            (directionPastToCurrent === Direction.North && directionCurrentToFuture === Direction.East) ||
-            (directionPastToCurrent === Direction.East && directionCurrentToFuture === Direction.North)
+            (directionPastToCurrent === Directions.North && directionCurrentToFuture === Directions.East) ||
+            (directionPastToCurrent === Directions.East && directionCurrentToFuture === Directions.North)
         ) {
-            return Direction.NorthEast;
+            return Directions.NorthEast;
         }
 
         return directionCurrentToFuture;
     }
 
+    /**
+     * Determines the turning state for the Vehicle based on its past, current, and future Cells.
+     *
+     * @param pastCell
+     * @param currentCell
+     * @param futureCell
+     */
     determineTurningState(pastCell: Cell, currentCell: Cell, futureCell: Cell): TurningStates {
         const directionPastToCurrent = pastCell.determineDirectionOfNeighbor(currentCell);
         const directionCurrentToFuture = currentCell.determineDirectionOfNeighbor(futureCell);
 
-        if (directionPastToCurrent === Direction.South && directionCurrentToFuture === Direction.West) {
+        if (directionPastToCurrent === Directions.South && directionCurrentToFuture === Directions.West) {
             return TurningStates.ToWestFromSouth;
         }
-        if (directionPastToCurrent === Direction.West && directionCurrentToFuture === Direction.South) {
+        if (directionPastToCurrent === Directions.West && directionCurrentToFuture === Directions.South) {
             return TurningStates.ToSouthFromWest;
         }
-        if (directionPastToCurrent === Direction.South && directionCurrentToFuture === Direction.East) {
+        if (directionPastToCurrent === Directions.South && directionCurrentToFuture === Directions.East) {
             return TurningStates.ToEastFromSouth;
         }
-        if (directionPastToCurrent === Direction.East && directionCurrentToFuture === Direction.South) {
+        if (directionPastToCurrent === Directions.East && directionCurrentToFuture === Directions.South) {
             return TurningStates.ToSouthFromEast;
         }
-        if (directionPastToCurrent === Direction.North && directionCurrentToFuture === Direction.West) {
+        if (directionPastToCurrent === Directions.North && directionCurrentToFuture === Directions.West) {
             return TurningStates.ToWestFromNorth;
         }
-        if (directionPastToCurrent === Direction.West && directionCurrentToFuture === Direction.North) {
+        if (directionPastToCurrent === Directions.West && directionCurrentToFuture === Directions.North) {
             return TurningStates.ToNorthFromWest;
         }
-        if (directionPastToCurrent === Direction.North && directionCurrentToFuture === Direction.East) {
+        if (directionPastToCurrent === Directions.North && directionCurrentToFuture === Directions.East) {
             return TurningStates.ToEastFromNorth;
         }
-        if (directionPastToCurrent === Direction.East && directionCurrentToFuture === Direction.North) {
+        if (directionPastToCurrent === Directions.East && directionCurrentToFuture === Directions.North) {
             return TurningStates.ToNorthFromEast;
         }
 
         return TurningStates.NotTurning;
     }
 
+    /**
+     * Finalizes the trip, which involves destroying its graphics.
+     */
     end(): void {
         this._vehicle.graphic.destroy();
         this._vehicle.graphic = null;

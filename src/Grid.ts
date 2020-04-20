@@ -98,7 +98,7 @@ export default class Grid extends ViewableObject {
         for (let row = 0; row < GameMap.ROWS; row++) {
             for (let col = 0; col < GameMap.COLS; col++) {
                 // Find the Cell for this row/column combination
-                const cell = this._game.map.getCellByRowColumn(row, col);
+                const cell = this._game.gameMap.getCellByRowColumn(row, col);
 
                 // Create a new Tile for it
                 const tile = new Tile(this, x, y, cell, this._game.spritesheet);
@@ -138,6 +138,9 @@ export default class Grid extends ViewableObject {
                 // Return true to propagate this event up to the grid
                 return true;
             case Tools.Road:
+                if(tile.cell.zoneType !== ZoneTypes.Unzoned || tile.cell.structureType !== StructureTypes.Empty){
+                    break;
+                }
                 tile.cell.structureType = StructureTypes.Road;
                 this._game.eventEmitter.emit(GameEvents.MoneyDeducted, Grid.TOOL_COSTS[Tools.Road]);
                 break;
@@ -145,11 +148,17 @@ export default class Grid extends ViewableObject {
                 tile.cell.structureType = StructureTypes.Empty;
                 break;
             case Tools.ZoneResidential:
+                if(tile.cell.zoneType !== ZoneTypes.Unzoned || tile.cell.structureType !== StructureTypes.Empty){
+                    break;
+                }
                 tile.cell.terrainType = TerrainTypes.Grass;
                 tile.cell.zoneType = ZoneTypes.Residential;
                 this._game.eventEmitter.emit(GameEvents.MoneyDeducted, Grid.TOOL_COSTS[Tools.ZoneResidential]);
                 break;
             case Tools.ZoneCommercial:
+                if(tile.cell.zoneType !== ZoneTypes.Unzoned || tile.cell.structureType !== StructureTypes.Empty){
+                    break;
+                }
                 tile.cell.terrainType = TerrainTypes.Grass;
                 tile.cell.zoneType = ZoneTypes.Commercial;
                 this._game.eventEmitter.emit(GameEvents.MoneyDeducted, Grid.TOOL_COSTS[Tools.ZoneCommercial]);
