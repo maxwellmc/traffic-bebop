@@ -18,7 +18,7 @@
 
 import GameMap from './GameMap';
 import Tile from './Tile';
-import {Directions} from './Vehicle';
+import { Directions } from './Vehicle';
 
 export enum TerrainTypes {
     Grass,
@@ -104,8 +104,8 @@ export default class Cell {
         );
     }
 
-    determineDirectionOfNeighbor(cell: Cell): Directions{
-        switch(cell){
+    determineDirectionOfNeighbor(cell: Cell): Directions {
+        switch (cell) {
             case this.getLeftNeighbor():
                 return Directions.West;
             case this.getRightNeighbor():
@@ -115,6 +115,10 @@ export default class Cell {
             case this.getBottomNeighbor():
                 return Directions.South;
         }
+    }
+
+    hasRoadConnectionIssue(): boolean {
+        return this._zoneType !== ZoneTypes.Unzoned && !this.doesAnyNeighborHaveStructure(StructureTypes.Road);
     }
 
     /* Getters & Setters -------------------------------------------------------------------------------------------- */

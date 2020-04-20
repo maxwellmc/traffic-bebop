@@ -18,10 +18,10 @@
 
 import ViewableObject from './ViewableObject';
 import Grid from './Grid';
-import Cell, { StructureTypes, TerrainTypes, ZoneTypes } from './Cell';
-import { Container, LoaderResource, Sprite, Text } from 'pixi.js';
+import Cell, {StructureTypes, TerrainTypes, ZoneTypes} from './Cell';
+import {Container, LoaderResource, Sprite, Text} from 'pixi.js';
 import Game from './Game';
-import { TileGraphicLayer } from './TileGraphic';
+import {TileGraphicLayer} from './TileGraphic';
 
 export enum TerrainSpriteFiles {
     Grass = 'grass.png',
@@ -57,6 +57,7 @@ export enum MiscSpriteFiles {
     Blank = '',
     Grid = 'grid.png',
     Drag = 'drag.png',
+    IssueRoad = 'issue-road.png',
 }
 
 /**
@@ -143,6 +144,10 @@ export default class Tile extends ViewableObject {
                 if (this._layers.get(TileGraphicLayer.Zone) !== ZoneSpriteFiles.Commercial) {
                     this.setLayerSprite(TileGraphicLayer.Zone, ZoneSpriteFiles.Commercial);
                 }
+            } else {
+                if (this._layers.get(TileGraphicLayer.Zone) !== MiscSpriteFiles.Blank) {
+                    this.setLayerSprite(TileGraphicLayer.Zone, MiscSpriteFiles.Blank);
+                }
             }
         }
 
@@ -176,6 +181,10 @@ export default class Tile extends ViewableObject {
         if (this._grid.isTileInDrag(this)) {
             if (this._layers.get(TileGraphicLayer.Highlight) !== MiscSpriteFiles.Drag) {
                 this.setLayerSprite(TileGraphicLayer.Highlight, MiscSpriteFiles.Drag);
+            }
+        } else if(this._cell.hasRoadConnectionIssue()){
+            if (this._layers.get(TileGraphicLayer.Highlight) !== MiscSpriteFiles.IssueRoad) {
+                this.setLayerSprite(TileGraphicLayer.Highlight, MiscSpriteFiles.IssueRoad);
             }
         } else {
             if (this._layers.get(TileGraphicLayer.Highlight) !== MiscSpriteFiles.Blank) {

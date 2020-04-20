@@ -10,15 +10,15 @@
 },
 "car1.png":
 {
-	"frame": {"x":401,"y":30,"w":5,"h":8},
-	"rotated": true,
+	"frame": {"x":374,"y":52,"w":5,"h":8},
+	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":5,"h":8},
 	"sourceSize": {"w":5,"h":8}
 },
 "drag.png":
 {
-	"frame": {"x":32,"y":0,"w":32,"h":32},
+	"frame": {"x":0,"y":32,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -26,7 +26,7 @@
 },
 "grass.png":
 {
-	"frame": {"x":64,"y":0,"w":32,"h":32},
+	"frame": {"x":32,"y":0,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -34,7 +34,7 @@
 },
 "grid.png":
 {
-	"frame": {"x":96,"y":0,"w":32,"h":32},
+	"frame": {"x":32,"y":32,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -42,32 +42,40 @@
 },
 "house1.png":
 {
-	"frame": {"x":128,"y":0,"w":32,"h":32},
+	"frame": {"x":64,"y":0,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
+"issue-road.png":
+{
+	"frame": {"x":374,"y":30,"w":22,"h":22},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":5,"y":5,"w":22,"h":22},
+	"sourceSize": {"w":32,"h":32}
+},
 "road-bl.png":
 {
-	"frame": {"x":128,"y":32,"w":31,"h":32},
-	"rotated": true,
+	"frame": {"x":160,"y":0,"w":31,"h":32},
+	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":1,"y":0,"w":31,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
 "road-br.png":
 {
-	"frame": {"x":0,"y":32,"w":32,"h":31},
-	"rotated": false,
+	"frame": {"x":222,"y":0,"w":32,"h":31},
+	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":31},
 	"sourceSize": {"w":32,"h":32}
 },
 "road-ib.png":
 {
-	"frame": {"x":32,"y":32,"w":32,"h":31},
-	"rotated": false,
+	"frame": {"x":222,"y":32,"w":32,"h":31},
+	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":31},
 	"sourceSize": {"w":32,"h":32}
@@ -75,14 +83,14 @@
 "road-il.png":
 {
 	"frame": {"x":160,"y":32,"w":31,"h":32},
-	"rotated": true,
+	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":1,"y":0,"w":31,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
 "road-im.png":
 {
-	"frame": {"x":160,"y":0,"w":32,"h":32},
+	"frame": {"x":64,"y":32,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -90,23 +98,23 @@
 },
 "road-ir.png":
 {
-	"frame": {"x":192,"y":32,"w":31,"h":32},
-	"rotated": true,
+	"frame": {"x":191,"y":0,"w":31,"h":32},
+	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":0,"y":0,"w":31,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
 "road-it.png":
 {
-	"frame": {"x":64,"y":32,"w":32,"h":31},
-	"rotated": false,
+	"frame": {"x":253,"y":0,"w":32,"h":31},
+	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":0,"y":1,"w":32,"h":31},
 	"sourceSize": {"w":32,"h":32}
 },
 "road-m.png":
 {
-	"frame": {"x":380,"y":0,"w":30,"h":30},
+	"frame": {"x":374,"y":0,"w":30,"h":30},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":1,"y":1,"w":30,"h":30},
@@ -114,31 +122,31 @@
 },
 "road-tl.png":
 {
-	"frame": {"x":96,"y":32,"w":32,"h":31},
-	"rotated": false,
+	"frame": {"x":253,"y":32,"w":32,"h":31},
+	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":0,"y":1,"w":32,"h":31},
 	"sourceSize": {"w":32,"h":32}
 },
 "road-tr.png":
 {
-	"frame": {"x":224,"y":32,"w":31,"h":32},
-	"rotated": true,
+	"frame": {"x":191,"y":32,"w":31,"h":32},
+	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":0,"y":0,"w":31,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
 "road-x.png":
 {
-	"frame": {"x":256,"y":32,"w":32,"h":30},
-	"rotated": false,
+	"frame": {"x":284,"y":32,"w":32,"h":30},
+	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":0,"y":1,"w":32,"h":30},
 	"sourceSize": {"w":32,"h":32}
 },
 "road-xl.png":
 {
-	"frame": {"x":350,"y":0,"w":31,"h":30},
+	"frame": {"x":344,"y":0,"w":31,"h":30},
 	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":1,"y":1,"w":31,"h":30},
@@ -146,7 +154,7 @@
 },
 "road-xr.png":
 {
-	"frame": {"x":350,"y":31,"w":31,"h":30},
+	"frame": {"x":344,"y":31,"w":31,"h":30},
 	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":0,"y":1,"w":31,"h":30},
@@ -154,15 +162,15 @@
 },
 "road-y.png":
 {
-	"frame": {"x":288,"y":32,"w":30,"h":32},
-	"rotated": true,
+	"frame": {"x":284,"y":0,"w":30,"h":32},
+	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":1,"y":0,"w":30,"h":32},
 	"sourceSize": {"w":32,"h":32}
 },
 "road-yb.png":
 {
-	"frame": {"x":320,"y":0,"w":30,"h":31},
+	"frame": {"x":314,"y":0,"w":30,"h":31},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":1,"y":0,"w":30,"h":31},
@@ -170,7 +178,7 @@
 },
 "road-yt.png":
 {
-	"frame": {"x":320,"y":31,"w":30,"h":31},
+	"frame": {"x":314,"y":31,"w":30,"h":31},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":1,"y":1,"w":30,"h":31},
@@ -178,7 +186,7 @@
 },
 "tool-bg-d.png":
 {
-	"frame": {"x":192,"y":0,"w":32,"h":32},
+	"frame": {"x":96,"y":0,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -186,7 +194,7 @@
 },
 "tool-bg.png":
 {
-	"frame": {"x":224,"y":0,"w":32,"h":32},
+	"frame": {"x":96,"y":32,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -194,7 +202,7 @@
 },
 "tool-bulldoze.png":
 {
-	"frame": {"x":380,"y":30,"w":21,"h":19},
+	"frame": {"x":418,"y":44,"w":21,"h":19},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":6,"y":6,"w":21,"h":19},
@@ -202,15 +210,15 @@
 },
 "tool-commercial.png":
 {
-	"frame": {"x":410,"y":22,"w":19,"h":22},
-	"rotated": true,
+	"frame": {"x":418,"y":22,"w":19,"h":22},
+	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":6,"y":5,"w":19,"h":22},
 	"sourceSize": {"w":32,"h":32}
 },
 "tool-residential.png":
 {
-	"frame": {"x":401,"y":41,"w":22,"h":18},
+	"frame": {"x":424,"y":0,"w":22,"h":18},
 	"rotated": true,
 	"trimmed": true,
 	"spriteSourceSize": {"x":5,"y":6,"w":22,"h":18},
@@ -218,15 +226,15 @@
 },
 "tool-road.png":
 {
-	"frame": {"x":380,"y":49,"w":14,"h":20},
-	"rotated": true,
+	"frame": {"x":404,"y":0,"w":20,"h":22},
+	"rotated": false,
 	"trimmed": true,
-	"spriteSourceSize": {"x":9,"y":6,"w":14,"h":20},
+	"spriteSourceSize": {"x":6,"y":5,"w":20,"h":22},
 	"sourceSize": {"w":32,"h":32}
 },
 "tool-select.png":
 {
-	"frame": {"x":410,"y":0,"w":22,"h":22},
+	"frame": {"x":396,"y":30,"w":22,"h":22},
 	"rotated": false,
 	"trimmed": true,
 	"spriteSourceSize": {"x":5,"y":5,"w":22,"h":22},
@@ -234,7 +242,7 @@
 },
 "zone-c.png":
 {
-	"frame": {"x":256,"y":0,"w":32,"h":32},
+	"frame": {"x":128,"y":0,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -242,7 +250,7 @@
 },
 "zone-r.png":
 {
-	"frame": {"x":288,"y":0,"w":32,"h":32},
+	"frame": {"x":128,"y":32,"w":32,"h":32},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
@@ -255,8 +263,8 @@
 	"version": "1.0",
 	"image": "sprites.png",
 	"format": "RGBA8888",
-	"size": {"w":432,"h":63},
+	"size": {"w":442,"h":64},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:a939afb97f6685a955ee79cf15f51f4e:f393f512b055e6d348ef8c4f6df5926d:1eabdf11f75e3a4fe3147baf7b5be24b$"
+	"smartupdate": "$TexturePacker:SmartUpdate:e4fbfeae7b2be613ff28167a15182e38:f35a6c01b18c480acdf03a4e9d80e21b:1eabdf11f75e3a4fe3147baf7b5be24b$"
 }
 }

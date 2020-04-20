@@ -138,17 +138,21 @@ export default class Grid extends ViewableObject {
                 // Return true to propagate this event up to the grid
                 return true;
             case Tools.Road:
-                if(tile.cell.zoneType !== ZoneTypes.Unzoned || tile.cell.structureType !== StructureTypes.Empty){
+                if (tile.cell.zoneType !== ZoneTypes.Unzoned || tile.cell.structureType !== StructureTypes.Empty) {
                     break;
                 }
                 tile.cell.structureType = StructureTypes.Road;
                 this._game.eventEmitter.emit(GameEvents.MoneyDeducted, Grid.TOOL_COSTS[Tools.Road]);
                 break;
             case Tools.Bulldoze:
-                tile.cell.structureType = StructureTypes.Empty;
+                if (tile.cell.structureType !== StructureTypes.Empty) {
+                    tile.cell.structureType = StructureTypes.Empty;
+                } else {
+                    tile.cell.zoneType = ZoneTypes.Unzoned;
+                }
                 break;
             case Tools.ZoneResidential:
-                if(tile.cell.zoneType !== ZoneTypes.Unzoned || tile.cell.structureType !== StructureTypes.Empty){
+                if (tile.cell.zoneType !== ZoneTypes.Unzoned || tile.cell.structureType !== StructureTypes.Empty) {
                     break;
                 }
                 tile.cell.terrainType = TerrainTypes.Grass;
@@ -156,7 +160,7 @@ export default class Grid extends ViewableObject {
                 this._game.eventEmitter.emit(GameEvents.MoneyDeducted, Grid.TOOL_COSTS[Tools.ZoneResidential]);
                 break;
             case Tools.ZoneCommercial:
-                if(tile.cell.zoneType !== ZoneTypes.Unzoned || tile.cell.structureType !== StructureTypes.Empty){
+                if (tile.cell.zoneType !== ZoneTypes.Unzoned || tile.cell.structureType !== StructureTypes.Empty) {
                     break;
                 }
                 tile.cell.terrainType = TerrainTypes.Grass;
