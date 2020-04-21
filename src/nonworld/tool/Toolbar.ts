@@ -19,6 +19,7 @@
 import Tool from './Tool';
 import Game from '../../Game';
 import Menubar from '../menu/Menubar';
+import {ToolbarEvents} from '../../Events';
 
 export enum Tools {
     Select,
@@ -97,7 +98,12 @@ export default class Toolbar {
     }
 
     onToolClick(e, tool): void {
+
+        // Set the "tool in use" to the clicked Tool
         this._game.toolInUse = tool;
+
+        // Emit an event so that others can know we were clicked
+        this._game.eventEmitter.emit(ToolbarEvents.Clicked);
     }
 
     /* Getters & Setters -------------------------------------------------------------------------------------------- */

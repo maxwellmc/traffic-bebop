@@ -219,6 +219,9 @@ export default class Grid {
 
         // Call `onCursorMove` in case this is a single, non-moving click, and not a drag motion
         this.onCursorMove();
+
+        // Emit an event so that others can know we were clicked
+        this._game.eventEmitter.emit(GridEvents.Clicked);
     }
 
     /**

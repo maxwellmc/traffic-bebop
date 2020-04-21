@@ -42,6 +42,7 @@ export default class SpeedMenu extends Menu {
     }
 
     onMenuItemClick(menuItem: MenuItem): void {
+        super.onMenuItemClick(menuItem);
         switch (menuItem.id) {
             case Speeds.Paused:
                 this._menubar.game.eventEmitter.emit(GameEvents.SpeedSet, Speeds.Paused);

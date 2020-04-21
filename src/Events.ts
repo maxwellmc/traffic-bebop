@@ -30,7 +30,18 @@ export enum GameStateEvents {
 }
 
 export enum GridEvents {
+    Clicked = 'grid.clicked',
     GridLayerToggled = 'grid.grid-layer-toggled',
     ZoomedIn = 'grid.zoomed-in',
     ZoomedOut = 'grid.zoomed-out',
+}
+
+export enum ToolbarEvents {
+    Clicked = 'toolbar.clicked',
+}
+
+export enum MenubarEvents {
+    Clicked = 'menubar.clicked',
+    MenuClicked = 'menubar.menu.clicked',
+    MenuItemClicked = 'menubar.menu-item.clicked',
 }

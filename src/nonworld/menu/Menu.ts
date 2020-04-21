@@ -20,6 +20,7 @@ import Menubar from './Menubar';
 import MenuItem from './MenuItem';
 import AbstractTwoGraphicObject from '../../AbstractTwoGraphicObject';
 import GraphicUtil from '../../GraphicUtil';
+import {GridEvents, MenubarEvents, ToolbarEvents} from '../../Events';
 
 /**
  * Selected by the user to manipulate the game state.
@@ -55,6 +56,12 @@ export default abstract class Menu extends AbstractTwoGraphicObject {
         this._open = false;
         this._label = '';
         this._items = [];
+
+        // Close the menu when something else is clicked
+        this._menubar.game.eventEmitter.on(GridEvents.Clicked, () => this.onOtherClicked());
+        this._menubar.game.eventEmitter.on(ToolbarEvents.Clicked, () => this.onOtherClicked());
+        this._menubar.game.eventEmitter.on(MenubarEvents.MenuClicked, (args) => this.onOtherClicked(args));
+        this._menubar.game.eventEmitter.on(MenubarEvents.MenuItemClicked, () => this.onOtherClicked());
     }
 
     generateGraphics(): void {
@@ -87,15 +94,39 @@ export default abstract class Menu extends AbstractTwoGraphicObject {
         this._foreground = text;
     }
 
+    /**
+     * Handles when *this* Menu is clicked.
+     */
     onMenuClick(): void {
         this.toggleOpen();
+        this._menubar.game.eventEmitter.emit(MenubarEvents.MenuClicked, this);
     }
 
     toggleOpen(): void {
         this._open = !this._open;
     }
 
-    abstract onMenuItemClick(menuItem: MenuItem): void;
+    /**
+     * Handles when something else is clicked, which is not necessarily this Menu (but could be).
+     *
+     * @param args The clicked something
+     */
+    onOtherClicked(args?): void {
+        // If the clicked item was actually this Menu, then skip
+        if(args === this){
+            return;
+        }
+        this._open = false;
+    }
+
+    /**
+     * This is designed to be a stub function which is extended by child classes.
+     *
+     * @param menuItem
+     */
+    onMenuItemClick(menuItem: MenuItem): void {
+        this._menubar.game.eventEmitter.emit(MenubarEvents.MenuItemClicked);
+    }
 
     abstract setGraphicsPositioning(): void;
 

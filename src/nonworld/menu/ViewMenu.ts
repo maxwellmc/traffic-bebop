@@ -57,6 +57,7 @@ export default class ViewMenu extends Menu {
     }
 
     onMenuItemClick(menuItem: MenuItem): void {
+        super.onMenuItemClick(menuItem);
         switch (menuItem.id) {
             case 0:
                 this._menubar.game.eventEmitter.emit(GridEvents.GridLayerToggled);
