@@ -16,9 +16,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import Cell, { StructureTypes, ZoneTypes } from './Cell';
+import Cell, {StructureTypes, ZoneTypes} from './Cell';
 import GameMap from './GameMap';
-import { Graph, Pathfinder } from './Pathfinding';
+import {Graph, Pathfinder} from './Pathfinding';
 import Game from './Game';
 import TravelTrip from './TravelTrip';
 
@@ -149,13 +149,9 @@ export default class Simulator {
      * @param cell
      */
     shouldResidentMoveIn(cell: Cell): boolean {
-        // Only even consider moving in if we're within so many tiles of a road
-        const nearestRoadDistance = this.calculateNearestRoadDistance(cell, this._game.gameMap);
-        if (nearestRoadDistance < Simulator.MOVE_IN_ROAD_CUTOFF) {
-            let chance = Simulator.MOVE_IN_CHANCE;
-            // Decrease our chances by how far we are from a road (i.e. the further, the worse)
-            chance *= nearestRoadDistance ** Simulator.MOVE_IN_ROAD_EXPONENTIATION_OPERAND;
-            return Simulator.randomInt(chance) === 0;
+        // Only even consider moving in if we're next to a road
+        if (cell.doesAnyNeighborHaveStructure(StructureTypes.Road)) {
+            return Simulator.randomInt(Simulator.MOVE_IN_CHANCE) === 0;
         }
         return false;
     }
@@ -166,13 +162,9 @@ export default class Simulator {
      * @param cell
      */
     shouldBusinessMoveIn(cell: Cell): boolean {
-        // Only even consider moving in if we're within so many tiles of a road
-        const nearestRoadDistance = this.calculateNearestRoadDistance(cell, this._game.gameMap);
-        if (nearestRoadDistance < Simulator.MOVE_IN_ROAD_CUTOFF) {
-            let chance = Simulator.MOVE_IN_CHANCE;
-            // Decrease our chances by how far we are from a road (i.e. the further, the worse)
-            chance *= nearestRoadDistance ** Simulator.MOVE_IN_ROAD_EXPONENTIATION_OPERAND;
-            return Simulator.randomInt(chance) === 0;
+        // Only even consider moving in if we're next to a road
+        if (cell.doesAnyNeighborHaveStructure(StructureTypes.Road)) {
+            return Simulator.randomInt(Simulator.MOVE_IN_CHANCE) === 0;
         }
         return false;
     }

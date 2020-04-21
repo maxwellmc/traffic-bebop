@@ -75,10 +75,8 @@ export default class Tile {
     private _layers: Map<TileGraphicLayer, string>;
     private _debugContainer: Container;
 
-    constructor(grid: Grid, x: number, y: number, cell: Cell, spritesheet: LoaderResource) {
+    constructor(grid: Grid, cell: Cell, spritesheet: LoaderResource) {
         this._grid = grid;
-        this._x = x;
-        this._y = y;
         this._cell = cell;
         this._spritesheet = spritesheet;
         this._container = new Container();
@@ -87,8 +85,6 @@ export default class Tile {
     }
 
     generateGraphics(): void {
-        const name = `${this._x},${this._y}`;
-
         // Initialize the layers of Sprites in the Container to graphically represent the Tile
         this._container.addChild(new Sprite());
         this._container.addChild(new Sprite());
@@ -104,11 +100,8 @@ export default class Tile {
             .set(TileGraphicLayer.Highlight, MiscSpriteFiles.Blank);
 
         // Initialize the Container
-        this._container.x = this._x;
-        this._container.y = this._y;
-        this._container.scale.set(this._grid.scale);
         this._container.interactive = true;
-        this._container.name = name;
+        this._container.name = `${this._x},${this._y}`;
 
         // Create the debug graphic
         this._debugContainer.addChild(
@@ -119,6 +112,13 @@ export default class Tile {
                 align: 'center',
             }),
         );
+    }
+
+    setGraphicsPositioning(): void {
+        this._container.scale.set(this._grid.scale);
+        this._container.x = this._x;
+        this._container.y = this._y;
+
         this._debugContainer.x = this._x;
         this._debugContainer.y = this._y;
     }
@@ -126,73 +126,47 @@ export default class Tile {
     updateGraphics(): void {
         // Set the "Terrain" layer
         if (this._cell.terrainType === TerrainTypes.Grass) {
-            if (this._layers.get(TileGraphicLayer.Terrain) !== TerrainSpriteFiles.Grass) {
-                this.setLayerSprite(TileGraphicLayer.Terrain, TerrainSpriteFiles.Grass);
-            }
+            this.setLayerSprite(TileGraphicLayer.Terrain, TerrainSpriteFiles.Grass);
         }
 
         // Set the "Zone" layer
         if (this._cell.structureType === StructureTypes.Empty) {
             if (this._cell.zoneType === ZoneTypes.Residential) {
-                if (this._layers.get(TileGraphicLayer.Zone) !== ZoneSpriteFiles.Residential) {
-                    this.setLayerSprite(TileGraphicLayer.Zone, ZoneSpriteFiles.Residential);
-                }
+                this.setLayerSprite(TileGraphicLayer.Zone, ZoneSpriteFiles.Residential);
             } else if (this._cell.zoneType === ZoneTypes.Commercial) {
-                if (this._layers.get(TileGraphicLayer.Zone) !== ZoneSpriteFiles.Commercial) {
-                    this.setLayerSprite(TileGraphicLayer.Zone, ZoneSpriteFiles.Commercial);
-                }
+                this.setLayerSprite(TileGraphicLayer.Zone, ZoneSpriteFiles.Commercial);
             } else {
-                if (this._layers.get(TileGraphicLayer.Zone) !== MiscSpriteFiles.Blank) {
-                    this.setLayerSprite(TileGraphicLayer.Zone, MiscSpriteFiles.Blank);
-                }
+                this.setLayerSprite(TileGraphicLayer.Zone, MiscSpriteFiles.Blank);
             }
         }
 
         // Set the "Structure" layer
         if (this._cell.structureType === StructureTypes.Road) {
             const roadFilename = this.determineRoadOrientation();
-            if (this._layers.get(TileGraphicLayer.Structure) !== roadFilename) {
-                this.setLayerSprite(TileGraphicLayer.Structure, roadFilename);
-            }
+            this.setLayerSprite(TileGraphicLayer.Structure, roadFilename);
         } else if (this._cell.structureType === StructureTypes.House) {
-            if (this._layers.get(TileGraphicLayer.Structure) !== StructureSpriteFiles.HouseStyle1) {
-                this.setLayerSprite(TileGraphicLayer.Structure, StructureSpriteFiles.HouseStyle1);
-            }
+            this.setLayerSprite(TileGraphicLayer.Structure, StructureSpriteFiles.HouseStyle1);
         } else if (this._cell.structureType === StructureTypes.Business) {
-            if (this._layers.get(TileGraphicLayer.Structure) !== StructureSpriteFiles.BusinessStyle1) {
-                this.setLayerSprite(TileGraphicLayer.Structure, StructureSpriteFiles.BusinessStyle1);
-            }
+            this.setLayerSprite(TileGraphicLayer.Structure, StructureSpriteFiles.BusinessStyle1);
         } else {
-            if (this._layers.get(TileGraphicLayer.Structure) !== MiscSpriteFiles.Blank) {
-                this.setLayerSprite(TileGraphicLayer.Structure, MiscSpriteFiles.Blank);
-            }
+            this.setLayerSprite(TileGraphicLayer.Structure, MiscSpriteFiles.Blank);
         }
 
         // Set the "Grid" layer
         if (this._grid.showGridLayer) {
-            if (this._layers.get(TileGraphicLayer.Grid) !== MiscSpriteFiles.Grid) {
-                this.setLayerSprite(TileGraphicLayer.Grid, MiscSpriteFiles.Grid);
-            }
+            this.setLayerSprite(TileGraphicLayer.Grid, MiscSpriteFiles.Grid);
         } else {
-            if (this._layers.get(TileGraphicLayer.Grid) !== MiscSpriteFiles.Blank) {
-                this.setLayerSprite(TileGraphicLayer.Grid, MiscSpriteFiles.Blank);
-            }
+            this.setLayerSprite(TileGraphicLayer.Grid, MiscSpriteFiles.Blank);
         }
 
         // Set the "Highlight" layer
         // If this tile is currently part of a cursor-drag event, then add an overlay to the "Highlight" layer
         if (this._grid.isTileInDrag(this)) {
-            if (this._layers.get(TileGraphicLayer.Highlight) !== MiscSpriteFiles.Drag) {
-                this.setLayerSprite(TileGraphicLayer.Highlight, MiscSpriteFiles.Drag);
-            }
+            this.setLayerSprite(TileGraphicLayer.Highlight, MiscSpriteFiles.Drag);
         } else if (this._cell.hasRoadConnectionIssue()) {
-            if (this._layers.get(TileGraphicLayer.Highlight) !== MiscSpriteFiles.IssueRoad) {
-                this.setLayerSprite(TileGraphicLayer.Highlight, MiscSpriteFiles.IssueRoad);
-            }
+            this.setLayerSprite(TileGraphicLayer.Highlight, MiscSpriteFiles.IssueRoad);
         } else {
-            if (this._layers.get(TileGraphicLayer.Highlight) !== MiscSpriteFiles.Blank) {
-                this.setLayerSprite(TileGraphicLayer.Highlight, MiscSpriteFiles.Blank);
-            }
+            this.setLayerSprite(TileGraphicLayer.Highlight, MiscSpriteFiles.Blank);
         }
 
         const debugText = this._debugContainer.getChildAt(0) as Text;
@@ -211,9 +185,10 @@ export default class Tile {
      * @param spriteFile
      */
     setLayerSprite(layer: TileGraphicLayer, spriteFile: string): void {
-        const sprite = this._container.getChildAt(layer) as Sprite;
-        sprite.texture = this._spritesheet.textures[spriteFile];
-        this._layers.set(layer, spriteFile);
+        if (this._layers.get(layer) !== spriteFile) {
+            (this._container.getChildAt(layer) as Sprite).texture = this._spritesheet.textures[spriteFile];
+            this._layers.set(layer, spriteFile);
+        }
     }
 
     /**

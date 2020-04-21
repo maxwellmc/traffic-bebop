@@ -102,13 +102,11 @@ export default class Game {
         // Start the game loop
         this._ticker.add(() => this.gameLoop());
         this._ticker.start();
-
-        // Listen for changes to the scale
-        this._grid.game.eventEmitter.on(GameEvents.ScaleChanged, () => this.onScaleChanged());
     }
 
     drawInitialGraphics(): void {
         this._grid.generateGraphics();
+        this._grid.setGraphicsPositioning();
         this._grid.setupGridListeners();
         this.drawGrid();
         this.drawToolbar();
@@ -262,21 +260,6 @@ export default class Game {
             item.foreground.destroy();
             item.foreground = null;
         }
-    }
-
-    onScaleChanged(): void {
-        // Stop the ticker so that we don't try to update while resetting the stage
-        this._ticker.stop();
-
-        // Reset the stage
-        this._stage.destroy();
-        this._stage = new PIXI.Container();
-
-        // Draw the initial graphics all over again
-        this.drawInitialGraphics();
-
-        // Resume the ticker
-        this._ticker.start();
     }
 
     /* Getters & Setters -------------------------------------------------------------------------------------------- */

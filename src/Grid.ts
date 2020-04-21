@@ -105,12 +105,6 @@ export default class Grid {
     }
 
     generateGraphics(): void {
-        this._grid = new Container();
-        this._tiles = [];
-
-        let x = this._startingX;
-        let y = this._startingY;
-
         // Create a Tile for every Cell in the game
         for (let row = 0; row < GameMap.ROWS; row++) {
             for (let col = 0; col < GameMap.COLS; col++) {
@@ -118,7 +112,7 @@ export default class Grid {
                 const cell = this._game.gameMap.getCellByRowColumn(row, col);
 
                 // Create a new Tile for it
-                const tile = new Tile(this, x, y, cell, this._game.spritesheet);
+                const tile = new Tile(this, cell, this._game.spritesheet);
 
                 // Let the Cell have a reference to the Tile
                 cell.tile = tile;
@@ -129,6 +123,23 @@ export default class Grid {
                 // Add the Tile to our stage
                 this._grid.addChild(tile.container);
                 this._grid.addChild(tile.debugContainer);
+            }
+        }
+    }
+
+    setGraphicsPositioning(): void {
+        let x = this._startingX,
+            y = this._startingY;
+
+        for (let row = 0; row < GameMap.ROWS; row++) {
+            for (let col = 0; col < GameMap.COLS; col++) {
+                // Find the Cell for this row/column combination
+                const cell = this._game.gameMap.getCellByRowColumn(row, col);
+
+                cell.tile.x = x;
+                cell.tile.y = y;
+
+                cell.tile.setGraphicsPositioning();
 
                 x += Grid.TILE_WIDTH * this._scale;
             }
@@ -464,14 +475,14 @@ export default class Grid {
     onZoomedIn(): void {
         if (this._scale + 1 < Grid.SCALE_MAX) {
             this._scale += 1;
-            this._game.eventEmitter.emit(GameEvents.ScaleChanged, this._scale);
+            this.setGraphicsPositioning();
         }
     }
 
     onZoomedOut(): void {
         if (this._scale - 1 > Grid.SCALE_MIN) {
             this._scale -= 1;
-            this._game.eventEmitter.emit(GameEvents.ScaleChanged, this._scale);
+            this.setGraphicsPositioning();
         }
     }
 

@@ -24,8 +24,8 @@ import Simulator from './Simulator';
  */
 export default class GameMap {
     /* Constants ---------------------------------------------------------------------------------------------------- */
-    public static readonly ROWS = 20;
-    public static readonly COLS = 30;
+    public static readonly ROWS = 50;
+    public static readonly COLS = 50;
 
     /* Class Properties --------------------------------------------------------------------------------------------- */
     private _map: Cell[][];
