@@ -100,7 +100,11 @@ export default class Game {
         window.addEventListener('resize', () => this.resize());
 
         // Listen for window zoom events
-        window.addEventListener('mousewheel', (e) => this.onWheel(e as WheelEvent));
+        window.addEventListener(
+            'mousewheel',
+            // Debounce so we don't get flooded with zooms
+            Game.debounce((e) => this.onWheel(e as WheelEvent), 100),
+        );
 
         // Start the game loop
         this._ticker.add(() => this.gameLoop());
@@ -152,6 +156,7 @@ export default class Game {
      * @param e
      */
     onWheel(e: WheelEvent): void {
+        // Determine if this is a zoom in or a zoom out, then emit the correct event
         if (e.deltaY < 0) {
             this._menubar.game.eventEmitter.emit(GridEvents.ZoomedIn);
         } else {
@@ -276,6 +281,14 @@ export default class Game {
             item.foreground.destroy();
             item.foreground = null;
         }
+    }
+
+    static debounce(fn: (e) => void, wait: number): () => void {
+        let t;
+        return function (...args): void {
+            clearTimeout(t);
+            t = setTimeout(() => fn.apply(this, args), wait);
+        };
     }
 
     /* Getters & Setters -------------------------------------------------------------------------------------------- */
