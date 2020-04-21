@@ -10,6 +10,12 @@
 
 
 
+## How to Play
+
+Use the tools to create roads, residential zones, and commercial zones. Control the speed of the game via the "Speed" menu. Randomly, residents and businesses will move in. Traffic will begin to generate from the residences to the businesses. The ultimate goal is to ensure that traffic stays flowing without backing up.
+
+
+
 ## Development
 
 1. Clone the source code.
@@ -18,3 +24,8 @@
 
 This project uses ESLint with the Prettier plugin for code formatting.
 
+
+
+## Credits
+
+The font used in-game is "VT323" by Peter Hull.
