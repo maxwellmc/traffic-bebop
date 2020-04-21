@@ -19,9 +19,10 @@
 import Menu from './Menu';
 import SpeedMenu from './SpeedMenu';
 import Game from '../../Game';
-import {Graphics} from 'pixi.js';
+import { Graphics } from 'pixi.js';
 import AbstractSingleGraphicObject from '../../AbstractSingleGraphicObject';
 import ViewMenu from './ViewMenu';
+import { MenubarEvents } from '../../Events';
 
 /**
  * A non-world container for Menus.
@@ -50,6 +51,10 @@ export default class Menubar extends AbstractSingleGraphicObject {
         rectangle.drawRect(Menubar.STARTING_X, Menubar.STARTING_Y, this._game.renderer.screen.width, Menubar.HEIGHT);
         rectangle.endFill();
 
+        rectangle.interactive = true;
+        rectangle.on('mousedown', () => this.onMenubarClick());
+        rectangle.on('touchstart', () => this.onMenubarClick());
+
         this.graphic = rectangle;
     }
 
@@ -62,6 +67,10 @@ export default class Menubar extends AbstractSingleGraphicObject {
             menu.y = Menubar.STARTING_Y;
             menu.setGraphicsPositioning();
         }
+    }
+
+    onMenubarClick(): void {
+        this._game.eventEmitter.emit(MenubarEvents.Clicked);
     }
 
     /* Getters & Setters -------------------------------------------------------------------------------------------- */

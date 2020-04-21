@@ -20,7 +20,7 @@ import Menubar from './Menubar';
 import MenuItem from './MenuItem';
 import AbstractTwoGraphicObject from '../../AbstractTwoGraphicObject';
 import GraphicUtil from '../../GraphicUtil';
-import {GridEvents, MenubarEvents, ToolbarEvents} from '../../Events';
+import { GridEvents, HUDEvents, MenubarEvents, ToolbarEvents } from '../../Events';
 
 /**
  * Selected by the user to manipulate the game state.
@@ -58,10 +58,12 @@ export default abstract class Menu extends AbstractTwoGraphicObject {
         this._items = [];
 
         // Close the menu when something else is clicked
-        this._menubar.game.eventEmitter.on(GridEvents.Clicked, () => this.onOtherClicked());
-        this._menubar.game.eventEmitter.on(ToolbarEvents.Clicked, () => this.onOtherClicked());
-        this._menubar.game.eventEmitter.on(MenubarEvents.MenuClicked, (args) => this.onOtherClicked(args));
-        this._menubar.game.eventEmitter.on(MenubarEvents.MenuItemClicked, () => this.onOtherClicked());
+        this._menubar.game.eventEmitter.on(GridEvents.Clicked, () => this.onOtherClick());
+        this._menubar.game.eventEmitter.on(ToolbarEvents.Clicked, () => this.onOtherClick());
+        this._menubar.game.eventEmitter.on(HUDEvents.Clicked, () => this.onOtherClick());
+        this._menubar.game.eventEmitter.on(MenubarEvents.Clicked, () => this.onOtherClick());
+        this._menubar.game.eventEmitter.on(MenubarEvents.MenuClicked, (args) => this.onOtherClick(args));
+        this._menubar.game.eventEmitter.on(MenubarEvents.MenuItemClicked, () => this.onOtherClick());
     }
 
     generateGraphics(): void {
@@ -107,13 +109,13 @@ export default abstract class Menu extends AbstractTwoGraphicObject {
     }
 
     /**
-     * Handles when something else is clicked, which is not necessarily this Menu (but could be).
+     * Handles when something is clicked, which is not necessarily this Menu (but could be).
      *
      * @param args The clicked something
      */
-    onOtherClicked(args?): void {
+    onOtherClick(args?): void {
         // If the clicked item was actually this Menu, then skip
-        if(args === this){
+        if (args === this) {
             return;
         }
         this._open = false;

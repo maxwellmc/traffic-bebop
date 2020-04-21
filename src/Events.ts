@@ -45,3 +45,7 @@ export enum MenubarEvents {
     MenuClicked = 'menubar.menu.clicked',
     MenuItemClicked = 'menubar.menu-item.clicked',
 }
+
+export enum HUDEvents {
+    Clicked = 'hud.clicked',
+}

@@ -22,7 +22,7 @@ import Game from '../../Game';
 import GameState from '../../GameState';
 import { Speeds } from '../../Speed';
 import AbstractSingleGraphicObject from '../../AbstractSingleGraphicObject';
-import { GameStateEvents } from '../../Events';
+import { GameStateEvents, HUDEvents, MenubarEvents } from '../../Events';
 
 /**
  * The heads-up display to show the game state to the user.
@@ -79,6 +79,10 @@ export default class HUD extends AbstractSingleGraphicObject {
         rectangle.drawRect(this._startingX, this._startingY, this._game.renderer.screen.width, HUD.HEIGHT);
         rectangle.endFill();
 
+        rectangle.interactive = true;
+        rectangle.on('mousedown', () => this.onHUDClick());
+        rectangle.on('touchstart', () => this.onHUDClick());
+
         this.graphic = rectangle;
     }
 
@@ -104,6 +108,10 @@ export default class HUD extends AbstractSingleGraphicObject {
 
     onSpeedChanged(speed): void {
         this.setSpeed(speed);
+    }
+
+    onHUDClick(): void {
+        this._game.eventEmitter.emit(HUDEvents.Clicked);
     }
 
     /**

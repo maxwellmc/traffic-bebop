@@ -19,7 +19,7 @@
 import Menu from './Menu';
 import MenuItem from './MenuItem';
 import Menubar from './Menubar';
-import {GridEvents} from '../../Events';
+import { GridEvents } from '../../Events';
 
 export default class ViewMenu extends Menu {
     /* Constants ---------------------------------------------------------------------------------------------------- */

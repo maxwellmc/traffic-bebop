@@ -19,7 +19,7 @@
 import Tool from './Tool';
 import Game from '../../Game';
 import Menubar from '../menu/Menubar';
-import {ToolbarEvents} from '../../Events';
+import { ToolbarEvents } from '../../Events';
 
 export enum Tools {
     Select,
@@ -98,7 +98,6 @@ export default class Toolbar {
     }
 
     onToolClick(e, tool): void {
-
         // Set the "tool in use" to the clicked Tool
         this._game.toolInUse = tool;
 

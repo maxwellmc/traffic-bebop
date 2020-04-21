@@ -16,8 +16,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import Toolbar, {Tools} from './Toolbar';
-import {LoaderResource, Sprite} from 'pixi.js';
+import Toolbar, { Tools } from './Toolbar';
+import { LoaderResource, Sprite } from 'pixi.js';
 import AbstractTwoGraphicObject from '../../AbstractTwoGraphicObject';
 
 enum ToolSpriteFiles {
