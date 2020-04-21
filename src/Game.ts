@@ -28,7 +28,7 @@ import Tool from './nonworld/tool/Tool';
 import Simulator from './Simulator';
 import { Speeds } from './Speed';
 import MenuItem from './nonworld/menu/MenuItem';
-import { GameEvents } from './Events';
+import { GameEvents, GridEvents } from './Events';
 
 /**
  * Manages the Pixi Application, the game loop, and calling the draw-ers.
@@ -99,6 +99,9 @@ export default class Game {
         // Listen for window resize events
         window.addEventListener('resize', () => this.resize());
 
+        // Listen for window zoom events
+        window.addEventListener('mousewheel', (e) => this.onWheel(e as WheelEvent));
+
         // Start the game loop
         this._ticker.add(() => this.gameLoop());
         this._ticker.start();
@@ -140,6 +143,19 @@ export default class Game {
             this._menubar.generateGraphics();
             this._menubar.setGraphicsPositioning();
             this.drawMenubar();
+        }
+    }
+
+    /**
+     * Handles when the user's mouse wheel has an event.
+     *
+     * @param e
+     */
+    onWheel(e: WheelEvent): void {
+        if (e.deltaY < 0) {
+            this._menubar.game.eventEmitter.emit(GridEvents.ZoomedIn);
+        } else {
+            this._menubar.game.eventEmitter.emit(GridEvents.ZoomedOut);
         }
     }
 
