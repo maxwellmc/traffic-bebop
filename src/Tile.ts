@@ -103,7 +103,6 @@ export default class Tile implements ViewableInterface, PositionableInterface {
 
         // Initialize the Container
         this._container.interactive = true;
-        this._container.name = `${this._x},${this._y}`;
 
         // Create the debug graphic
         this._debugContainer.addChild(
@@ -120,6 +119,7 @@ export default class Tile implements ViewableInterface, PositionableInterface {
         this._container.scale.set(this._grid.scale);
         this._container.x = this._x;
         this._container.y = this._y;
+        this._container.name = `${this._x},${this._y}`;
 
         this._debugContainer.x = this._x;
         this._debugContainer.y = this._y;
@@ -174,7 +174,7 @@ export default class Tile implements ViewableInterface, PositionableInterface {
         const debugText = this._debugContainer.getChildAt(0) as Text;
         // If the debug flag is set, then show the Cell's ID
         if (this._grid.game.debug) {
-            debugText.text = String(this._cell.id);
+            debugText.text = String(this._container.name);
         } else {
             debugText.text = '';
         }

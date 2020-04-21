@@ -76,15 +76,16 @@ export default class Grid implements ViewableInterface, PositionableInterface {
         this._showGridLayer = true;
         this._scale = Grid.STARTING_SCALE;
 
-        // Center the grid in the app
-        this._width = GameMap.COLS * (Grid.TILE_WIDTH * this._scale);
-        this._height = GameMap.ROWS * (Grid.TILE_HEIGHT * this._scale);
+        // Set the "real" width and height (not considering scaling)
+        this._width = GameMap.COLS * Grid.TILE_WIDTH;
+        this._height = GameMap.ROWS * Grid.TILE_HEIGHT;
 
         // Set up the listeners for cursor interactions with the Grid
         this.setupGridListeners();
 
         // Listen for when the Grid layer is toggled
         this._game.eventEmitter.on(GridEvents.GridLayerToggled, () => this.onGridLayerToggled());
+
         // Listen for zooms
         this._game.eventEmitter.on(GridEvents.ZoomedIn, () => this.onZoomedIn());
         this._game.eventEmitter.on(GridEvents.ZoomedOut, () => this.onZoomedOut());
@@ -252,15 +253,14 @@ export default class Grid implements ViewableInterface, PositionableInterface {
             if (this._game.toolInUse.id === Tools.Select) {
                 const movementX = this._dragEvent.global.x - this._dragLastX,
                     movementY = this._dragEvent.global.y - this._dragLastY,
-                    scaledMargin = Grid.GRID_MARGIN * this._scale,
                     targetX = this._grid.x + movementX,
                     targetY = this._grid.y + movementY;
 
                 // If we won't go beyond the margins
-                if (targetX < scaledMargin && targetX + this._width - this._game.renderer.width + scaledMargin > 0) {
+                if (this.checkIsXWithinMargin(targetX)) {
                     this._grid.x += movementX;
                 }
-                if (targetY < scaledMargin && targetY + this._height - this._game.renderer.height + scaledMargin > 0) {
+                if (this.checkIsYWithinMargin(targetY)) {
                     this._grid.y += movementY;
                 }
 
@@ -291,6 +291,20 @@ export default class Grid implements ViewableInterface, PositionableInterface {
                 this.addDraggingTile(this.findTileByXY(Number(hitXYArray[0]), Number(hitXYArray[1])));
             }
         }
+    }
+
+    checkIsXWithinMargin(x: number): boolean {
+        return (
+            x < this.getScaledMargin() &&
+            x + this.getScaledWidth() - this._game.renderer.width + this.getScaledMargin() > 0
+        );
+    }
+
+    checkIsYWithinMargin(y: number): boolean {
+        return (
+            y < this.getScaledMargin() &&
+            y + this.getScaledHeight() - this._game.renderer.height + this.getScaledMargin() > 0
+        );
     }
 
     /**
@@ -479,16 +493,66 @@ export default class Grid implements ViewableInterface, PositionableInterface {
 
     onZoomedIn(): void {
         if (this._scale + 1 < Grid.SCALE_MAX) {
+
+            // Keep track of the widths before and after the scale
+            const originalWidth = this.getScaledWidth(),
+                originalHeight = this.getScaledHeight();
             this._scale += 1;
+            const newWidth = this.getScaledWidth(),
+                newHeight = this.getScaledHeight();
+
+            // Adjust the Grid's position so that it zooms in to the center
+            this._grid.x -= (newWidth - originalWidth) / 2;
+            this._grid.y -= (newHeight - originalHeight) / 2;
+
             this.setGraphicsPositioning();
         }
     }
 
     onZoomedOut(): void {
         if (this._scale - 1 > Grid.SCALE_MIN) {
+
+            // Keep track of the widths before and after the scale
+            const originalWidth = this.getScaledWidth(),
+                originalHeight = this.getScaledHeight();
             this._scale -= 1;
+            const newWidth = this.getScaledWidth(),
+                newHeight = this.getScaledHeight();
+
+            // Adjust the Grid's position so that it zooms out of the center
+            this._grid.x += (originalWidth - newWidth) / 2;
+            this._grid.y += (originalHeight - newHeight) / 2;
+
+            // It's possible to zoom out beyond the bounds of the margins, so check for that and correct
+            if (!this.checkIsXWithinMargin(this._grid.x)) {
+                if (this._grid.x > this.getScaledMargin()) {
+                    this._grid.x = this.getScaledMargin();
+                } else {
+                    this._grid.x = -(this.getScaledWidth() - this._game.renderer.width + this.getScaledMargin());
+                }
+            }
+            if (!this.checkIsYWithinMargin(this._grid.y)) {
+                if (this._grid.y > this.getScaledMargin()) {
+                    this._grid.y = this.getScaledMargin();
+                } else {
+                    this._grid.y = -(this.getScaledHeight() - this._game.renderer.height + this.getScaledMargin());
+                }
+            }
+
             this.setGraphicsPositioning();
         }
+    }
+
+    getScaledWidth() {
+        return this._width * this._scale;
+    }
+
+    getScaledHeight() {
+        return this._height * this._scale;
+    }
+
+    getScaledMargin() {
+        return Grid.GRID_MARGIN * this._scale;
     }
 
     /* Getters & Setters -------------------------------------------------------------------------------------------- */
