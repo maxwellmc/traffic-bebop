@@ -16,19 +16,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import DisplayObject = PIXI.DisplayObject;
-
 /**
- * An abstract class for when an object only has a single graphic.
+ * An interface for objects when have graphical elements that need to be generated after construction.
  */
-export default abstract class AbstractSingleGraphicObject {
-    protected _graphic: DisplayObject;
-
-    get graphic(): PIXI.DisplayObject {
-        return this._graphic;
-    }
-
-    set graphic(value: PIXI.DisplayObject) {
-        this._graphic = value;
-    }
+export default interface ViewableInterface {
+    generateGraphics(): void;
 }

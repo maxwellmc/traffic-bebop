@@ -19,6 +19,7 @@
 import Toolbar, { Tools } from './Toolbar';
 import { LoaderResource, Sprite } from 'pixi.js';
 import AbstractTwoGraphicObject from '../../AbstractTwoGraphicObject';
+import ViewableInterface from '../../ViewableInterface';
 
 enum ToolSpriteFiles {
     Background = 'tool-bg.png',
@@ -33,7 +34,7 @@ enum ToolSpriteFiles {
 /**
  * Selected by the user to manipulate individual cells in the world.
  */
-export default class Tool extends AbstractTwoGraphicObject {
+export default class Tool extends AbstractTwoGraphicObject implements ViewableInterface {
     /* Constants ---------------------------------------------------------------------------------------------------- */
 
     /* Class Properties --------------------------------------------------------------------------------------------- */

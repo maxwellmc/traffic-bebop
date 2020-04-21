@@ -21,6 +21,8 @@ import Cell, { StructureTypes, TerrainTypes, ZoneTypes } from './Cell';
 import { Container, LoaderResource, Sprite, Text } from 'pixi.js';
 import Game from './Game';
 import { TileGraphicLayer } from './TileGraphic';
+import ViewableInterface from './ViewableInterface';
+import PositionableInterface from './PositionableInterface';
 
 export enum TerrainSpriteFiles {
     Grass = 'grass.png',
@@ -62,7 +64,7 @@ export enum MiscSpriteFiles {
 /**
  * A cell within the world.
  */
-export default class Tile {
+export default class Tile implements ViewableInterface, PositionableInterface {
     /* Constants ---------------------------------------------------------------------------------------------------- */
 
     /* Class Properties --------------------------------------------------------------------------------------------- */

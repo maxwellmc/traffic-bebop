@@ -21,11 +21,14 @@ import MenuItem from './MenuItem';
 import AbstractTwoGraphicObject from '../../AbstractTwoGraphicObject';
 import GraphicUtil from '../../GraphicUtil';
 import { GridEvents, HUDEvents, MenubarEvents, ToolbarEvents } from '../../Events';
+import ViewableInterface from '../../ViewableInterface';
+import PositionableInterface from '../../PositionableInterface';
 
 /**
  * Selected by the user to manipulate the game state.
  */
-export default abstract class Menu extends AbstractTwoGraphicObject {
+export default abstract class Menu extends AbstractTwoGraphicObject
+    implements ViewableInterface, PositionableInterface {
     /* Constants ---------------------------------------------------------------------------------------------------- */
     public static readonly HEIGHT = 40;
     public static readonly WIDTH = 100;

@@ -16,9 +16,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import Cell, {StructureTypes, ZoneTypes} from './Cell';
+import Cell, { StructureTypes, ZoneTypes } from './Cell';
 import GameMap from './GameMap';
-import {Graph, Pathfinder} from './Pathfinding';
+import { Graph, Pathfinder } from './Pathfinding';
 import Game from './Game';
 import TravelTrip from './TravelTrip';
 

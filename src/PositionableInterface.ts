@@ -16,19 +16,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import DisplayObject = PIXI.DisplayObject;
-
 /**
- * An abstract class for when an object only has a single graphic.
+ * An interface for objects when have graphical elements which need to be positioned after construction and
+ * generation.
  */
-export default abstract class AbstractSingleGraphicObject {
-    protected _graphic: DisplayObject;
-
-    get graphic(): PIXI.DisplayObject {
-        return this._graphic;
-    }
-
-    set graphic(value: PIXI.DisplayObject) {
-        this._graphic = value;
-    }
+export default interface PositionableInterface {
+    setGraphicsPositioning(): void;
 }

@@ -19,11 +19,12 @@
 import Menu from './Menu';
 import GraphicUtil from '../../GraphicUtil';
 import AbstractTwoGraphicObject from '../../AbstractTwoGraphicObject';
+import ViewableInterface from '../../ViewableInterface';
 
 /**
  * An individual choice in a Menu, only shown when the Menu is in the open state.
  */
-export default class MenuItem extends AbstractTwoGraphicObject {
+export default class MenuItem extends AbstractTwoGraphicObject implements ViewableInterface {
     /* Constants ---------------------------------------------------------------------------------------------------- */
     public static readonly FILL_COLOR = 0xeeeeee;
     public static readonly LINE_COLOR = 0xdedede;

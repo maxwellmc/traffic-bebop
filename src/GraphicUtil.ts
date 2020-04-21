@@ -19,6 +19,9 @@
 import { Graphics, Text } from 'pixi.js';
 import Game from './Game';
 
+/**
+ * Houses convenience functions to reduce the complexity involved in generating common PixiJS elements.
+ */
 export default class GraphicUtil {
     static generateRectangle(lineWidth, lineColor, lineAlpha, fillColor, width, height, x, y): Graphics {
         const rectangle = new Graphics();

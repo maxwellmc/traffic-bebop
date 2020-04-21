@@ -20,6 +20,8 @@ import Tool from './Tool';
 import Game from '../../Game';
 import Menubar from '../menu/Menubar';
 import { ToolbarEvents } from '../../Events';
+import ViewableInterface from '../../ViewableInterface';
+import PositionableInterface from '../../PositionableInterface';
 
 export enum Tools {
     Select,
@@ -32,7 +34,7 @@ export enum Tools {
 /**
  * A non-world container for Tools.
  */
-export default class Toolbar {
+export default class Toolbar implements ViewableInterface, PositionableInterface {
     /* Constants ---------------------------------------------------------------------------------------------------- */
     public static readonly TOOLBAR_STARTING_X = 24;
     public static readonly TOOLBAR_STARTING_Y = Menubar.HEIGHT + 24;
@@ -79,7 +81,7 @@ export default class Toolbar {
     }
 
     generateGraphics(): void {
-        // FIXME
+        // TODO: Should the Toolbar actually have its own viewable element? Or just its children? What about a grab-and-move?
     }
 
     setGraphicsPositioning(): void {

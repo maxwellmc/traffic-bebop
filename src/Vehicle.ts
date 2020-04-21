@@ -21,6 +21,7 @@ import TravelTrip from './TravelTrip';
 import GameState from './GameState';
 import Grid from './Grid';
 import { Speeds, SpeedUtil } from './Speed';
+import AbstractSingleGraphicObject from './AbstractSingleGraphicObject';
 
 export enum Directions {
     North,
@@ -50,17 +51,17 @@ enum VehicleSpriteFiles {
     Car1 = 'car1.png',
 }
 
-export default class Vehicle {
+export default class Vehicle extends AbstractSingleGraphicObject {
     private _travelTrip: TravelTrip;
     private _tileX: number;
     private _tileY: number;
     private _spritesheet: LoaderResource;
-    private _graphic: Sprite;
     private _isOnStage: boolean;
     private _direction: Directions;
     private _turningState: TurningStates;
 
     constructor(travelTrip: TravelTrip, spritesheet: LoaderResource) {
+        super();
         this._travelTrip = travelTrip;
         this._spritesheet = spritesheet;
         this._isOnStage = false;
@@ -70,7 +71,7 @@ export default class Vehicle {
         this._direction = Directions.South;
 
         this._graphic.scale.set(this._travelTrip.game.grid.scale);
-        this._graphic.anchor.set(0.5);
+        (this._graphic as Sprite).anchor.set(0.5);
     }
 
     updateGraphics(deltaMS: number, speed: Speeds): void {
@@ -157,14 +158,6 @@ export default class Vehicle {
 
     set tileY(value: number) {
         this._tileY = value;
-    }
-
-    get graphic(): Sprite {
-        return this._graphic;
-    }
-
-    set graphic(value: Sprite) {
-        this._graphic = value;
     }
 
     get isOnStage(): boolean {

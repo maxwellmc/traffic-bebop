@@ -23,13 +23,15 @@ import { StructureTypes, TerrainTypes, ZoneTypes } from './Cell';
 import GameMap from './GameMap';
 import { Container, Point } from 'pixi.js';
 import { GameEvents, GridEvents } from './Events';
+import ViewableInterface from './ViewableInterface';
+import PositionableInterface from './PositionableInterface';
 import InteractionEvent = PIXI.interaction.InteractionEvent;
 import InteractionData = PIXI.interaction.InteractionData;
 
 /**
  * Visually represents the GameMap, as translated to an arrangement of viewable Tiles.
  */
-export default class Grid {
+export default class Grid implements ViewableInterface, PositionableInterface {
     /* Constants ---------------------------------------------------------------------------------------------------- */
     public static readonly GRID_MARGIN = 50; // Will be scaled by the zoom level
     public static readonly TILE_WIDTH = 32;

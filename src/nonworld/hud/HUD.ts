@@ -22,12 +22,14 @@ import Game from '../../Game';
 import GameState from '../../GameState';
 import { Speeds } from '../../Speed';
 import AbstractSingleGraphicObject from '../../AbstractSingleGraphicObject';
-import { GameStateEvents, HUDEvents, MenubarEvents } from '../../Events';
+import { GameStateEvents, HUDEvents } from '../../Events';
+import ViewableInterface from '../../ViewableInterface';
+import PositionableInterface from '../../PositionableInterface';
 
 /**
  * The heads-up display to show the game state to the user.
  */
-export default class HUD extends AbstractSingleGraphicObject {
+export default class HUD extends AbstractSingleGraphicObject implements ViewableInterface, PositionableInterface {
     /* Constants ---------------------------------------------------------------------------------------------------- */
     public static readonly HEIGHT = 48;
     public static readonly FILL_COLOR = 0x2f89fc;

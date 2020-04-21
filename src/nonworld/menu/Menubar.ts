@@ -23,11 +23,16 @@ import { Graphics } from 'pixi.js';
 import AbstractSingleGraphicObject from '../../AbstractSingleGraphicObject';
 import ViewMenu from './ViewMenu';
 import { MenubarEvents } from '../../Events';
+import ViewableInterface from '../../ViewableInterface';
+import PositionableInterface from '../../PositionableInterface';
 
 /**
  * A non-world container for Menus.
+ *
+ * Inside a Menubar is many Menus. Each Menu has many MenuItems. The Menubar and its Menus are always visible, but a
+ * Menu's MenuItems are only visible and interactive when that Menu is open.
  */
-export default class Menubar extends AbstractSingleGraphicObject {
+export default class Menubar extends AbstractSingleGraphicObject implements ViewableInterface, PositionableInterface {
     /* Constants ---------------------------------------------------------------------------------------------------- */
     public static readonly STARTING_X = 0;
     public static readonly STARTING_Y = 0;

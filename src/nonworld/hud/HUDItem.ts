@@ -19,11 +19,12 @@
 import { Text } from 'pixi.js';
 import Game from '../../Game';
 import AbstractSingleGraphicObject from '../../AbstractSingleGraphicObject';
+import ViewableInterface from '../../ViewableInterface';
 
 /**
  * An item within the HUD, displaying both the label and the value.
  */
-export default class HUDItem extends AbstractSingleGraphicObject {
+export default class HUDItem extends AbstractSingleGraphicObject implements ViewableInterface {
     /* Constants ---------------------------------------------------------------------------------------------------- */
     public static readonly WIDTH = 200;
     public static readonly TEXT_COLOR = 0xf5f5f5;

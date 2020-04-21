@@ -18,6 +18,9 @@
 
 import DisplayObject = PIXI.DisplayObject;
 
+/**
+ * An abstract class for when an object has two graphics, a background and a foreground.
+ */
 export default abstract class AbstractTwoGraphicObject {
     protected _background: DisplayObject;
     protected _foreground: DisplayObject;
