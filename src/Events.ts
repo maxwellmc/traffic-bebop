@@ -20,7 +20,7 @@ export enum GameEvents {
     MoneyDeducted = 'money.deducted',
     TimeIncreased = 'time.increased',
     SpeedSet = 'speed.set',
-    ScaleChanged = 'scale.changed',
+    ZoomChanged = 'zoom.changed',
 }
 
 export enum GameStateEvents {
@@ -32,8 +32,9 @@ export enum GameStateEvents {
 export enum GridEvents {
     Clicked = 'grid.clicked',
     GridLayerToggled = 'grid.grid-layer-toggled',
-    ZoomedIn = 'grid.zoomed-in',
-    ZoomedOut = 'grid.zoomed-out',
+    ZoomIn = 'grid.zoom-in',
+    ZoomOut = 'grid.zoom-out',
+    ZoomFinished = 'grid.zoom-finished',
 }
 
 export enum ToolbarEvents {

@@ -88,8 +88,7 @@ export default class TravelTrip {
         const turningState = this.determineTurningState(pastCell, currentCell, futureCell);
         this._vehicle.turningState = turningState;
 
-        this._vehicle.tileX = currentCell.tile.x;
-        this._vehicle.tileY = currentCell.tile.y;
+        this._vehicle.currentTile = currentCell.tile;
 
         const scaledTileHeight = Grid.TILE_HEIGHT * this._game.grid.scale,
             scaledTileWidth = Grid.TILE_WIDTH * this._game.grid.scale,

@@ -63,10 +63,10 @@ export default class ViewMenu extends Menu {
                 this._menubar.game.eventEmitter.emit(GridEvents.GridLayerToggled);
                 break;
             case 1:
-                this._menubar.game.eventEmitter.emit(GridEvents.ZoomedIn);
+                this._menubar.game.eventEmitter.emit(GridEvents.ZoomIn);
                 break;
             case 2:
-                this._menubar.game.eventEmitter.emit(GridEvents.ZoomedOut);
+                this._menubar.game.eventEmitter.emit(GridEvents.ZoomOut);
                 break;
         }
     }

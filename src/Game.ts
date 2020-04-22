@@ -158,9 +158,9 @@ export default class Game {
     onWheel(e: WheelEvent): void {
         // Determine if this is a zoom in or a zoom out, then emit the correct event
         if (e.deltaY < 0) {
-            this._menubar.game.eventEmitter.emit(GridEvents.ZoomedIn);
+            this._menubar.game.eventEmitter.emit(GridEvents.ZoomIn);
         } else {
-            this._menubar.game.eventEmitter.emit(GridEvents.ZoomedOut);
+            this._menubar.game.eventEmitter.emit(GridEvents.ZoomOut);
         }
     }
 

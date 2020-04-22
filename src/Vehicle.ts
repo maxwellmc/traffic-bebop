@@ -22,6 +22,8 @@ import GameState from './GameState';
 import Grid from './Grid';
 import { Speeds, SpeedUtil } from './Speed';
 import AbstractSingleGraphicObject from './AbstractSingleGraphicObject';
+import { GridEvents } from './Events';
+import Tile from './Tile';
 
 export enum Directions {
     North,
@@ -53,8 +55,7 @@ enum VehicleSpriteFiles {
 
 export default class Vehicle extends AbstractSingleGraphicObject {
     private _travelTrip: TravelTrip;
-    private _tileX: number;
-    private _tileY: number;
+    private _currentTile: Tile;
     private _spritesheet: LoaderResource;
     private _isOnStage: boolean;
     private _direction: Directions;
@@ -72,6 +73,11 @@ export default class Vehicle extends AbstractSingleGraphicObject {
 
         this._graphic.scale.set(this._travelTrip.game.grid.scale);
         (this._graphic as Sprite).anchor.set(0.5);
+
+        // Listen for finished zooms on the Grid
+        this._travelTrip.game.eventEmitter.on(GridEvents.ZoomFinished, (oldScale, newScale) =>
+            this.onGridZoomFinished(oldScale, newScale),
+        );
     }
 
     updateGraphics(deltaMS: number, speed: Speeds): void {
@@ -142,22 +148,37 @@ export default class Vehicle extends AbstractSingleGraphicObject {
         }
     }
 
+    onGridZoomFinished(oldScale, newScale): void {
+        if (!this._graphic) {
+            return;
+        }
+
+        // Scale the Vehicle's sprite
+        this._graphic.scale.set(newScale);
+
+        // Determine where in the Tile the Vehicle was
+        const oldTileX = (this._currentTile.x / newScale) * oldScale,
+            oldTileY = (this._currentTile.y / newScale) * oldScale,
+            tileXPercent = (this._graphic.x - oldTileX) / (Grid.TILE_WIDTH * oldScale),
+            tileYPercent = (this._graphic.y - oldTileY) / (Grid.TILE_HEIGHT * oldScale);
+
+        // Use the "percentage of the tile" numbers to find the new X and Y
+        const newX = this._currentTile.x + tileXPercent * (Grid.TILE_WIDTH * newScale),
+            newY = this._currentTile.y + tileYPercent * (Grid.TILE_HEIGHT * newScale);
+
+        // Set them
+        this._graphic.x = newX;
+        this._graphic.y = newY;
+    }
+
     /* Getters & Setters -------------------------------------------------------------------------------------------- */
 
-    get tileX(): number {
-        return this._tileX;
+    get currentTile(): Tile {
+        return this._currentTile;
     }
 
-    set tileX(value: number) {
-        this._tileX = value;
-    }
-
-    get tileY(): number {
-        return this._tileY;
-    }
-
-    set tileY(value: number) {
-        this._tileY = value;
+    set currentTile(value: Tile) {
+        this._currentTile = value;
     }
 
     get isOnStage(): boolean {
