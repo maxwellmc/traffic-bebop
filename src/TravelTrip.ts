@@ -32,6 +32,8 @@ export default class TravelTrip {
     private _path: number[];
     private _currentCellID: number;
     private _vehicle: Vehicle;
+    private _tileProgress: number;
+    private _hasBegun: boolean;
 
     constructor(game: Game, startingCellID: number, destinationCellID: number, path: number[]) {
         this._game = game;
@@ -40,6 +42,37 @@ export default class TravelTrip {
         this._path = path;
         this._currentCellID = startingCellID;
         this._vehicle = new Vehicle(this, this._game.spritesheet);
+        this._tileProgress = 1;
+        this._hasBegun = false;
+    }
+
+    begin(): void {
+        // If we're not going to come out onto a busy road
+        if (!this.nextPathCellHasVehicle()) {
+            this._hasBegun = true;
+            this.advance();
+            this.setVehiclePositioning(
+                this._vehicle.direction,
+                this._vehicle.turningState,
+                this._game.gameMap.getCellByID(this._currentCellID),
+            );
+            this._tileProgress = 0;
+        }
+    }
+
+    nextPathCellHasVehicle(): boolean {
+        const nextCellID = this.getNextPathCellID();
+        // See if any other trips have a vehicle in this cell
+        for (const otherTrip of this.game.gameState.travelTrips) {
+            // Skip if it's our own trip
+            if (otherTrip === this) {
+                continue;
+            }
+            if (otherTrip.currentCellID === nextCellID) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -49,17 +82,16 @@ export default class TravelTrip {
      */
     advance(): boolean {
         // Find the next Cell to which to advance
-        let currentPathIndex = this._path.indexOf(this._currentCellID);
-        const nextCellID = this._path[currentPathIndex + 1];
+        const nextCellID = this.getNextPathCellID();
 
         // Set the next Cell as the current Cell now (and save the current as past)
         const pastCell = this._game.gameMap.getCellByID(this._currentCellID);
         this._currentCellID = nextCellID;
         const currentCell = this._game.gameMap.getCellByID(this._currentCellID);
+        this._tileProgress = 0;
 
         // Get the "future" Cell (one step ahead of the now-current Cell)
-        currentPathIndex = this._path.indexOf(this._currentCellID);
-        const futureCellID = this._path[currentPathIndex + 1];
+        const futureCellID = this.getNextPathCellID();
 
         // If there's no future Cell (i.e. we're approaching our destination)
         if (futureCellID === undefined) {
@@ -71,6 +103,11 @@ export default class TravelTrip {
         this.updateVehicle(pastCell, currentCell, futureCell);
 
         return true;
+    }
+
+    getNextPathCellID(): number {
+        const currentPathIndex = this._path.indexOf(this._currentCellID);
+        return this._path[currentPathIndex + 1];
     }
 
     /**
@@ -89,7 +126,9 @@ export default class TravelTrip {
         this._vehicle.turningState = turningState;
 
         this._vehicle.currentTile = currentCell.tile;
+    }
 
+    setVehiclePositioning(direction, turningState, currentCell): void {
         const scaledTileHeight = Grid.TILE_HEIGHT * this._game.grid.scale,
             scaledTileWidth = Grid.TILE_WIDTH * this._game.grid.scale,
             laneOffset1 = 11 * this._game.grid.scale - 4,
@@ -227,6 +266,7 @@ export default class TravelTrip {
     end(): void {
         this._vehicle.graphic.destroy();
         this._vehicle.graphic = null;
+        this._game.gameState.travelTrips.delete(this);
     }
 
     /* Getters & Setters -------------------------------------------------------------------------------------------- */
@@ -253,5 +293,21 @@ export default class TravelTrip {
 
     get vehicle(): Vehicle {
         return this._vehicle;
+    }
+
+    get tileProgress(): number {
+        return this._tileProgress;
+    }
+
+    set tileProgress(value: number) {
+        this._tileProgress = value;
+    }
+
+    get hasBegun(): boolean {
+        return this._hasBegun;
+    }
+
+    set hasBegun(value: boolean) {
+        this._hasBegun = value;
     }
 }

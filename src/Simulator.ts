@@ -31,6 +31,7 @@ export default class Simulator {
     public static readonly MOVE_IN_CHANCE = 50;
     public static readonly MOVE_IN_ROAD_CUTOFF = 2;
     public static readonly MOVE_IN_ROAD_EXPONENTIATION_OPERAND = 4;
+    public static readonly RESIDENT_TRAVEL_CHANCE = 30;
 
     /* Class Properties --------------------------------------------------------------------------------------------- */
     private _game: Game;
@@ -63,7 +64,6 @@ export default class Simulator {
 
         // Simulate traffic
         this.simulateResidentialTraffic();
-        this.advanceTravelTrips();
     }
 
     /**
@@ -128,19 +128,6 @@ export default class Simulator {
         this._game.gameState.travelTrips.add(travelTrip);
     }
 
-    advanceTravelTrips(): void {
-        if (!this._game.gameState.travelTrips.size) {
-            return;
-        }
-
-        for (const trip of this._game.gameState.travelTrips) {
-            if (!trip.advance()) {
-                // If advancing returned false, then that was the end of this trip
-                this._game.gameState.travelTrips.delete(trip);
-            }
-        }
-    }
-
     /* Chance Determiners ------------------------------------------------------------------------------------------- */
 
     /**
@@ -171,7 +158,7 @@ export default class Simulator {
 
     shouldResidentTravel(cell: Cell): boolean {
         // TODO
-        return Simulator.randomInt(50) === 0;
+        return Simulator.randomInt(Simulator.RESIDENT_TRAVEL_CHANCE) === 0;
     }
 
     /* -------------------------------------------------------------------------------------------------------------- */
